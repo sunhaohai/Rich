@@ -6,18 +6,57 @@
 #include "rich.h"
 #include "display.h"
 
-extern PLAYER USERS[4];
+extern PLAYER USERS[MAX_USER];
 extern int USERS_NUMBER;
 extern MAP MAPS[MAX_POSITION];
 extern int game_over;
 extern int dice_num;
+extern char dot[8][30];
+
+void _del_symbol(MAP* map,SYMBOL dels){
+    //this is for player leave this position
+    if(map->symbol==dels) {
+        map->symbol = (map->pre_symbol)[MAX_USER-1];
+        return;
+    }
+    for(int i=0;i<MAX_USER-1;i++){
+        (map->pre_symbol)[i] = (map->pre_symbol)[i+1];
+    }
+}
+
+BOOL _isuser_symbol(SYMBOL sym){
+    if( (sym==SYMBOL_J)||(sym==SYMBOL_S)||(sym==SYMBOL_A)||(sym==SYMBOL_Q) )
+    return TRUE;
+    return FALSE;
+}
+
+void _add_symbol(MAP* map,SYMBOL adds){
+    //for player arrive this position
+    for(int i=0;i<MAX_USER-1;i++){
+        if(!_isuser_symbol((map->pre_symbol)[i])){
+            (map->pre_symbol)[i] = map->symbol;
+            break;
+        }
+    }
+    map->symbol=adds;
+}
+
+SYMBOL _get_symbol(PLAYER player){
+    if(player.name==QIAN) return SYMBOL_Q;
+    else if(player.name==JING) return SYMBOL_J;
+    else if(player.name==SUN) return SYMBOL_S;
+    else if(player.name==ATUBO) return  SYMBOL_A;
+    else return SYMBOL_0;
+}
 
 void dice_cmd(PLAYER* player,BOOL* end_round){
     //dice random
     int steps = _get_rand(1,6);
+    _del_symbol(&MAPS[(*player).position],_get_symbol(*player));
     (*player).position = ((*player).position + steps) % MAX_POSITION;
-    *end_round = TRUE;
+    _add_symbol(&MAPS[(*player).position],_get_symbol(*player));
     display((*player).position, (*player).short_name);
+    *end_round = TRUE;
 }
 
 void query_cmd(PLAYER *player,BOOL* end_round){
