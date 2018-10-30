@@ -19,6 +19,16 @@ typedef short BOOL;
 #define YELLOW_S "\033[0;32;33m"
 #define ORI "\033[0m"
 
+#define ROLL "Roll"
+#define SELL "Sell"
+#define BLOCK "Block"
+#define BOMB "Bomb"
+#define ROBOT "Bobot"
+#define QUERY "Query"
+#define HELP "Help"
+#define QUIT "Quit"
+#define STEP "Step"
+
 typedef enum 
 {
     RICH_FALSE  = 0,

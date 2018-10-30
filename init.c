@@ -174,17 +174,6 @@ void init_game()
     _init_maps();
 }
 
-BOOL skip_judge(int i)
-{
-    if (USERS[i].skip_num > 0)
-    {
-        USERS[i].skip_num--;
-        return 1;
-    }
-    else
-        return 0;
-}
-
 void use_tool()
 {
 
