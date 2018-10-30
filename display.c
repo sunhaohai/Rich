@@ -1,6 +1,5 @@
 #include "display.h"
 #include "rich.h"
-#include <string.h>
 
 extern PLAYER USERS[4];
 extern int USERS_NUMBER;
@@ -35,69 +34,244 @@ void print_yellow(char *chars)
     printf(ORI);
 }
 
-void print_player(char* chars, USER_NAME name){
+void print_player(char *chars, USER_NAME name)
+{
     //print with color depends on name
-    if(name==QIAN) print_red(chars);
-    else if(name==ATUBO) print_green(chars);
-    else if(name==JING) print_blue(chars);
-    else if(name==SUN) print_yellow(chars);
-    else printf("%s", chars);
+    if (name == QIAN)
+        print_red(chars);
+    else if (name == ATUBO)
+        print_green(chars);
+    else if (name == JING)
+        print_blue(chars);
+    else if (name == SUN)
+        print_yellow(chars);
+    else
+        printf("%s", chars);
 }
 
-void print_prompt(PLAYER* player){
+void print_prompt(PLAYER *player)
+{
     //print player's name prompt
-    if((*player).name==QIAN){
-        char name[]="Qian>";
-        print_player(name,(*player).name);
+    if ((*player).name == QIAN)
+    {
+        char name[] = "Qian>";
+        print_player(name, (*player).name);
     }
-    else if((*player).name==ATUBO){
-        char name[]="Atubo>";
-        print_player(name,(*player).name);
+    else if ((*player).name == ATUBO)
+    {
+        char name[] = "Atubo>";
+        print_player(name, (*player).name);
     }
-    else if((*player).name==JING){
-        char name[]="Jing>";
-        print_player(name,(*player).name);
+    else if ((*player).name == JING)
+    {
+        char name[] = "Jing>";
+        print_player(name, (*player).name);
     }
-    else if((*player).name==SUN){
-        char name[]="Sun>";
-        print_player(name,(*player).name);
+    else if ((*player).name == SUN)
+    {
+        char name[] = "Sun>";
+        print_player(name, (*player).name);
     }
-    else{
+    else
+    {
         printf("print_prompt error!");
     }
 }
 
-void display(char position,char short_name)
+void display(char position, char short_name)
 {
-    oneD2twoD(position,short_name);
-    printMap(dot[0]);
+    //oneD2twoD(position,short_name);
+    printMap(dot[0], position, short_name);
 }
 
-void printMap(char line[])
+void printMap(char line[], char position, char short_name)
 {
     system("clear");
+    char color[MAX_POSITION] = {0};
+    for (int i = 0; i < MAX_POSITION; i++)
+    {
+        switch (MAPS[i].symbol)
+        {
+        case 0:
+            oneD2twoD(i, 'Q');
+            break;
+        case 1:
+            oneD2twoD(i, 'A');
+            break;
+        case 2:
+            oneD2twoD(i, 'S');
+            break;
+        case 3:
+            oneD2twoD(i, 'J');
+            break;
+        case 4:
+            switch (MAPS[i].owner)
+            {
+            case 0:
+                oneD2twoD(i, '0');
+                break;
+            case 1:
+                oneD2twoD(i, RED0_Q);
+                break;
+            case 2:
+                oneD2twoD(i, GREEN0_A);
+                break;
+            case 3:
+                oneD2twoD(i, BLUE0_S);
+                break;
+            case 4:
+                oneD2twoD(i, YELLOW0_J);
+                break;
+            default:
+                break;
+            }
+            break;
+        case 5:
+            switch (MAPS[i].owner)
+            {
+            case 0:
+                oneD2twoD(i, '1');
+                break;
+            case 1:
+                oneD2twoD(i, RED1_Q);
+                break;
+            case 2:
+                oneD2twoD(i, GREEN1_A);
+                break;
+            case 3:
+                oneD2twoD(i, BLUE1_S);
+                break;
+            case 4:
+                oneD2twoD(i, YELLOW1_J);
+                break;
+            default:
+                break;
+            }
+            break;
+        case 6:
+            switch (MAPS[i].owner)
+            {
+            case 0:
+                oneD2twoD(i, '2');
+                break;
+            case 1:
+                oneD2twoD(i, RED2_Q);
+                break;
+            case 2:
+                oneD2twoD(i, GREEN2_A);
+                break;
+            case 3:
+                oneD2twoD(i, BLUE2_S);
+                break;
+            case 4:
+                oneD2twoD(i, YELLOW2_J);
+                break;
+            default:
+                break;
+            }
+            break;
+        case 7:
+            switch (MAPS[i].owner)
+            {
+            case 0:
+                oneD2twoD(i, '3');
+                break;
+            case 1:
+                oneD2twoD(i, RED3_Q);
+                break;
+            case 2:
+                oneD2twoD(i, GREEN3_A);
+                break;
+            case 3:
+                oneD2twoD(i, BLUE3_S);
+                break;
+            case 4:
+                oneD2twoD(i, YELLOW3_J);
+                break;
+            default:
+                break;
+            }
+            break;
+        case 8:
+            oneD2twoD(i, 's');
+            break;
+        case 9:
+            oneD2twoD(i, 'H');
+            break;
+        case 10:
+            oneD2twoD(i, 'T');
+            break;
+        case 11:
+            oneD2twoD(i, 'G');
+            break;
+        case 12:
+            oneD2twoD(i, 'P');
+            break;
+        case 13:
+            oneD2twoD(i, 'M');
+            break;
+        case 14:
+            oneD2twoD(i, '$');
+            break;
+        case 15:
+            oneD2twoD(i, 'L');
+            break;
+        case 16:
+            oneD2twoD(i, 'R');
+            break;
+        case 17:
+            oneD2twoD(i, 'B');
+            break;
+        default:
+            break;
+        }
+    }
+    oneD2twoD(position, short_name);
     for (int i = 0; i < strlen(line); i++)
     {
+
         if (line[i] == 'Q')
-        {
-            printf("\033[31mQ\033[0m");
-        }
+            print_red("Q");
         else if (line[i] == 'A')
-        {
-            printf("\033[32mA\033[0m");
-        }
+            print_green("A");
         else if (line[i] == 'S')
-        {
-            printf("\033[34mS\033[0m");
-        }
+            print_blue("S");
         else if (line[i] == 'J')
-        {
-            printf("\033[33mJ\033[0m");
-        }
+            print_yellow("J");
+        else if (line[i] == RED0_Q)
+            print_red("0");
+        else if (line[i] == RED1_Q)
+            print_red("1");
+        else if (line[i] == RED2_Q)
+            print_red("2");
+        else if (line[i] == RED3_Q)
+            print_red("3");
+        else if (line[i] == GREEN0_A)
+            print_green("0");
+        else if (line[i] == GREEN1_A)
+            print_green("1");
+        else if (line[i] == GREEN2_A)
+            print_green("2");
+        else if (line[i] == GREEN3_A)
+            print_green("3");
+        else if (line[i] == BLUE0_S)
+            print_blue("0");
+        else if (line[i] == BLUE1_S)
+            print_blue("1");
+        else if (line[i] == BLUE2_S)
+            print_blue("2");
+        else if (line[i] == BLUE3_S)
+            print_blue("3");
+        else if (line[i] == YELLOW0_J)
+            print_yellow("0");
+        else if (line[i] == YELLOW1_J)
+            print_yellow("1");
+        else if (line[i] == YELLOW2_J)
+            print_yellow("2");
+        else if (line[i] == YELLOW3_J)
+            print_yellow("3");
         else
-        {
             printf("%c", line[i]);
-        }
     }
     printf("\n");
 }

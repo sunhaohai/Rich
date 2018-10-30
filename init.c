@@ -128,6 +128,7 @@ void _init_one_map(MAP* map,int posi, MAP_TYPE type, USER_NAME name, TOOL_TYPE t
     map[posi].symbol = symbol;
     map[posi].tool = tool;
     map[posi].mine = mine;
+    for(int i=0;i<MAX_USER;i++) map[posi].pre_symbol[i] = symbol;
 }
 
 void _init_maps()
@@ -190,4 +191,13 @@ void use_tool()
     printf("your dice number is:%d\n", dice_num); //生成打印骰>子数
 
     return;
+}
+
+void mapcpy(MAP* map1,MAP* map2){
+    (*map1).symbol = (*map2).symbol;
+    (*map1).mine = (*map2).mine;
+    (*map1).owner = (*map2).owner;
+    (*map1).price = (*map2).price;
+    (*map1).tool = (*map2).tool;
+    (*map1).type = (*map2).type;
 }

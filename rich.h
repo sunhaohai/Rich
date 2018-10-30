@@ -13,6 +13,8 @@ typedef short BOOL;
 #define TOOL_NUMBER 3
 #define MAX_POSITION 70
 
+#define MAX_USER 4
+
 #define RED_Q "\033[0;32;31m"
 #define GREEN_A "\033[0;32;32m"
 #define BLUE_J "\033[0;32;34m"
@@ -151,6 +153,7 @@ typedef struct
     char            mine;
     PRICE           price;
     SYMBOL          symbol;
+    SYMBOL pre_symbol[MAX_USER];
 }MAP;
 
 #endif
