@@ -17,5 +17,11 @@ void _args_parse_one(char *arg, PLAYER *player, BOOL *end_round);
 void _args_parse_two(char *arg, PLAYER *player, int position, BOOL *end_round);
 BOOL args_parse(char *arg, PLAYER *player);
 void player_round(PLAYER *player);
+void tool_house(PLAYER* player);
+void gift_house(PLAYER* player);
+void prison(PLAYER* player);
+void magic_house(PLAYER* player);
+void on_mine(char mine,PLAYER* player);
+void pay_rent(int owner,int symbol,PLAYER* player);
 
 #endif //_RUN_H_

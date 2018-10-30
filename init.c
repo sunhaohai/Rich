@@ -106,7 +106,7 @@ void _init_players(int *users, int init_money)
         USERS[i].name = users[i];
         USERS[i].short_name = _get_player_symbol(USERS[i].name); ///
         USERS[i].id = i + 1;
-        USERS[i].lucky_god = FALSE;
+        USERS[i].lucky_god = 0;
         USERS[i].money = init_money;
         USERS[i].point = 0;
         USERS[i].position = 0;
