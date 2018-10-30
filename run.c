@@ -11,7 +11,7 @@ extern int USERS_NUMBER;
 extern MAP MAPS[MAX_POSITION];
 extern int game_over;
 extern int dice_num;
-extern char dot[8][30];
+extern char dot[MAX_VERTICAL_NUM][MAX_HORIZONTAL_NUM];
 
 void _del_symbol(MAP* map,SYMBOL dels){
     //this is for player leave this position
@@ -86,17 +86,17 @@ void bolck_cmd(PLAYER *player, int position,BOOL* end_round){
     }
     else 
     {            
-        pos_tool = (*player.position + pos) % MAX_POSITION;
-        if((*player.tool[TOOL_L].num > 0) && (*player.tool[TOOL_L].num < 11))
+        pos_tool = (player->position + pos) % MAX_POSITION;
+        if((player->tool[TOOL_L].num > 0) && (player->tool[TOOL_L].num < 11))
         {
-            *player.tool[TOOL_L].num--;
+            player->tool[TOOL_L].num--;
             MAPS[pos_tool].tool = TOOL_L;
-            MAPS[pos_tool].symbol = SYMBOL_L;
+            _add_symbol(&MAPS[pos_tool], SYMBOL_L);
             printf("Block is used successfully !\r\n");
          }
         else
         {
-            *player.tool[TOOL_L].num = 0;
+            player->tool[TOOL_L].num = 0;
             printf("Sorry, you don't have available tool(Block) now !\r\n");
         }
     }
@@ -114,17 +114,17 @@ void bomb_cmd(PLAYER *player, int position,BOOL* end_round){
     }
     else 
     {            
-        pos_tool = (*player.position + pos) % MAX_POSITION;
-        if((*player.tool[TOOL_B].num > 0) && (*player.tool[TOOL_B].num < 11))
+        pos_tool = (player->position + pos) % MAX_POSITION;
+        if((player->tool[TOOL_B].num > 0) && (player->tool[TOOL_B].num < 11))
         {
-            *player.tool[TOOL_B].num--;
+            player->tool[TOOL_B].num--;
             MAPS[pos_tool].tool = TOOL_B;
-            MAPS[pos_tool].symbol = SYMBOL_B;
+            _add_symbol(&MAPS[pos_tool], SYMBOL_B);
             printf("Bomb is used successfully !\r\n");
          }
         else
         {
-            *player.tool[TOOL_B].num = 0;
+            player->tool[TOOL_B].num = 0;
             printf("Sorry, you don't have available tool(Bomb) now !\r\n");
         }
     }
@@ -132,14 +132,13 @@ void bomb_cmd(PLAYER *player, int position,BOOL* end_round){
 }
 
 void robot_cmd(PLAYER* player,BOOL* end_round){
-    //end_round :end this round or not
     //printf("Function is developing\n");
-    char pos = *player.position;
+    char pos = player->position;
     char pos_scan = pos;
     
-    if((*player.tool[TOOL_R].num > 0) && (*player.tool[[TOOL_R]].num < 11))
+    if((player->tool[TOOL_R].num > 0) && (player->tool[TOOL_R].num < 11))
     {
-        *player.tool[TOOL_R].num--;
+        player->tool[TOOL_R].num--;
         while((++pos_scan % MAX_POSITION)  <= ((pos + 10) % MAX_POSITION))        
         {
             pos_scan %= MAX_POSITION;
@@ -154,7 +153,7 @@ void robot_cmd(PLAYER* player,BOOL* end_round){
                     printf("Your robot found a Bomb !\r\n");
                 }
                 MAPS[pos_scan].tool = TOOL_NULL;  //TO DO: symbol proc 
-
+                _del_symbol(&MAPS[pos_scan], );
                 break;
             }
             else
@@ -165,13 +164,12 @@ void robot_cmd(PLAYER* player,BOOL* end_round){
                     printf("Your robot found nothing !\r\n");
                 }
             }
-
         }
         
      }
     else
     {
-        *player.tool[TOOL_R].num = 0;
+        player->tool[TOOL_R].num = 0;
         printf("Sorry, you don't have available tool(Robot) now !\r\n");
     }
     *end_round = FALSE;
