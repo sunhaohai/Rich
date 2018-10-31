@@ -91,7 +91,6 @@ void bolck_cmd(PLAYER *player, int position,BOOL* end_round){
         {
             player->tool[TOOL_L].num--;
             MAPS[pos_tool].tool = TOOL_L;
-            _add_symbol(&MAPS[pos_tool], SYMBOL_L);
             printf("Block is used successfully !\r\n");
          }
         else
@@ -119,7 +118,6 @@ void bomb_cmd(PLAYER *player, int position,BOOL* end_round){
         {
             player->tool[TOOL_B].num--;
             MAPS[pos_tool].tool = TOOL_B;
-            _add_symbol(&MAPS[pos_tool], SYMBOL_B);
             printf("Bomb is used successfully !\r\n");
          }
         else
@@ -152,8 +150,7 @@ void robot_cmd(PLAYER* player,BOOL* end_round){
                 {
                     printf("Your robot found a Bomb !\r\n");
                 }
-                MAPS[pos_scan].tool = TOOL_NULL;  //TO DO: symbol proc 
-                _del_symbol(&MAPS[pos_scan], );
+                MAPS[pos_scan].tool = TOOL_NULL;  
                 break;
             }
             else
