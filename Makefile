@@ -9,4 +9,5 @@ rich.o: rich.c
 run.o: run.c
 	gcc -c run.c
 clean:
-	rm *.o
+	rm *.o rich
+

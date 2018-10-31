@@ -142,9 +142,10 @@ void player_round(PLAYER* player){
     while(1){
         printf("\n");
         print_prompt(player);
-        char _args[10];
-        rewind(stdin);
-        scanf("%s", _args);
+        char _args[1024];
+        gets(_args);
+        
         if(args_parse(_args, player)) break;
     }
 }
+
