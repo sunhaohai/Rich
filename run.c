@@ -52,7 +52,7 @@ void dice_cmd(PLAYER* player,BOOL* end_round){
     _del_symbol(&MAPS[(*player).position],_get_symbol(*player));
     (*player).position = ((*player).position + steps) % MAX_POSITION;
     _add_symbol(&MAPS[(*player).position],_get_symbol(*player));
-    display((*player).position, (*player).short_name);
+    display(MAPS);
     *end_round = TRUE;
 }
 

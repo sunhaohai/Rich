@@ -177,7 +177,6 @@ void init_game()
 
 void use_tool()
 {
-
     char usetool;   //usetool是所选道具
     //Display_tool(); //显示总道具
     printf(" Do you use props now?\n");

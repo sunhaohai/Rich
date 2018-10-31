@@ -29,7 +29,7 @@ int main()
     while (1) //main loop of the game
     {
         init_game();
-        display(0,'s');
+        display(MAPS);
         while (!game_over) //
         {
             for(int i=0;i<USERS_NUMBER;i++) player_round(USERS+i);
