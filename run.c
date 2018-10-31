@@ -21,7 +21,7 @@ void buy_house(PLAYER* player){
     printf("waiting to do!\n");
 }
 
-void players_run_in_the_way(PLAYER *player, BOOL *end_round)
+int players_run_in_the_way(PLAYER *player, BOOL *end_round)
 {
     int steps = _get_rand(1, 6);
     int pos_temp = 0;
@@ -46,6 +46,7 @@ void players_run_in_the_way(PLAYER *player, BOOL *end_round)
             break;
         }
     }
+    return steps;
 }
 
 void players_end_run(PLAYER *player, BOOL *end_round)
@@ -226,7 +227,7 @@ SYMBOL _get_symbol(PLAYER player){
 
 int dice_cmd(PLAYER* player,BOOL* end_round){
     //dice random
-    players_run_in_the_way(player, end_round);
+    int steps = players_run_in_the_way(player, end_round);
     if (*end_round)
         return;
     display_run_map(player,player->position+1);
