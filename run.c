@@ -25,7 +25,7 @@ void _del_symbol(MAP* map,SYMBOL dels){
 }
 
 BOOL _isuser_symbol(SYMBOL sym){
-    if( (sym==SYMBOL_J)||(sym==SYMBOL_S)||(sym==SYMBOL_A)||(sym==SYMBOL_Q) )
+    if( (sym<=SYMBOL_J)&&(sym>=SYMBOL_Q) )
     return TRUE;
     return FALSE;
 }
@@ -80,13 +80,19 @@ void bolck_cmd(PLAYER *player, int position,BOOL* end_round){
     int pos = position;
     int pos_tool;
 
-    if((pos > 10) || (pos < -10))
+    if((pos > 10) || (pos < -10) || (!pos))
     {
-        printf("To use this tool, please input a number between -10 and 10\r\n");
+        printf("To use this tool, please input a number between -10 and 10 indicate behind or before you, 0 is not allowed! \r\n");
     }
     else 
     {            
         pos_tool = (player->position + pos) % MAX_POSITION;
+        if((MAPS[pos_tool].tool > TOOL_NULL) || _isuser_symbol(MAPS[pos_tool].symbol))
+        {
+            printf("Can not be used in this place !\r\n");
+            *end_round = FALSE;
+            return;
+        }
         if((player->tool[TOOL_L].num > 0) && (player->tool[TOOL_L].num < 11))
         {
             player->tool[TOOL_L].num--;
@@ -107,13 +113,19 @@ void bomb_cmd(PLAYER *player, int position,BOOL* end_round){
     int pos = position;
     int pos_tool;
 
-    if((pos > 10) || (pos < -10))
+    if((pos > 10) || (pos < -10) || (!pos))
     {
-        printf("To use this tool, please input a number between -10 and 10\r\n");
+        printf("To use this tool, please input a number between -10 and 10 indicate behind or before you, 0 is not allowed! \r\n");
     }
     else 
     {            
         pos_tool = (player->position + pos) % MAX_POSITION;
+        if((MAPS[pos_tool].tool > TOOL_NULL) || _isuser_symbol(MAPS[pos_tool].symbol))
+        {
+            printf("Can not be used in this place !\r\n");
+            *end_round = FALSE;
+            return;
+        }
         if((player->tool[TOOL_B].num > 0) && (player->tool[TOOL_B].num < 11))
         {
             player->tool[TOOL_B].num--;
