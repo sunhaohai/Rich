@@ -7,7 +7,6 @@ extern int USERS_NUMBER;
 extern MAP MAPS[MAX_POSITION];
 extern int game_over;
 extern int dice_num;
-extern char dot[8][30];
 
 void print_red(char* chars){
     //print red chars
@@ -75,6 +74,7 @@ void print_prompt(PLAYER *player){
 }
 
 char _get_map_display(SYMBOL symbol){
+    // input symbol and return symbol char display in window
     if(symbol==SYMBOL_$) return '$';
     else if(symbol==SYMBOL_0) return '0';
     else if(symbol==SYMBOL_1) return '1';
@@ -97,6 +97,8 @@ char _get_map_display(SYMBOL symbol){
 }
 
 void _print_map_symbol(MAP* map){
+    // input:a map struct point
+    // print map symbol in window
     char p = _get_map_display(map->symbol);
     if(map->tool==TOOL_B) p = _get_map_display(SYMBOL_B);
     else if(map->tool==TOOL_L) p = _get_map_display(SYMBOL_L);
@@ -111,6 +113,7 @@ void _print_map_symbol(MAP* map){
 }
 
 void display(MAP* maps){
+    //display you should input map vector 
     _clear();
     for(int i=0;i<29;i++)
         _print_map_symbol(maps + i);

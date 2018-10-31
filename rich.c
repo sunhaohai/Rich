@@ -12,20 +12,10 @@ MAP MAPS[MAX_POSITION];
 int game_over;
 int dice_num;
 
-char dot[8][30] = {
-    "s0000000000000H0000000000000T\n",
-    "$                           0\n",
-    "$                           0\n",
-    "$                           0\n",
-    "$                           0\n",
-    "$                           0\n",
-    "$                           0\n",
-    "M0000000000000P0000000000000G"};
-
 int main()
 {
     game_over = 0;
-
+    srand((unsigned)time(NULL));
     while (1) //main loop of the game
     {
         init_game();
