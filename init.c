@@ -54,7 +54,9 @@ int* _read_n_players(int min_player,int max_player,int min_n,int max_n){
 REIN:        
         setbuf(stdin,NULL);
         int* result = _read_number();
-        printf("%d\n",USERS_NUMBER);
+        //for (int j=0;j < USERS_NUMBER;j++)
+            //printf("%d\n",result[j] );
+        //printf("USERS_NUMBER = %d\n",USERS_NUMBER);
         if(USERS_NUMBER>max_player||USERS_NUMBER<min_player){
             printf("you should input players number between %d-%d,and input again:", min_player, max_player);
             goto REIN;
@@ -82,6 +84,7 @@ int *_start_game()
     printf("1:Qian  2:Atubo, 3:Sun Meimei   4:Jing Beibei\n");
     printf("please input 1-4 to choose roles(at least 2 roles):");
     int *users = _read_n_players(2, 4, 1, 4);
+    
     //USERS_NUMBER = sizeof(users) / sizeof(int) - 1;
     //printf("%d\n", USERS_NUMBER);
     return users;
@@ -133,6 +136,8 @@ void _init_one_map(MAP* map,int posi, MAP_TYPE type, USER_NAME name, TOOL_TYPE t
     map[posi].symbol = symbol;
     map[posi].tool = tool;
     map[posi].mine = mine;
+    for(int i=0;i<MAX_USER;i++) map[posi].pre_symbol[i] = symbol;
+
 }
 
 void _init_maps()
@@ -171,6 +176,10 @@ void _init_maps()
 void init_game()
 {
     int *users = _start_game();
+    for (int j=0;j < USERS_NUMBER;j++)
+        printf("%d\n",users[j] );
+
+
     printf("please input init money(1000-50000):");
     int init_money;
 
@@ -185,7 +194,6 @@ void init_game()
                 printf("please input init money(1000-50000) again:");
         else
             break;
-
     }
     
     _init_players(users, init_money);
