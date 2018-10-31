@@ -65,7 +65,7 @@ typedef enum
 
 typedef struct 
 {
-   char position;
+   BOOL position;
    char level;
 }HOUSE;
 
@@ -140,7 +140,7 @@ typedef struct
     char skip_num; //跳过轮数
     long money; //拥有金钱
     long point; //拥有点数
-    HOUSE house[MAX_POSITION]; //拥有的房产
+    int house[MAX_POSITION]; //拥有的房产
     TOOL tool[TOOL_NUMBER]; //拥有的道具
     char lucky_god; //拥有财神回合数
 }PLAYER;
