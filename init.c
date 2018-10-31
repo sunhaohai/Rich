@@ -5,20 +5,9 @@ extern int USERS_NUMBER;
 extern MAP MAPS[MAX_POSITION];
 extern int game_over;
 extern int dice_num;
-extern char dot[8][30];
 
 int _get_rand(int min, int max)
 {
-    /*
-    get random int number
-    @param
-    min:min number
-    max:max number
-    @exp
-    input min=1 and max=6
-    return number=[1-6]
-    */
-    srand((unsigned)time(NULL));
     return rand() % (max - min + 1) + min;
 }
 
@@ -90,8 +79,7 @@ int *_start_game()
     return users;
 }
 
-char _get_player_symbol(USER_NAME name)
-{
+char _get_player_symbol(USER_NAME name){
     char result;
     if (name == QIAN)
         result = 'Q';
@@ -122,7 +110,7 @@ void _init_players(int *users, int init_money)
         for (int j = 0; j < TOOL_NUMBER; j++)
         {
             USERS[i].tool[j].num = 0;
-            USERS[i].tool[i].type = j + 1;
+            USERS[i].tool[j].type = j;
         }
     }
 }
@@ -176,10 +164,6 @@ void _init_maps()
 void init_game()
 {
     int *users = _start_game();
-    //for (int j=0;j < USERS_NUMBER;j++)
-        //printf("%d\n",users[j] );
-
-
     printf("please input init money(1000-50000):");
     int init_money;
 
