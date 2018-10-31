@@ -224,7 +224,7 @@ SYMBOL _get_symbol(PLAYER player){
     else return SYMBOL_0;
 }
 
-void dice_cmd(PLAYER* player,BOOL* end_round){
+int dice_cmd(PLAYER* player,BOOL* end_round){
     //dice random
     players_run_in_the_way(player, end_round);
     if (*end_round)
@@ -233,6 +233,7 @@ void dice_cmd(PLAYER* player,BOOL* end_round){
     //判断user最后停留地
     players_end_run(player, end_round);
     *end_round = TRUE;
+    return steps;
 }
 
 void robot_cmd(PLAYER* player,BOOL* end_round){
@@ -324,7 +325,10 @@ int _args_num_parse(char* arg){
 
 void _args_parse_one(char* arg, PLAYER* player,BOOL* end_round){
     //deal cmd without param
-    if(strcmp(ROLL,arg)==0) dice_cmd(player,end_round);
+    if(strcmp(ROLL,arg)==0)
+    {
+        dice_num = dice_cmd(player,end_round);
+    } 
     else if(strcmp(ROBOT,arg)==0) robot_cmd(player,end_round);
     else if(strcmp(QUERY,arg)==0) query_cmd(player,end_round);
     else if(strcmp(QUIT,arg)==0) quit_cmd(player,end_round);
