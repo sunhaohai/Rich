@@ -133,27 +133,28 @@ typedef enum
 
 typedef struct 
 {
-    USER_NAME name;
-    char short_name;
-    char position;
-    char id;
-    char skip_num;
-    long money;
-    long point;
-    HOUSE* house;
-    TOOL tool[TOOL_NUMBER];
-    char lucky_god;
+    USER_NAME name; //用户姓名
+    char short_name; //用户显示缩写
+    char position; //用户位置
+    char id;  //用户掷骰子先后
+    char skip_num; //跳过轮数
+    long money; //拥有金钱
+    long point; //拥有点数
+    HOUSE house[MAX_POSITION]; //拥有的房产
+    TOOL tool[TOOL_NUMBER]; //拥有的道具
+    char lucky_god; //拥有财神回合数
 }PLAYER;
 
 typedef struct
 {
-    MAP_TYPE        type;
-    USER_NAME       owner;
-    TOOL_TYPE       tool;
-    char            mine;
-    PRICE           price;
-    SYMBOL          symbol;
-    SYMBOL pre_symbol[MAX_USER];
+    MAP_TYPE        type;  //类型
+    USER_NAME       owner; //拥有者
+    TOOL_TYPE       tool; //路上的道具
+    char            mine; //矿地点数
+    PRICE           price; //地段
+    SYMBOL          symbol; //当前标志
+    SYMBOL pre_symbol[MAX_USER]; //保留标志
+    int             price_all; //当前地产价值
 }MAP;
 
 #endif

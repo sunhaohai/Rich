@@ -18,8 +18,68 @@ void display_run_map(PLAYER* player, int fin_position){
     display(MAPS);
 }
 
+int get_house_price(int position, MAP* maps){
+    if(maps[position].price==PRICE_1) return 200*(maps[position].symbol-3);
+    else if(maps[position].price==PRICE_2) return 500*(maps[position].symbol-3);
+    else if(maps[position].price==PRICE_3) return 300*(maps[position].symbol-3);
+    else return 0;
+}
+
 void buy_house(PLAYER* player){
-    printf("waiting to do!\n");
+    //buy house
+    int price = get_house_price(player->position,MAPS);
+    printf("Your total money:%ld\n", player->money);
+    printf("This house price:%d\n", price);
+    if(price>player->money)
+        printf("You money is not enough!\n");
+    else{
+        while(1){
+            printf("You can chose to buy it or not(Y/N):");
+            char chose=getchar();
+            if(chose=='Y'||chose=='y'){
+                player->money -= price;
+                int nh = sizeof(player->house)/sizeof(HOUSE);
+                printf("nh:%d\n", nh);
+                player->house = (HOUSE *)realloc(player->house, ( (nh+1)* sizeof(HOUSE)));
+                (player->house)[nh].position = player->position;
+                (player->house)[nh].level = 0;
+                MAPS[player->position].owner = player->name; 
+                break;
+            }
+            else if(chose=='N'||chose=='n') break;
+        }
+    }
+}
+
+void high_house_level(HOUSE* house,char position){
+    int house_n = sizeof(house)/sizeof(HOUSE);
+    for(int i=0;i<house_n;i++){
+        if(house[i].position==position)
+            house[i].level += 1;
+    }
+}
+
+void upper_house(PLAYER* player,MAP* maps){
+    //upper house 
+    int price;
+    if(maps[player->position].price==PRICE_1) price=200;
+    else if(maps[player->position].price == PRICE_2)
+        price = 500;
+    else price = 300;
+    if(price > player->money)
+        printf("You money is not enough!\n");
+    while (1){
+        printf("You can chose to upper your house(Y/N):");
+        char chose = getchar();
+        getchar();
+        if (chose == 'Y' || chose == 'y'){
+            player->money -= price;
+            high_house_level(player->house,player->position);
+            maps[player->position].symbol += 1;
+        }
+        else if (chose == 'N' || chose == 'n')
+            return;
+    }
 }
 
 void players_run_in_the_way(PLAYER *player, BOOL *end_round)
@@ -55,14 +115,12 @@ void players_end_run(PLAYER *player, BOOL *end_round)
 {
     //run last step and do things follow
     int pos_temp = (*player).position;
-    if (MAPS[pos_temp].owner)
-    {
+    if (MAPS[pos_temp].owner && MAPS[pos_temp].owner!=player->name)
         pay_rent(MAPS[pos_temp].owner, MAPS[pos_temp].symbol, player);
-    }
-    else if (MAPS[pos_temp].symbol == 0)
-    {
+    else if (MAPS[pos_temp].type == MAP_COM)
         buy_house(player);
-    }
+    else if(MAPS[pos_temp].owner==player->name) 
+        upper_house(player,MAPS);
     else
     {
         int tool_num = player->tool[0].num + player->tool[1].num + player->tool[2].num;
