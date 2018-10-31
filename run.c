@@ -46,7 +46,7 @@ SYMBOL _get_symbol(PLAYER player){
     else return SYMBOL_0;
 }
 
-void dice_cmd(PLAYER* player,BOOL* end_round){
+int dice_cmd(PLAYER* player,BOOL* end_round){
     //dice random
     int steps = _get_rand(1,6);
     _del_symbol(&MAPS[(*player).position],_get_symbol(*player));
@@ -54,6 +54,7 @@ void dice_cmd(PLAYER* player,BOOL* end_round){
     _add_symbol(&MAPS[(*player).position],_get_symbol(*player));
     display((*player).position, (*player).short_name);
     *end_round = TRUE;
+    return steps;
 }
 
 void robot_cmd(PLAYER* player,BOOL* end_round){
@@ -101,7 +102,10 @@ int _args_num_parse(char* arg){
 
 void _args_parse_one(char* arg, PLAYER* player,BOOL* end_round){
     //deal cmd without param
-    if(strcmp(ROLL,arg)==0) dice_cmd(player,end_round);
+    if(strcmp(ROLL,arg)==0)
+    {
+        dice_num = dice_cmd(player,end_round);
+    } 
     else if(strcmp(ROBOT,arg)==0) robot_cmd(player,end_round);
     else if(strcmp(QUERY,arg)==0) query_cmd(player,end_round);
     else if(strcmp(QUIT,arg)==0) quit_cmd(player,end_round);

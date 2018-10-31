@@ -5,6 +5,7 @@
 #include "init.h"
 #include "display.h"
 #include "run.h"
+#include "test.h"
 
 PLAYER USERS[4];
 int USERS_NUMBER;
@@ -30,7 +31,7 @@ int main()
     {
         init_game();
         display(0,'s');
-        while (!game_over) //
+        while (!game_over) 
         {
             for(int i=0;i<USERS_NUMBER;i++) player_round(USERS+i);
         }

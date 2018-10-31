@@ -3,7 +3,7 @@
 #include "init.h"
 #include "rich.h"
 
-void dice_cmd(PLAYER *player, BOOL *end_round);
+int dice_cmd(PLAYER *player, BOOL *end_round);
 void robot_cmd(PLAYER *player, BOOL *end_round);
 void query_cmd(PLAYER *player, BOOL *end_round);
 void help_cmd();
