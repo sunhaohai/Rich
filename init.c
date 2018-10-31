@@ -176,8 +176,8 @@ void _init_maps()
 void init_game()
 {
     int *users = _start_game();
-    for (int j=0;j < USERS_NUMBER;j++)
-        printf("%d\n",users[j] );
+    //for (int j=0;j < USERS_NUMBER;j++)
+        //printf("%d\n",users[j] );
 
 
     printf("please input init money(1000-50000):");
