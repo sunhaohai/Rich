@@ -33,8 +33,10 @@ int* _read_number(){
     int now_n;
     int i = 0;
     char c;
-    rewind(stdin);
-    while (scanf("%d", &now_n)){
+    
+    while (1){
+        scanf("%d", &now_n);
+
         result[i] = now_n;
         i++;
         result = (int *)realloc(result, ((i + 1) * sizeof(int)));
@@ -49,20 +51,23 @@ int* _read_number(){
 int* _read_n_players(int min_player,int max_player,int min_n,int max_n){
     //read n number bewteen min_n-max_n
     while(1){
+REIN:        
+        setbuf(stdin,NULL);
         int* result = _read_number();
+        printf("%d\n",USERS_NUMBER);
         if(USERS_NUMBER>max_player||USERS_NUMBER<min_player){
             printf("you should input players number between %d-%d,and input again:", min_player, max_player);
-            continue;
+            goto REIN;
         }
         for(int i=0;i<USERS_NUMBER;i++){
             if(result[i]<min_n||result[i]>max_n){
                 printf("you should input number between %d-%d,and input again:", min_n, max_n);
-                continue;
+                goto REIN;
             }
             for(int j=i+1;j<USERS_NUMBER;j++){
                 if(result[i]==result[j]){
                     printf("you should input non-repeating number,and input again:");
-                    continue;
+                    goto REIN;
                 }
             }
         }
@@ -75,7 +80,7 @@ int *_start_game()
     // get users and user number
     _clear();
     printf("1:Qian  2:Atubo, 3:Sun Meimei   4:Jing Beibei\n");
-    printf("please input 1-4 to choose roles:");
+    printf("please input 1-4 to choose roles(at least 2 roles):");
     int *users = _read_n_players(2, 4, 1, 4);
     //USERS_NUMBER = sizeof(users) / sizeof(int) - 1;
     //printf("%d\n", USERS_NUMBER);
@@ -128,7 +133,6 @@ void _init_one_map(MAP* map,int posi, MAP_TYPE type, USER_NAME name, TOOL_TYPE t
     map[posi].symbol = symbol;
     map[posi].tool = tool;
     map[posi].mine = mine;
-    for(int i=0;i<MAX_USER;i++) map[posi].pre_symbol[i] = symbol;
 }
 
 void _init_maps()
@@ -169,7 +173,21 @@ void init_game()
     int *users = _start_game();
     printf("please input init money(1000-50000):");
     int init_money;
-    scanf("%d", &init_money);
+
+    while(1)
+    {   
+        setbuf(stdin,NULL);
+        scanf("%d", &init_money);
+        int c;
+        while((c = getchar()) != '\n' && c != EOF);
+
+        if (init_money > 50000 || init_money < 1000)
+                printf("please input init money(1000-50000) again:");
+        else
+            break;
+
+    }
+    
     _init_players(users, init_money);
     //printf("init players end!\n");
     _init_maps();
@@ -191,13 +209,4 @@ void use_tool()
     printf("your dice number is:%d\n", dice_num); //生成打印骰>子数
 
     return;
-}
-
-void mapcpy(MAP* map1,MAP* map2){
-    (*map1).symbol = (*map2).symbol;
-    (*map1).mine = (*map2).mine;
-    (*map1).owner = (*map2).owner;
-    (*map1).price = (*map2).price;
-    (*map1).tool = (*map2).tool;
-    (*map1).type = (*map2).type;
 }
