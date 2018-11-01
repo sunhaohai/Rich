@@ -1,20 +1,15 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
 #include "rich.h"
 #include "init.h"
 #include "display.h"
 #include "run.h"
 
-PLAYER USERS[4];
-int USERS_NUMBER;
-MAP MAPS[MAX_POSITION];
-int game_over;
-int dice_num;
+PLAYER USERS[4]; //玩家信息
+int USERS_NUMBER; //玩家个数
+MAP MAPS[MAX_POSITION]; //地图信息
 
 int main()
 {
-    game_over = 0;
+    int game_over = 0;
     srand((unsigned)time(NULL));
     while (1) //main loop of the game
     {

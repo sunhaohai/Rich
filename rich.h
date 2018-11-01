@@ -1,7 +1,11 @@
 #ifndef _RICH_H_
 #define _RICH_H_
-
-#include "stdio.h"
+//工程基本结构
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+#include "rich.h"
 
 #define MAX_HORIZONTAL_NUM    30    //horizontial
 #define MAX_VERTICAL_NUM      8     //vertical
