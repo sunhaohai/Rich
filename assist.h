@@ -12,6 +12,10 @@ char _get_player_symbol(USER_NAME name);
 int _get_place_price(PRICE place);
 char _get_map_display(SYMBOL symbol);
 SYMBOL _get_symbol(PLAYER player);
+int _get_house_level(int map_index); //get house level by map index
+int _get_money_by_symbol(char user_symbol);
+int _get_point_by_symbol(char user_symbol);
+
 
 
 void print_red(char *chars);

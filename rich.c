@@ -1,11 +1,11 @@
 #include "rich.h"
-#include "init.h"
-#include "display.h"
-#include "run.h"
+#include "function.h"
+#include "assist.h"
 
 PLAYER USERS[4]; //玩家信息
 int USERS_NUMBER; //玩家个数
 MAP MAPS[MAX_POSITION]; //地图信息
+int NOW_ID;
 
 int main()
 {
@@ -15,9 +15,14 @@ int main()
     {
         init_game();
         display(MAPS);
+        dump();
         while (!game_over) //
         {
-            for(int i=0;i<USERS_NUMBER;i++) player_round(USERS+i);
+            for(int i=0;i<USERS_NUMBER;i++)
+            {
+                player_round(USERS+i);   
+                NOW_ID = i;
+            }
         }
     }
     return 0;
