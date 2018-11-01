@@ -3,6 +3,7 @@
 extern PLAYER USERS[4];
 extern int USERS_NUMBER;
 extern MAP MAPS[MAX_POSITION];
+extern int game_over;
 
 int *_start_game(){
     // 开始游戏,等待玩家选择角色
@@ -125,9 +126,16 @@ void player_round(PLAYER* player){
         print_prompt(player);
         char _args[10];
         rewind(stdin);
-        scanf("%s", _args);
+        setbuf(stdin, NULL);
+        gets(_args);
         if(args_parse(_args, player)) break;
     }
+    if(USERS_NUMBER<2){
+        printf("游戏结束!\n");
+        getchar();
+        game_over = 1;
+    }
+    if(player->lucky_god) player->lucky_god--;
 }
 
 void bolck_cmd(PLAYER *plary, int position,BOOL* end_round){
@@ -142,8 +150,12 @@ void robot_cmd(PLAYER* player,BOOL* end_round){
     printf("Function is developing\n");
 }
 
-void step_cmd(PLAYER *plary, int position,BOOL* end_round){
-    printf("Function is developing\n");
+void step_cmd(PLAYER *player, int position, BOOL *end_round){
+    players_run_in_the_way(player, position, end_round);
+    if (*end_round) return;
+    display_run_map(player, player->position + 1);
+    players_end_run(player, end_round);
+    *end_round = TRUE;
 }
 
 void help_cmd() {
@@ -178,7 +190,8 @@ void sell_cmd(PLAYER *player, int position, BOOL *end_round) {
 
 void dice_cmd(PLAYER* player,BOOL* end_round){
     //玩家执行Roll命令后的一系列情况
-    players_run_in_the_way(player, end_round);
+    int steps = _get_rand(1, 6);
+    players_run_in_the_way(player,steps, end_round);
     if (*end_round) return;
     display_run_map(player,player->position+1);
     players_end_run(player, end_round);

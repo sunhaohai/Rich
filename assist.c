@@ -4,6 +4,7 @@
 extern PLAYER USERS[4];
 extern int USERS_NUMBER;
 extern MAP MAPS[MAX_POSITION];
+extern int game_over;
 
 int _get_rand(int min, int max){
     //生成大小在[min,max]当中的随机数
@@ -261,11 +262,21 @@ void _add_symbol(MAP* map,SYMBOL adds){
 void _del_symbol(MAP* map,SYMBOL dels){
     //玩家离开时显示 被覆盖的符号
     if(map->symbol==dels) {
-        map->symbol = (map->pre_symbol)[MAX_USER-1];
+        for(int i = MAX_USER-1;i>0;i--){
+            if( (map->pre_symbol)[i] != (map->pre_symbol)[i-1] ){
+                map->symbol = (map->pre_symbol)[i - 1];
+                (map->pre_symbol)[i - 1] = (map->pre_symbol)[i];
+                return;
+            }
+        }
+        map->symbol = (map->pre_symbol)[0];
         return;
     }
     for(int i=0;i<MAX_USER-1;i++){
-        (map->pre_symbol)[i] = (map->pre_symbol)[i+1];
+        if(map->pre_symbol[i] == dels){
+            for(int j=i;j<MAX_USER-1;j++)
+                map->pre_symbol[j] = map->pre_symbol[j+1]; 
+        }
     }
 }
 
@@ -345,48 +356,142 @@ void tool_house(PLAYER *player){
     }
 }
 
-void pay_rent(int owner, int symbol, PLAYER *player){
+void _usercmp(PLAYER* user1, PLAYER* user2){
+    //PLAYER 结构赋值
+    user1->name = user2->name;
+    user1->short_name = user2->short_name;
+    user1->position = user2->position;
+    user1->id = user2->id;
+    user1->skip_num = user2->skip_num;
+    user1->money = user2->money;
+    user1->point = user2->point;
+    for(int i=0;i<MAX_POSITION;i++)
+        user1->house[i] = user2->house[i];
+    for(int i=0;i<TOOL_NUMBER;i++){
+        user1->tool[i].type = user2->tool[i].type;
+        user1->tool[i].num = user2->tool[i].num;
+    }
+    user1->lucky_god = user2->lucky_god;
+}
+
+void rm_user(PLAYER* users,USER_NAME name, int* user_size){
+    //玩家破产,删除玩家
+    for(int i=0;i<MAX_POSITION;i++){
+        if(MAPS[i].owner==name){
+            MAPS[i].type = MAP_COM;
+            MAPS[i].owner = USER_NULL;
+        }
+    }
+    for(int i=0;i<*user_size;i++){
+        if(users[i].name==name){
+            _del_symbol(&MAPS[users[i].position],_get_symbol(users[i]));
+            for(int j=i;j<*user_size-1;j++){
+                _usercmp(users+j,users+j+1);
+            }
+        }
+    }
+    *user_size -= 1;
+}
+
+void pay_rent(PLAYER *player, MAP *maps){
     //玩家交租
-    printf("Waiting to do\n");
+    if(player->lucky_god) return;
+    for(int i=0;i<USERS_NUMBER;i++){
+        if(USERS[i].name == maps[player->position].owner){
+            if(USERS[i].skip_num) return ;
+            if(player->money < (maps[player->position].price_all/2) ){
+                USERS[i].money += player->money;
+                rm_user(USERS,player->name,&USERS_NUMBER);
+                printf("你破产了!\n");
+                return;
+            }
+            player->money -= (maps[player->position].price_all / 2);
+            USERS[i].money += (maps[player->position].price_all / 2);
+            return ;
+        }
+    }
 }
 
 void buy_upper_house(PLAYER *player, MAP *maps){
     //买房子和升级房子
+    printf("Your Money:%ld\n",player->money);
+    //买房子
+    if(maps[player->position].type == MAP_COM){
+        printf("This house price:%d\n",maps[player->position].price_all);
+        if (player->money >= maps[player->position].price_all){
+            printf("You can buy this house(Y/N):");
+            while(1){
+                char chose;
+                scanf("%c", &chose);
+                if (chose == 'N' || chose == 'n') return;
+                else if (chose == 'Y' || chose == 'y'){
+                    player->house[player->position] = 1;
+                    maps[player->position].owner = player->name;
+                    maps[player->position].type = MAP_PRI;
+                    player->money -= maps[player->position].price_all;
+                    printf("After you buy the house you have money:%ld\n",player->money);
+                    return;
+                }
+            }
+        }
+        else printf("You money is not enough!\n");
+    }
+    else{
+        SYMBOL tmp = maps[player->position].pre_symbol[MAX_USER - 1];
+        if(tmp == SYMBOL_3) return;
+        printf("upper you house price is:%d\n",_get_place_price(maps[player->position].price));
+        if (player->money >= _get_place_price(maps[player->position].price)){
+            printf("You can upper this house(Y/N):");
+            while(1){
+                char chose;
+                scanf("%c", &chose);
+                if (chose == 'N' || chose == 'n') return;
+                else if (chose == 'Y' || chose == 'y'){
+                    maps[player->position].price_all += _get_place_price(maps[player->position].price);
+                    player->money -= _get_place_price(maps[player->position].price);
+                    //更新标志
+                    for (int i = 0; i < MAX_USER; i++){
+                        if (maps[player->position].pre_symbol[i] == tmp)
+                            maps[player->position].pre_symbol[i] += 1;
+                        if (maps[player->position].symbol == tmp)
+                            maps[player->position].symbol += 1;
+                    }
+                    printf("After you upper the house you have money:%ld\n", player->money);
+                    return;
+                }
+            }
+        }
+    }
     return;
 }
 
 void display_run_map(PLAYER* player, int fin_position){
     //将玩家放到map上的指定位置,fin_position是想要玩家前往的位置
     _del_symbol(&MAPS[(*player).position], _get_symbol(*player));
-    (*player).position = fin_position;
+    (*player).position = fin_position % MAX_POSITION;
     _add_symbol(&MAPS[(*player).position], _get_symbol(*player));
     display(MAPS);
 }
 
-void players_end_run(PLAYER *player, BOOL *end_round){
+void players_end_run(PLAYER *player,BOOL *end_round){
     //玩家走最后一步的时候发生的事件控制函数
     int pos_temp = (*player).position;
     if (MAPS[pos_temp].owner && MAPS[pos_temp].owner!=player->name)
-        pay_rent(MAPS[pos_temp].owner, MAPS[pos_temp].symbol, player);
-    else if (MAPS[pos_temp].type == MAP_COM)
-        buy_upper_house(player, MAPS);
-    else if(MAPS[pos_temp].owner==player->name)
+        pay_rent(player,MAPS);
+    else if (MAPS[pos_temp].type == MAP_COM || MAPS[pos_temp].owner == player->name)
         buy_upper_house(player, MAPS);
     else{
         int tool_num = player->tool[0].num + player->tool[1].num + player->tool[2].num;
         switch (MAPS[pos_temp].symbol)
         {
         case SYMBOL_T:
-            if (player->point < 30)
-            {
+            if (player->point < 30){
                 printf("You are too pool to buy tools");
             }
-            else if (tool_num >= 10)
-            {
+            else if (tool_num >= 10){
                 printf("You already have a maximum limit number of tools");
             }
-            else
-            {
+            else{
                 tool_house(player);
             }
             break;
@@ -409,9 +514,8 @@ void players_end_run(PLAYER *player, BOOL *end_round){
     *end_round = TRUE;
 }
 
-void players_run_in_the_way(PLAYER *player, BOOL *end_round){
+void players_run_in_the_way(PLAYER *player, int steps,BOOL *end_round){
     //玩家走在路上的时候可能发生的事件
-    int steps = _get_rand(1, 6);
     int pos_temp = 0;
     for (int i = 1; i < steps; i++){
         pos_temp = (player->position + 1) % MAX_POSITION;
