@@ -181,11 +181,20 @@ void query_cmd(PLAYER *player, BOOL *end_round) {
 }
 
 void quit_cmd(PLAYER *player,BOOL* end_round){
-    printf("Function is developing\n");
+    *end_round = 1;
+    game_over = 1;
 }
 
 void sell_cmd(PLAYER *player, int position, BOOL *end_round) {
-    printf("Function is developing\n");
+    if(player->house[position]==0){
+        printf("这不是你都房子,你不能卖!\n");
+        return;
+    }
+    MAPS[position].owner = USER_NULL;
+    MAPS[position].type = MAP_COM;
+    player->money += MAPS[position].price_all * 2;
+    printf("你的房子卖了:%d\n",MAPS[position].price_all * 2);
+    *end_round = 1;
 }
 
 void dice_cmd(PLAYER* player,BOOL* end_round){
