@@ -304,3 +304,21 @@ void dice_cmd(PLAYER* player,BOOL* end_round){
     players_end_run(player, end_round);
     *end_round = TRUE;
 }
+void save_cmd()
+{
+    FILE *fp;
+    if((fp = fopen("save.txt","w+"))==NULL){
+         printf("The file save.txt can not be opened.\n");
+         return;
+    } 
+    fprintf(fp,"name:%d short_name:%d position:%d id:%d skip_num：%d ",
+        USERS[0].name, USERS[0].short_name, USERS[0].position, USERS[0].id, USERS[0].skip_num);
+    for(int i = 0;i < MAX_POSITION; i++){
+        fprintf(fp, "house:%d ", USERS[0].house[i]);
+    }
+    for(int i = 0;i < TOOL_NUMBER; i++){
+        fprintf(fp, "type：%d num：%d ", USERS[0].tool[i].type, USERS[0].tool[i].num);
+    }
+    fprintf(fp, "lucky_god：%d ", USERS[0].lucky_god);
+    fclose(fp);
+}

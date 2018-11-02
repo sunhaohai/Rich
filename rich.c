@@ -11,16 +11,18 @@ int main()
 {
     game_over = 0;
     srand((unsigned)time(NULL));
-    while (1) //main loop of the game
-    {
+    //while (1) //main loop of the game
+    //{
         init_game();
         display(MAPS);
-        while (!game_over) //
-        {
-            for(int i=0;i<USERS_NUMBER;i++) player_round(USERS+i);
-        }
-        game_over = 0;
-    }
+        save_cmd();
+        
+    //    while (!game_over) //
+    //    {
+    //        for(int i=0;i<USERS_NUMBER;i++) player_round(USERS+i);
+    //    }
+    //    game_over = 0;
+    //}
     return 0;
 }
 
