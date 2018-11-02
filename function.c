@@ -6,6 +6,9 @@ extern int USERS_NUMBER;
 extern MAP MAPS[MAX_POSITION];
 extern int NOW_ID;
 
+FILE * pdump;
+char order_buf[5] = {'\0'};
+
 
 int *_start_game(){
     // 开始游戏,等待玩家选择角色
@@ -190,65 +193,98 @@ void dice_cmd(PLAYER* player,BOOL* end_round){
 
 void dump()
 {
-    FILE * pdump;
-    char buf[10] = {'\0'};
-    char order_buf[10] = {'\0'};
-    int next_id;
-
-
     if (!(pdump = fopen("./dump.txt","a")))
     {
         printf("open dump.txt failed\ndump failed!\n");
         goto EXIT;
     }
 
+    dump_user();
+
+    dump_map();
+   
+    dump_money();
+
+    dump_point();
+
+    dump_tool_user();
+
+    dump_tool_map();
+
+    dump_loc();
+
+    dump_next();
+
+    printf("dump finished\n");
+
+    fclose(pdump);
+
+EXIT:
+    if(pdump)
+        fclose(pdump);
+
+    return;
+}
+
+void dump_user()
+{
+    char buf[5] = {'\0'};
+    char temp[5] = {'\0'};
+
     for (int i = 0; i < USERS_NUMBER; ++i)
         strcat(buf,&USERS[i].short_name);
-    //user 排序 
-    // for (int i = 0; i < USERS_NUMBER; ++i)
-    // {
-    //     for (int j = 0; j < USERS_NUMBER; ++j)
-    //     {
-    //         if('A' == buf[j])
-    //         {
-    //             order_buf[i] = 'A';
-    //             buf[j] = '0';
-    //         }
-    //         else if ('Q' == buf[j])
-    //         {
-    //             order_buf[i] = 'Q';
-    //             buf[j] = '0';
-    //         }
-    //         else if ('S' == buf[j])
-    //         {
-    //             order_buf[i] = 'S';
-    //             buf[j] = '0';
-    //         }
-    //         else if ('J' == buf[j])
-    //         {
-    //             order_buf[i] = 'J';
-    //             buf[j] = '0';
-    //         }
-    //     }
-    // }
-    fprintf(pdump,"user %s\n",buf);
 
-    //dump map
+    for (int i = 0; i < USERS_NUMBER; ++i)
+    {
+        if (buf[i] == 'A')
+            temp[0] = 'A';
+        if (buf[i] == 'Q')
+            temp[1] = 'Q';
+        if (buf[i] == 'S')
+            temp[2] = 'S';
+        if (buf[i] == 'J')
+            temp[3] = 'J';
+    }
+
+    int j=0;
+    for (int i = 0; i < 4; ++i)
+    {
+        if (temp[i] != '\0')
+            order_buf[j++]=temp[i];
+    }
+
+    fprintf(pdump,"user %s\n",order_buf);
+
+    return;
+}
+
+void dump_map()
+{   
     for (int i = 0; i < MAX_POSITION; ++i)
     {
         if (MAPS[i].owner != USER_NULL)
-            fprintf(pdump,"map[%d] %c %d\n",i,_get_player_symbol(MAPS[i].owner),_get_house_level(i));      
+            fprintf(pdump,"map[%d] %c %d\n",i,_get_player_symbol(MAPS[i].owner),MAPS[i].symbol);      
     }
 
-    //dump money
+    return;
+}
+
+void dump_money()
+{
     for (int i = 0; i < USERS_NUMBER; ++i)
         fprintf(pdump,"fund %c %d\n",order_buf[i],_get_money_by_symbol(order_buf[i]));
+    return;
+}
 
-    //dump point
+void dump_point()
+{
     for (int i = 0; i < USERS_NUMBER; ++i)
         fprintf(pdump,"credit %c %d\n",order_buf[i],_get_point_by_symbol(order_buf[i]));
+    return;
+}
 
-    //dump gift
+void dump_tool_user()
+{
     for (int i = 0; i < USERS_NUMBER; ++i)
     {
         for (int j = 0; j < USERS_NUMBER; ++j)
@@ -258,27 +294,32 @@ void dump()
                 fprintf(pdump,"gift %c bomb %d\n",order_buf[i],USERS[j].tool[1].num);
                 fprintf(pdump,"gift %c barrier %d\n",order_buf[i],USERS[j].tool[0].num);
                 fprintf(pdump,"gift %c robot %d\n",order_buf[i],USERS[j].tool[2].num);
-                //确认god含义个数还是回合数？lucky_god 回合数
                 fprintf(pdump,"gift %c god %d\n",order_buf[i],USERS[j].lucky_god);
             }
         }   
     }
+    return;
+}
 
-    //dump bomb
+
+void dump_tool_map()
+{
     for (int i = 0; i < MAX_POSITION; ++i)
     {
         if (MAPS[i].tool == 1)
             fprintf(pdump,"bomb in %d\n",i);      
     }
 
-    //dump barrier
     for (int i = 0; i < MAX_POSITION; ++i)
     {
         if (MAPS[i].tool == 0)
             fprintf(pdump,"barrier in %d\n",i);      
     }
+    return;
+}
 
-    //dump userloc
+void dump_loc()
+{
     for (int i = 0; i < USERS_NUMBER; ++i)
     {
         for (int j = 0; j < USERS_NUMBER; ++j)
@@ -293,8 +334,14 @@ void dump()
 
         }
     }
+    return;
     
-    //dump nextuser
+}
+
+void dump_next()
+{
+    int next_id;
+
     for (int i = 0; i < USERS_NUMBER; ++i)
     {
         if (USERS[i].id == NOW_ID)
@@ -311,14 +358,6 @@ void dump()
         fprintf(pdump,"nextuser %c\n",USERS[next_id-1].short_name);
     else
         fprintf(pdump,"nextuser %c\n",USERS[next_id%USERS_NUMBER-1].short_name);
-
-    printf("dump finished\n");
-
-    fclose(pdump);
-
-EXIT:
-    if(pdump)
-        fclose(pdump);
-
     return;
 }
+

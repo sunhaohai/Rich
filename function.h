@@ -23,6 +23,15 @@ void query_cmd(PLAYER *player, BOOL *end_round);
 void quit_cmd(PLAYER *player, BOOL *end_round);
 void sell_cmd(PLAYER *player, int position, BOOL *end_round);
 void dice_cmd(PLAYER *player, BOOL *end_round);
+
 void dump();
+void dump_user();
+void dump_map();
+void dump_money();
+void dump_point();
+void dump_tool_user();
+void dump_tool_map();
+void dump_loc();
+void dump_next();
 
 #endif //_FUNCTION_H_
