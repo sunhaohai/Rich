@@ -311,14 +311,26 @@ void save_cmd()
          printf("The file save.txt can not be opened.\n");
          return;
     } 
-    fprintf(fp,"name:%d short_name:%d position:%d id:%d skip_num：%d ",
-        USERS[0].name, USERS[0].short_name, USERS[0].position, USERS[0].id, USERS[0].skip_num);
-    for(int i = 0;i < MAX_POSITION; i++){
-        fprintf(fp, "house:%d ", USERS[0].house[i]);
+    //save all player's info to save.txt
+    for(int i = 0;i < USERS_NUMBER; i++){
+        fprintf(fp,"name:%d short_name:%d position:%d id:%d skip_num：%d money:%ld point:%ld ",
+        USERS[i].name, USERS[i].short_name, USERS[i].position, USERS[i].id, USERS[i].skip_num, USERS[i].money, USERS[i].point);
+        for(int j = 0;j < MAX_POSITION; j++){
+            fprintf(fp, "house:%d ", USERS[i].house[j]);
+        }
+        for(int j = 0;j < TOOL_NUMBER; j++){
+            fprintf(fp, "type：%d num：%d ", USERS[i].tool[j].type, USERS[i].tool[j].num);
+        }
+        fprintf(fp, "lucky_god：%d \n", USERS[i].lucky_god);
     }
-    for(int i = 0;i < TOOL_NUMBER; i++){
-        fprintf(fp, "type：%d num：%d ", USERS[0].tool[i].type, USERS[0].tool[i].num);
+    //save all map's info to save.txt
+    for(int i = 0;i < MAX_POSITION;i++){
+        fprintf(fp,"type:%d owner:%d tool:%d mine:%d price:%d symbol:%d ",
+        MAPS[i].type, MAPS[i].owner, MAPS[i].tool, MAPS[i].mine, MAPS[i].price, MAPS[i].symbol);
+        for(int j = 0;j < MAX_USER;j++){
+            fprintf(fp,"pre_symbol:%d ",MAPS[i].pre_symbol[j]);
+        }
+        fprintf(fp,"price_all:%d \n",MAPS[i].price_all);
     }
-    fprintf(fp, "lucky_god：%d ", USERS[0].lucky_god);
     fclose(fp);
 }

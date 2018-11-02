@@ -181,6 +181,7 @@ void _print_map_symbol(MAP* map){
     else if(map->tool==TOOL_R) p = _get_map_display(SYMBOL_R);
     char pt[2];
     pt[0] = p;
+    pt[1] = '\0';
     if(p=='Q') print_player(pt,QIAN);
     else if(p=='J') print_player(pt,JING);
     else if(p=='A') print_player(pt,ATUBO);
