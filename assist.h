@@ -17,7 +17,6 @@ int _get_money_by_symbol(char user_symbol);
 int _get_point_by_symbol(char user_symbol);
 
 
-
 void print_red(char *chars);
 void print_green(char *chars);
 void print_blue(char *chars);
@@ -42,9 +41,12 @@ void on_mine(char mine, PLAYER *player);
 void gift_house(PLAYER *player);
 void tool_house(PLAYER *player);
 
-void pay_rent(int owner, int symbol, PLAYER *player);
+void pay_rent(PLAYER *player, MAP *maps);
 void buy_upper_house(PLAYER *player, MAP *maps);
 
 void players_end_run(PLAYER *player, BOOL *end_round);
-void players_run_in_the_way(PLAYER *player, BOOL *end_round);
+void players_run_in_the_way(PLAYER *player, int steps, BOOL *end_round);
+
+void _usercmp(PLAYER *user1, PLAYER *user2);
+void rm_user(PLAYER *users, USER_NAME name, int* user_size);
 #endif //_ASSIST_H_
