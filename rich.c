@@ -1,15 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
 #include "rich.h"
-#include "init.h"
-#include "display.h"
-#include "run.h"
-#include "test.h"
+#include "function.h"
+#include "assist.h"
 
-PLAYER USERS[4];
-int USERS_NUMBER;
-MAP MAPS[MAX_POSITION];
+PLAYER USERS[4]; //玩家信息
+int USERS_NUMBER; //玩家个数
+MAP MAPS[MAX_POSITION]; //地图信息
 int game_over;
 int dice_num;
 
@@ -25,6 +20,7 @@ int main()
         {
             for(int i=0;i<USERS_NUMBER;i++) player_round(USERS+i);
         }
+        game_over = 0;
     }
     return 0;
 }
