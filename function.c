@@ -134,6 +134,7 @@ void player_round(PLAYER* player){
         scanf("%s", _args);
         if(args_parse(_args, player)) break;
     }
+    return;
 }
 
 void bolck_cmd(PLAYER *plary, int position,BOOL* end_round){

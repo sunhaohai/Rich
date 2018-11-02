@@ -18,14 +18,4 @@ SM：邬昕昱
 
 ## dump todo
 
-完成函数
-	_get_house_level
-	_get_money_by_symbol
-	_get_point_by_symbol
-	
-确定god 后参数含义
-
-重写dump
-	分成小函数
-
 测试dump
