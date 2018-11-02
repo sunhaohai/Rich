@@ -197,3 +197,10 @@ void dice_cmd(PLAYER* player,BOOL* end_round){
     players_end_run(player, end_round);
     *end_round = TRUE;
 }
+
+void save_cmd(){
+    FILE *fp;
+    fp = fopen("save.txt","w+");
+    fwrite(USERS,sizeof(USERS[0]),1,fp);
+    fclose(fp);
+}
