@@ -282,18 +282,21 @@ void _del_symbol(MAP* map,SYMBOL dels){
 
 void prison(PLAYER *player){
     //走到监狱的时候发生的事
+    printf("你被关进了监狱,将被关2轮!\n");
+    getchar();
     player->skip_num += 2;
     return;
 }
 
 void magic_house(PLAYER *player){
     //走到魔法屋的时候发生的事
-    printf("Waiting to do\n");
+    printf("你来到了魔法屋 Waiting to do\n");
 }
 
 void on_mine(char mine, PLAYER *player){
     //走到旷地放生的事
-    player->money += mine;
+    player->point += mine;
+    printf("你获得点数:%hhd\n",mine);
     return;
 }
 
@@ -308,15 +311,18 @@ void gift_house(PLAYER *player){
         {
         case 1:
             (*player).money += 2000;
+            printf("你获得2000元!\n");
             return;
         case 2:
             (*player).point += 200;
+            printf("你获得200点!\n");
             return;
         case 3:
             (*player).lucky_god += 5;
+            printf("你获得5轮财神!\n");
             return;
         default:
-            printf("please choose again ~~~");
+            printf("please choose again:");
             break;
         }
     }
@@ -423,6 +429,7 @@ void buy_upper_house(PLAYER *player, MAP *maps){
             while(1){
                 char chose;
                 scanf("%c", &chose);
+                getchar();
                 if (chose == 'N' || chose == 'n') return;
                 else if (chose == 'Y' || chose == 'y'){
                     player->house[player->position] = 1;
@@ -445,6 +452,7 @@ void buy_upper_house(PLAYER *player, MAP *maps){
             while(1){
                 char chose;
                 scanf("%c", &chose);
+                getchar();
                 if (chose == 'N' || chose == 'n') return;
                 else if (chose == 'Y' || chose == 'y'){
                     maps[player->position].price_all += _get_place_price(maps[player->position].price);
@@ -482,7 +490,7 @@ void players_end_run(PLAYER *player,BOOL *end_round){
         buy_upper_house(player, MAPS);
     else{
         int tool_num = player->tool[0].num + player->tool[1].num + player->tool[2].num;
-        switch (MAPS[pos_temp].symbol)
+        switch (MAPS[pos_temp].pre_symbol[MAX_USER-1])
         {
         case SYMBOL_T:
             if (player->point < 30){
