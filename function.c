@@ -301,6 +301,7 @@ void dice_cmd(PLAYER* player,BOOL* end_round){
     players_run_in_the_way(player,steps, end_round);
     if (*end_round) return;
     display_run_map(player,player->position+1);
+    printf("You walked %d steps forward happily !!.\n", steps);
     players_end_run(player, end_round);
     *end_round = TRUE;
 }

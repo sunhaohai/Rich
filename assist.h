@@ -20,8 +20,11 @@ void print_blue(char *chars);
 void print_yellow(char *chars);
 void print_player(char *chars, USER_NAME name);
 void print_prompt(PLAYER *player);
+void print_player_name(PLAYER *player);
 void _print_map_symbol(MAP *map);
 
+char* _str_upper(char* str);
+PLAYER* _find_player(USER_NAME name);
 BOOL args_parse(char *arg, PLAYER *player);
 void _args_parse_one(char *arg, PLAYER *player, BOOL *end_round);
 void _args_parse_two(char *arg, PLAYER *player, int position, BOOL *end_round);
@@ -46,4 +49,5 @@ void players_run_in_the_way(PLAYER *player, int steps, BOOL *end_round);
 
 void _usercmp(PLAYER *user1, PLAYER *user2);
 void rm_user(PLAYER *users, USER_NAME name, int* user_size);
+
 #endif //_ASSIST_H_

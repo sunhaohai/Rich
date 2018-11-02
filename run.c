@@ -428,18 +428,18 @@ void _args_parse_one(char* arg, PLAYER* player,BOOL* end_round){
     {
         dice_num = dice_cmd(player,end_round);
     } 
-    else if(strcmp(ROBOT,arg)==0) robot_cmd(player,end_round);
-    else if(strcmp(QUERY,arg)==0) query_cmd(player,end_round);
-    else if(strcmp(QUIT,arg)==0) quit_cmd(player,end_round);
+    else if(strcmp(_str_change_upper(ROBOT),arg)==0) robot_cmd(player,end_round);
+    else if(strcmp(_str_change_upper(QUERY),arg)==0) query_cmd(player,end_round);
+    else if(strcmp(_str_change_upper(QUIT),arg)==0) quit_cmd(player,end_round);
     else help_cmd();
 }
 
 void _args_parse_two(char *arg, PLAYER *player, int position,BOOL* end_round){
     //deal cmd with param
-    if(strcmp(SELL,arg)==0) sell_cmd(player,position,end_round);
-    else if(strcmp(BLOCK,arg)==0) bolck_cmd(player,position,end_round);
-    else if(strcmp(BOMB,arg)==0) bomb_cmd(player,position,end_round);
-    else if(strcmp(STEP,arg)==0) step_cmd(player,position,end_round);
+    if(strcmp(_str_change_upper(SELL),arg)==0) sell_cmd(player,position,end_round);
+    else if(strcmp(_str_change_upper(BLOCK),arg)==0) bolck_cmd(player,position,end_round);
+    else if(strcmp(_str_change_upper(BOMB),arg)==0) bomb_cmd(player,position,end_round);
+    else if(strcmp(_str_change_upper(STEP),arg)==0) step_cmd(player,position,end_round);
     else help_cmd();
 }
 
@@ -453,6 +453,7 @@ BOOL args_parse(char* arg, PLAYER* player){
         char* f1=t;
         t=strtok(NULL," ");
         char* f2=t;
+
         _args_parse_two(f1,player,atoi(f2),&end_round);
     }
     else help_cmd();
