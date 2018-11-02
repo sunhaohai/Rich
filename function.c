@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "function.h"
 #include "assist.h"
 extern PLAYER USERS[4];
@@ -138,16 +139,113 @@ void player_round(PLAYER* player){
     if(player->lucky_god) player->lucky_god--;
 }
 
-void bolck_cmd(PLAYER *plary, int position,BOOL* end_round){
-    printf("Function is developing\n");
+void bolck_cmd(PLAYER *player, int position,BOOL* end_round){
+    //printf("Function is developing\n");
+    int pos = position;
+    int pos_tool;
+
+    if((pos > 10) || (pos < -10) || (!pos))
+    {
+        printf("To use this tool, please input a number between -10 and 10 indicate behind or before you, 0 is not allowed! \r\n");
+    }
+    else
+    {
+        pos_tool = (player->position + pos) % MAX_POSITION;
+        if((MAPS[pos_tool].tool > TOOL_NULL) || _isuser_symbol(MAPS[pos_tool].symbol))
+        {
+            printf("Can not be used in this place !\r\n");
+            *end_round = FALSE;
+            return;
+        }
+        if((player->tool[TOOL_L].num > 0) && (player->tool[TOOL_L].num < 11))
+        {
+            player->tool[TOOL_L].num--;
+            MAPS[pos_tool].tool = TOOL_L;
+            printf("Block is used successfully !\r\n");
+        }
+        else
+        {
+            player->tool[TOOL_L].num = 0;
+            printf("Sorry, you don't have available tool(Block) now !\r\n");
+        }
+    }
+    *end_round = FALSE;
 }
 
-void bomb_cmd(PLAYER *plary, int position,BOOL* end_round){
-    printf("Function is developing\n");
+void bomb_cmd(PLAYER *player, int position,BOOL* end_round){
+    //printf("Function is developing\n");
+    int pos = position;
+    int pos_tool;
+
+    if((pos > 10) || (pos < -10) || (!pos))
+    {
+        printf("To use this tool, please input a number between -10 and 10 indicate behind or before you, 0 is not allowed! \r\n");
+    }
+    else
+    {
+        pos_tool = (player->position + pos) % MAX_POSITION;
+        if((MAPS[pos_tool].tool > TOOL_NULL) || _isuser_symbol(MAPS[pos_tool].symbol))
+        {
+            printf("Can not be used in this place !\r\n");
+            *end_round = FALSE;
+            return;
+        }
+        if((player->tool[TOOL_B].num > 0) && (player->tool[TOOL_B].num < 11))
+        {
+            player->tool[TOOL_B].num--;
+            MAPS[pos_tool].tool = TOOL_B;
+            printf("Bomb is used successfully !\r\n");
+        }
+        else
+        {
+            player->tool[TOOL_B].num = 0;
+            printf("Sorry, you don't have available tool(Bomb) now !\r\n");
+        }
+    }
+    *end_round = FALSE;
 }
 
 void robot_cmd(PLAYER* player,BOOL* end_round){
-    printf("Function is developing\n");
+    //printf("Function is developing\n");
+    char pos = player->position;
+    char pos_scan = pos;
+
+    if((player->tool[TOOL_R].num > 0) && (player->tool[TOOL_R].num < 11))
+    {
+        player->tool[TOOL_R].num--;
+        while((++pos_scan % MAX_POSITION)  <= ((pos + 10) % MAX_POSITION))
+        {
+            pos_scan %= MAX_POSITION;
+            if((MAPS[pos_scan].tool > TOOL_NULL) && (MAPS[pos_scan].tool < TOOL_R))
+            {
+                if(TOOL_L == MAPS[pos_scan].tool)
+                {
+                    printf("Your robot found a Block !\r\n");
+                }
+                else
+                {
+                    printf("Your robot found a Bomb !\r\n");
+                }
+                MAPS[pos_scan].tool = TOOL_NULL;
+                break;
+            }
+            else
+            {
+                MAPS[pos_scan].tool = TOOL_NULL;
+                if(pos_scan == ((pos + 10) % MAX_POSITION))
+                {
+                    printf("Your robot found nothing !\r\n");
+                }
+            }
+        }
+
+    }
+    else
+    {
+        player->tool[TOOL_R].num = 0;
+        printf("Sorry, you don't have available tool(Robot) now !\r\n");
+    }
+    *end_round = FALSE;
 }
 
 void step_cmd(PLAYER *player, int position, BOOL *end_round){

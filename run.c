@@ -2,7 +2,6 @@
 #include <string.h>
 
 #include "run.h"
-#include "init.h"
 #include "rich.h"
 #include "display.h"
 
