@@ -85,15 +85,40 @@ void _init_maps(){
 void init_game(){
     // 开始游戏,完成游戏的初始化
     int *users = _start_game();
-    printf("please input init money(1000-50000):");
     int init_money;
+    char tmp[6] = "\0";
+//    puts(tmp);
     while (1){
-        setbuf(stdin, NULL);
-        scanf("%d", &init_money);
-        int c;
-        while ((c = getchar()) != '\n' && c != EOF) ;
+        char i = 0;
+        char c, clear;
+
+        printf("please input init money(1000-50000):");
+        while(1) {
+            c = getchar();
+            if (('\n' == c) && (0 == i)) {
+                init_money = 10000;
+                i = 0;
+                printf("Set default money -> 10000\n");
+                break;
+            } else if ((c >= '0') && (c <= '9') && (i < 5)) {
+                tmp[i] = c;
+//                puts(tmp);
+                i++;
+                continue;
+            }
+            if (('\n' == c) && (i < 6)) {//normal end, add a '\0', exchange, reset i
+                tmp[i] = '\0';
+                i = 0;
+                init_money = atoi(tmp);
+//                printf("init_money is %d\n", init_money);
+                break;
+            } else {
+                while (((clear = getchar()) != '\n') && (clear != EOF));
+                break;
+            }
+        }
         if (init_money > 50000 || init_money < 1000)
-            printf("please input init money(1000-50000) again:");
+            continue;
         else break;
     }
     _init_players(users, init_money);
@@ -118,6 +143,7 @@ void display(MAP* maps){
 
 void player_round(PLAYER* player){
     //玩家回合控制总函数
+    //TODO: cmd input check and table complete
     if((*player).skip_num>0){
         (*player).skip_num--;
         return;
@@ -252,6 +278,8 @@ void step_cmd(PLAYER *player, int position, BOOL *end_round){
     players_run_in_the_way(player, position, end_round);
     if (*end_round) return;
     display_run_map(player, player->position + 1);
+    print_player_name(player);
+    printf(":\n");
     players_end_run(player, end_round);
     *end_round = TRUE;
 }
@@ -265,17 +293,30 @@ void help_cmd() {
     printf("Query : Display your assets. \n");
     printf("Help : View command help. \n");
     printf("Quit : Forced return. \n");
-    printf("Step n : Telecontrol dice. \n");
+    printf("Step n : Control step. \n");
 }
 
 void query_cmd(PLAYER *player, BOOL *end_round) {
-    printf("your total money:%ld\n", player->money);
-    printf("your total point:%ld\n", player->point);
-    printf("your total house:");                                      //显示房产（等级和位置）
-    printf("\nyour total tool>>\n");                            //显示道具（种类和数量）
-    printf("Block's number:%d\n", player->tool[TOOL_L].num); //路障数量
-    printf("Bomb's number:%d\n", player->tool[TOOL_B].num);  //炸弹数量
-    printf("Robot's number:%d\n", player->tool[TOOL_R].num); //路障数量
+    //TODO: player's property rank
+    print_player_name(player);
+    printf(":\nPosition: %d\n", player -> position);
+    printf("Money: %ld\n", player->money);
+    printf("Point: %ld\n", player->point);
+    printf("Skip round: %d\n", player->skip_num);
+    printf("Luck god  : %d\n", player->lucky_god);
+    printf("House:\n""\t   position\tlevel\t cost\n");                                      //显示房产（等级和位置）
+    for(char i = 0;i < MAX_POSITION; i++)
+    {
+     if(player->house[i]){
+         printf("\t*     %d  \t  %d\t  %d\n", i, (player->house[i] - 1), (MAPS[i].price_all));
+     }
+    }
+    printf("--------------------------------------------------------------\n");
+    printf("Tool:\n");                            //显示道具（种类和数量）
+    printf("\t* Block's number: %d\n", player->tool[TOOL_L].num); //路障数量
+    printf("\t* Bomb's  number: %d\n", player->tool[TOOL_B].num);  //炸弹数量
+    printf("\t* Robot's number: %d\n", player->tool[TOOL_R].num); //路障数量
+    printf("**************************************************************\n");
 }
 
 void quit_cmd(PLAYER *player,BOOL* end_round){
@@ -285,14 +326,21 @@ void quit_cmd(PLAYER *player,BOOL* end_round){
 
 void sell_cmd(PLAYER *player, int position, BOOL *end_round) {
     if(player->house[position]==0){
-        printf("这不是你都房子,你不能卖!\n");
+        printf("It's NOT your house!\n");
         return;
     }
-    MAPS[position].owner = USER_NULL;
-    MAPS[position].type = MAP_COM;
-    player->money += MAPS[position].price_all * 2;
-    printf("你的房子卖了:%d\n",MAPS[position].price_all * 2);
-    *end_round = 1;
+    {
+        int price = MAPS[position].price_all * 2;
+        MAPS[position].owner = USER_NULL;
+        MAPS[position].type = MAP_COM;
+        player->money += price;
+        player->house[position] = 0;
+        display(MAPS);
+        print_player_name(player);
+        printf(":\nYou SELL the house in %d and get money %d.\n""You money: %ld -> %ld\n",
+               position, price, ((player->money) - price), (player->money));
+        *end_round = 1;
+    }
 }
 
 void dice_cmd(PLAYER* player,BOOL* end_round){
@@ -301,7 +349,8 @@ void dice_cmd(PLAYER* player,BOOL* end_round){
     players_run_in_the_way(player,steps, end_round);
     if (*end_round) return;
     display_run_map(player,player->position+1);
-    printf("You walked %d steps forward happily !!.\n", steps);
+    print_player_name(player);
+    printf(":\nYou walked %d steps forward happily !!\n", steps);
     players_end_run(player, end_round);
     *end_round = TRUE;
 }
