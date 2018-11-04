@@ -354,3 +354,86 @@ void dice_cmd(PLAYER* player,BOOL* end_round){
     players_end_run(player, end_round);
     *end_round = TRUE;
 }
+
+BOOL preset_cmd(char* cmd){
+    //测试接口,preset命令,详情见测试文档
+    char *tmp = strtok(cmd, " ");
+    int init_money = 10000;
+    printf("%s\n",cmd);
+    if (strcmp(tmp, "preset") == 0){
+        tmp = strtok(NULL, " ");
+        if (strcmp(tmp, "user") == 0){
+            tmp = strtok(NULL, " ");
+            USERS_NUMBER = sizeof(tmp) / sizeof(char);
+            int users[USERS_NUMBER];
+            for (int i = 0; i < USERS_NUMBER; i++)
+            {
+                if (tmp[i] == 'A')
+                    users[i] = 2;
+                else if (tmp[i] == 'Q')
+                    users[i] = 1;
+                else if (tmp[i] == 'S')
+                    users[i] = 3;
+                else if (tmp[i] == 'J')
+                    users[i] = 4;
+            }
+            _init_players(users, init_money);
+        }
+        else if (strcmp(tmp, "map") == 0){
+            tmp = strtok(NULL, " ");
+            int posi = atoi(tmp);
+            tmp = strtok(NULL, " ");
+            char name = tmp[0];
+            tmp = strtok(NULL," ");
+            int level = atoi(tmp);
+            preset_map(MAPS,posi,_get_player(name),level);
+        }
+        else if (strcmp(tmp, "fund") == 0){
+            tmp = strtok(NULL, " ");
+            char name = tmp[0];
+            tmp = strtok(NULL," ");
+            long money = atol(tmp);
+            preset_fund(_get_player(name),money);
+        }
+        else if (strcmp(tmp, "credit") == 0){
+            tmp = strtok(NULL, " ");
+            char name = tmp[0];
+            tmp = strtok(NULL," ");
+            long credit = atol(tmp);
+            preset_credit(_get_player(name),credit);
+        }
+        else if (strcmp(tmp, "gift") == 0){
+            tmp = strtok(NULL," ");
+            char name = tmp[0];
+            tmp = strtok(NULL," ");
+            int tn_size = sizeof(tmp)/sizeof(char);
+            char tool[tn_size+1];
+            strcpy(tool,tmp);
+            tmp = strtok(NULL," ");
+            int n = atoi(tmp);
+            preset_gift(_get_player(name),tool,n);
+        }
+        else if (strcmp(tmp, "bomb") == 0){
+            tmp = strtok(NULL, " ");
+            MAPS[atoi(tmp)].tool = TOOL_B;
+        }
+        else if (strcmp(tmp, "barrier") == 0){
+            tmp = strtok(NULL, " ");
+            MAPS[atoi(tmp)].tool = TOOL_L;
+        }
+        else if (strcmp(tmp, "userloc") == 0){
+            tmp = strtok(NULL," ");
+            char name = tmp[0];
+            tmp = strtok(NULL," ");
+            int posi = atoi(tmp);
+            tmp = strtok(NULL, " ");
+            int m = atoi(tmp);
+            preset_userloc(MAPS,_get_player(name),posi,m);
+        }
+        else if (strcmp(tmp, "nextuser") == 0){
+            
+        }
+    }
+    else return FALSE;
+    return TRUE;
+}

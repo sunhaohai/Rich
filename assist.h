@@ -50,4 +50,12 @@ void players_run_in_the_way(PLAYER *player, int steps, BOOL *end_round);
 void _usercmp(PLAYER *user1, PLAYER *user2);
 void rm_user(PLAYER *users, USER_NAME name, int* user_size);
 
+void preset_map(MAP *maps, int n, PLAYER *player, int level);
+void preset_fund(PLAYER *player, long money);
+void preset_credit(PLAYER *player, long point);
+void preset_gift(PLAYER *player, char *tool, char n);
+void preset_userloc(MAP *maps, PLAYER *player, int position, int m);
+PLAYER *_get_player(char n);
+int my_getline(char *line, int max_size);
+
 #endif //_ASSIST_H_

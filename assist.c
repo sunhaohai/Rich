@@ -656,3 +656,73 @@ void players_run_in_the_way(PLAYER *player, int steps,BOOL *end_round){
         }
     }
 }
+
+void preset_map(MAP *maps, int n, PLAYER *player, int level){
+    //设置地图建筑
+    maps[n].owner = player->name;
+    maps[n].price_all = _get_place_price(maps[n].price)*(level+1);
+    SYMBOL tmp = maps[n].pre_symbol[MAX_USER - 1];
+    for (int i = 0; i < MAX_USER; i++){
+        if (maps[n].pre_symbol[i] == tmp)
+            maps[player->position].pre_symbol[i] = level + SYMBOL_0;
+        if (maps[player->position].symbol == tmp)
+            maps[player->position].symbol = level + SYMBOL_0;
+    }
+    maps[n].type = MAP_PRI;
+    player->house[n] = 1;
+}
+
+void preset_fund(PLAYER* player,long money){
+    //设置玩家金钱数
+    player->money = money;
+}
+
+void preset_credit(PLAYER* player,long point){
+    //设置玩家点数
+    player->point = point;
+}
+
+void preset_gift(PLAYER* player,char* tool,char n){
+    //设置用户拥有的道具
+    if(strcmp(tool,"bomb")==0){
+        player->tool[TOOL_B].type = TOOL_B;
+        player->tool[TOOL_B].num = n;
+    }
+    else if(strcmp(tool,"barrier")==0){
+        player->tool[TOOL_L].type = TOOL_L;
+        player->tool[TOOL_L].num = n;
+    }
+    else if(strcmp(tool,"robot")==0){
+        player->tool[TOOL_R].type = TOOL_R;
+        player->tool[TOOL_R].num = n;
+    }
+    else if(strcmp(tool,"god")==0){
+        player->lucky_god = n;
+    }
+    else return;
+}
+
+void preset_userloc(MAP* maps,PLAYER* player,int position, int m){
+    player->position = position;
+    player->skip_num = m;
+    _add_symbol(maps,_get_symbol(*player));
+}
+
+PLAYER* _get_player(char n){
+    for(int i=0;i<USERS_NUMBER;i++){
+        if(USERS[i].short_name==n) return USERS+i;
+    }
+}
+
+int my_getline(char *line, int max_size)
+{
+    int c;
+    int len = 0;
+    while ((c = getchar()) != EOF && len < max_size){
+        line[len++] = c;
+        if ('\n' == c)
+            break;
+    }
+    line[len] = '\0';
+    return len;
+}
