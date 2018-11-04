@@ -355,6 +355,7 @@ void dice_cmd(PLAYER* player,BOOL* end_round){
     *end_round = TRUE;
 }
 
+
 BOOL preset_cmd(char* cmd){
     //测试接口,preset命令,详情见测试文档
     char *tmp = strtok(cmd, " ");

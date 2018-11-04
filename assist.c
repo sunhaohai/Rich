@@ -657,6 +657,7 @@ void players_run_in_the_way(PLAYER *player, int steps,BOOL *end_round){
     }
 }
 
+
 void preset_map(MAP *maps, int n, PLAYER *player, int level){
     //设置地图建筑
     maps[n].owner = player->name;

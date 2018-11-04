@@ -50,6 +50,7 @@ void players_run_in_the_way(PLAYER *player, int steps, BOOL *end_round);
 void _usercmp(PLAYER *user1, PLAYER *user2);
 void rm_user(PLAYER *users, USER_NAME name, int* user_size);
 
+
 void preset_map(MAP *maps, int n, PLAYER *player, int level);
 void preset_fund(PLAYER *player, long money);
 void preset_credit(PLAYER *player, long point);
