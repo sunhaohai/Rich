@@ -693,9 +693,4 @@ void players_run_in_the_way(PLAYER *player, int steps,BOOL *end_round){
             break;
         }
     }
-void preset_map(MAP *maps, int n, PLAYER *player, int level){
-    maps[n].owner = player->name;
-    maps[n].price_all = _get_place_price(maps[n].price)*(level+1);
-    for (int i = 0; i < MAX_USER; i++){
-        if (maps[n].pre_symbol[i] == tmp)
 }
