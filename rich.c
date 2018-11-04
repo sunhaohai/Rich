@@ -17,6 +17,7 @@ int main()
         USERS_NUMBER = MAX_USER;
         _init_maps();
         _init_players(init_user,10000);
+        
 
         /*
         printf("Enter a space to continue!");
