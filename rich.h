@@ -43,6 +43,13 @@ typedef enum
 
 typedef enum
 {
+    ROOT_OFF = 0,
+    ROOT_PRE ,
+    ROOT_ON,
+}ROOT_STATE;
+
+typedef enum
+{
   USER_NULL      = 0,
   QIAN      = 1, //Qian
   ATUBO     = 2, //Atubo

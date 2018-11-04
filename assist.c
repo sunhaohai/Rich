@@ -7,6 +7,7 @@ extern PLAYER USERS[4];
 extern int USERS_NUMBER;
 extern MAP MAPS[MAX_POSITION];
 extern int game_over;
+extern ROOT_STATE root;
 
 int _get_rand(int min, int max){
     //生成大小在[min,max]当中的随机数
@@ -244,7 +245,8 @@ BOOL args_parse(char* arg, PLAYER* player){
         char* f1=t;
         t=strtok(NULL," ");
         char* f2=t;
-        _args_parse_two(_str_upper(f1),player,atoi(f2),&end_round);
+//        puts(f2);
+        _args_parse_two(_str_upper(f1),player, f2,&end_round);
     }
     else help_cmd();
     return end_round;
@@ -256,15 +258,18 @@ void _args_parse_one(char* arg, PLAYER* player,BOOL* end_round){
     else if(strcmp("ROBOT",arg)==0) robot_cmd(player,end_round);
     else if(strcmp("QUERY",arg)==0) query_cmd(player,end_round);
     else if(strcmp("QUIT",arg)==0) quit_cmd(player,end_round);
+    else if((strcmp("SU",arg)==0)) su_cmd_pre(player,end_round);
+    else if((strcmp("EXIT",arg)==0) && (ROOT_ON == root)) exit_cmd(player,end_round);
     else help_cmd();
 }
 
-void _args_parse_two(char *arg, PLAYER *player, int position,BOOL* end_round){
+void _args_parse_two(char *arg, PLAYER *player, char* str,BOOL* end_round){
     //deal cmd with param
-    if(strcmp("SELL",arg)==0) sell_cmd(player,position,end_round);
-    else if(strcmp("BLOCK",arg)==0) bolck_cmd(player,position,end_round);
-    else if(strcmp("BOMB",arg)==0) bomb_cmd(player,position,end_round);
-    else if(strcmp("STEP",arg)==0) step_cmd(player,position,end_round);
+    if(strcmp("SELL",arg)==0) sell_cmd(player,atoi(str),end_round);
+    else if(strcmp("BLOCK",arg)==0) bolck_cmd(player,atoi(str),end_round);
+    else if(strcmp("BOMB",arg)==0) bomb_cmd(player,atoi(str),end_round);
+    else if((strcmp("STEP",arg)==0) && (ROOT_ON == root)) step_cmd(player,atoi(str),end_round);
+    else if((strcmp("SU",arg)==0) && (ROOT_PRE == root)) su_cmd(player,str,end_round);
     else help_cmd();
 }
 
@@ -325,6 +330,39 @@ void _del_symbol(MAP* map,SYMBOL dels){
         }
     }
 }
+
+PLAYER* _find_top_rank(void)
+{
+    char i = 0;
+    long max = 0;
+    char k;
+
+    for(i = 0;i < USERS_NUMBER;i++)
+    {
+      if(USERS[i].money > max)
+      {
+          max = USERS[i].money;
+          k = i;
+      }
+    }
+    return &USERS[k];
+}
+
+//about input
+BOOL _isalph(char c)
+{
+    return ( ((c >= 'A')&&(c <= 'Z')) || ((c >= 'a')&&(c <= 'z')))? TRUE : FALSE;
+}
+BOOL _isnum(char c)
+{
+    return ( ((c >= '0')&&(c <= '9')) )? TRUE : FALSE;
+}
+BOOL _isdivider(char c)
+{
+    return ( ((c == ' ')||(c == '\t')||(c == ',')||(c == '.')) )? TRUE : FALSE;
+}
+
+
 
 void prison(PLAYER *player){
     //走到监狱的时候发生的事  step 49
@@ -471,7 +509,7 @@ void rm_user(PLAYER* users,USER_NAME name, int* user_size){
 void pay_rent(PLAYER *player, MAP *maps){
     //玩家交租
     PLAYER* owner;
-    char rent = 0;
+    int rent = 0;
     if(player->lucky_god)
     {
         (player->lucky_god) --;
@@ -484,6 +522,7 @@ void pay_rent(PLAYER *player, MAP *maps){
     print_player_name(owner);
     printf("'s place\n");
     rent = ((maps[player->position]).price_all ) / 2;
+    if(rent < 0)printf("rent err! %d , the price all %d\n", rent, ((maps[player->position]).price_all ));
     if(owner -> skip_num != SKIP_NULL)
     {
         printf("You didn't pay the rent and nobody knew.\n");
@@ -511,10 +550,10 @@ void buy_upper_house(PLAYER *player, MAP *maps){
 //    print_player_name(player);
     //买房子
     if(maps[player->position].type == MAP_COM){
-        printf("This house price: %d\n",maps[player->position].price_all);
         if (player->money >= maps[player->position].price_all){
             while(1){
                 char chose, clear;
+                printf("This house price: %d\n",maps[player->position].price_all);
                 printf("Your Money: %ld\n",player->money);
                 printf("You can buy this house(Y/N):");
                 chose = getchar();
@@ -542,11 +581,10 @@ void buy_upper_house(PLAYER *player, MAP *maps){
             printf("This house belongs to you and it's highest level.\n");
             return;
         }
-        printf("\n");
-        printf("To upper you house cost %d\n",_get_place_price(maps[player->position].price));
         if (player->money >= _get_place_price(maps[player->position].price)){
             while(1){
                 char chose, clear;
+                printf("To upper you house cost %d\n",_get_place_price(maps[player->position].price));
                 printf("Your Money: %ld\n",player->money);
                 printf("You can upper this house(Y/N):");
                 chose = getchar();
@@ -630,7 +668,7 @@ void players_run_in_the_way(PLAYER *player, int steps,BOOL *end_round){
     //玩家走在路上的时候可能发生的事件
     char pos_start = player -> position;
     int pos_temp = 0;
-    for (int i = 1; i < steps; i++){
+    for (int i = 1; i < steps+1; i++){
         pos_temp = (player->position + 1) % MAX_POSITION;
         switch (MAPS[pos_temp].tool)
         {
@@ -655,74 +693,9 @@ void players_run_in_the_way(PLAYER *player, int steps,BOOL *end_round){
             break;
         }
     }
-}
-
 void preset_map(MAP *maps, int n, PLAYER *player, int level){
-    //设置地图建筑
     maps[n].owner = player->name;
     maps[n].price_all = _get_place_price(maps[n].price)*(level+1);
-    SYMBOL tmp = maps[n].pre_symbol[MAX_USER - 1];
     for (int i = 0; i < MAX_USER; i++){
         if (maps[n].pre_symbol[i] == tmp)
-            maps[player->position].pre_symbol[i] = level + SYMBOL_0;
-        if (maps[player->position].symbol == tmp)
-            maps[player->position].symbol = level + SYMBOL_0;
-    }
-    maps[n].type = MAP_PRI;
-    player->house[n] = 1;
-}
-
-void preset_fund(PLAYER* player,long money){
-    //设置玩家金钱数
-    player->money = money;
-}
-
-void preset_credit(PLAYER* player,long point){
-    //设置玩家点数
-    player->point = point;
-}
-
-void preset_gift(PLAYER* player,char* tool,char n){
-    //设置用户拥有的道具
-    if(strcmp(tool,"bomb")==0){
-        player->tool[TOOL_B].type = TOOL_B;
-        player->tool[TOOL_B].num = n;
-    }
-    else if(strcmp(tool,"barrier")==0){
-        player->tool[TOOL_L].type = TOOL_L;
-        player->tool[TOOL_L].num = n;
-    }
-    else if(strcmp(tool,"robot")==0){
-        player->tool[TOOL_R].type = TOOL_R;
-        player->tool[TOOL_R].num = n;
-    }
-    else if(strcmp(tool,"god")==0){
-        player->lucky_god = n;
-    }
-    else return;
-}
-
-void preset_userloc(MAP* maps,PLAYER* player,int position, int m){
-    player->position = position;
-    player->skip_num = m;
-    _add_symbol(maps,_get_symbol(*player));
-}
-
-PLAYER* _get_player(char n){
-    for(int i=0;i<USERS_NUMBER;i++){
-        if(USERS[i].short_name==n) return USERS+i;
-    }
-}
-
-int my_getline(char *line, int max_size)
-{
-    int c;
-    int len = 0;
-    while ((c = getchar()) != EOF && len < max_size){
-        line[len++] = c;
-        if ('\n' == c)
-            break;
-    }
-    line[len] = '\0';
-    return len;
 }

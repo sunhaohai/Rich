@@ -5,6 +5,7 @@ extern PLAYER USERS[4];
 extern int USERS_NUMBER;
 extern MAP MAPS[MAX_POSITION];
 extern int game_over;
+extern ROOT_STATE root;
 
 int *_start_game(){
     // 开始游戏,等待玩家选择角色
@@ -143,7 +144,7 @@ void display(MAP* maps){
 
 void player_round(PLAYER* player){
     //玩家回合控制总函数
-    //TODO: cmd input check and table complete
+    //TODO: cmd table complete
     if((*player).skip_num>0){
         (*player).skip_num--;
         return;
@@ -151,10 +152,43 @@ void player_round(PLAYER* player){
     while(1){
         printf("\n");
         print_prompt(player);
-        char _args[10];
-        rewind(stdin);
-        setbuf(stdin, NULL);
-        gets(_args);
+        char _args[12] = "\0";
+        char c, clear, i=0;
+        do{
+            c = getchar();
+            if(('\n' == c) && (0 == i)) break;
+            if(_isdivider(c) && (0 == i)) continue;
+            if((_isalph(c) || _isnum(c) || _isdivider(c)
+                || '-'==c || '+' == c || '*'==c || '#' == c)&& i < 11)
+            {
+                if(!_isdivider(c))
+                {
+                    _args[i] = c;
+                    i++;
+                }
+                else {
+                    i -= (_isdivider(_args[i-1]))? 1 : 0;
+                    _args[i] = ' ';
+                    i++;
+                }
+                puts(_args);
+                continue;
+            }
+            // '\n' and over
+            if(('\n' == c) && (i < 12))
+            {//normal end
+                if(_args[i-1] == ' ') i--;
+                _args[i] = '\0';
+                i = 0;
+                break;
+            }else {
+                _args[11] = '\0';
+                while (((clear = getchar()) != '\n') && (clear != EOF));
+                break;
+            }
+
+        }while(1);
+        if(('\n' == c) && (0 == i) && (!strlen(_args))) continue;
         if(args_parse(_args, player)) break;
     }
     if(USERS_NUMBER<2){
@@ -187,6 +221,8 @@ void bolck_cmd(PLAYER *player, int position,BOOL* end_round){
         {
             player->tool[TOOL_L].num--;
             MAPS[pos_tool].tool = TOOL_L;
+            display(MAPS);
+            print_player_name(player); printf(":\n");
             printf("Block is used successfully !\r\n");
         }
         else
@@ -220,6 +256,8 @@ void bomb_cmd(PLAYER *player, int position,BOOL* end_round){
         {
             player->tool[TOOL_B].num--;
             MAPS[pos_tool].tool = TOOL_B;
+            display(MAPS);
+            print_player_name(player); printf(":\n");
             printf("Bomb is used successfully !\r\n");
         }
         else
@@ -246,13 +284,18 @@ void robot_cmd(PLAYER* player,BOOL* end_round){
             {
                 if(TOOL_L == MAPS[pos_scan].tool)
                 {
+                    MAPS[pos_scan].tool = TOOL_NULL;
+                    display(MAPS);
+                    print_player_name(player); printf(":\n");
                     printf("Your robot found a Block !\r\n");
                 }
                 else
                 {
+                    MAPS[pos_scan].tool = TOOL_NULL;
+                    display(MAPS);
+                    print_player_name(player); printf(":\n");
                     printf("Your robot found a Bomb !\r\n");
                 }
-                MAPS[pos_scan].tool = TOOL_NULL;
                 break;
             }
             else
@@ -274,17 +317,71 @@ void robot_cmd(PLAYER* player,BOOL* end_round){
     *end_round = FALSE;
 }
 
+void su_cmd_pre(PLAYER *player, BOOL *end_round) {
+    static char try = 0;
+
+    if(ROOT_OFF == root) {
+        if (++try < 3) {
+            help_cmd();
+        } else {
+            try = 0;
+            root = ROOT_PRE;
+            printf("***** Invalid Cmd *****\n");
+        }
+    }
+    else if(ROOT_PRE == root)
+    {
+        try = 0;
+        printf("***** Invalid Cmd *****\n");
+    }
+    else if(ROOT_ON == root)
+    {
+        printf("You already are ROOT now!\n");
+    }
+    else
+    {
+        root = ROOT_OFF;
+        printf("SU err!\n");
+    }
+}
+
+void su_cmd(PLAYER *player, char* str, BOOL *end_round) {
+    char* ps_in = str;
+    char* pass_wd = "***";
+//    printf("ps_in is %s\n", ps_in);
+//    printf("pass_wd is %s\n", pass_wd);
+//    printf("the strcmp is %d\n", strcmp(pass_wd, ps_in));
+
+    if(strcmp(pass_wd, ps_in) == 0)
+    {
+        root = ROOT_ON;
+        display(MAPS);
+        printf("SU successfully!\n");
+    }
+    else
+    {
+        root = ROOT_OFF;
+        help_cmd();
+    }
+}
+
+void exit_cmd(PLAYER *player, BOOL *end_round) {
+    root = ROOT_OFF;
+    display(MAPS);
+    printf("Exit root successfully!\n");
+}
+
 void step_cmd(PLAYER *player, int position, BOOL *end_round){
     players_run_in_the_way(player, position, end_round);
     if (*end_round) return;
-    display_run_map(player, player->position + 1);
+    display_run_map(player, player->position);
     print_player_name(player);
     printf(":\n");
     players_end_run(player, end_round);
     *end_round = TRUE;
 }
 
-void help_cmd() {
+void help_cmd(void) {
     printf("Roll : Roll the dice 1~6 \n");
     printf("Sell n : When it's the buyer's turn to play, sell a property with an absolute n on his map at twice the total cost of investment. \n");
     printf("Block n :  You can place the roadblock anywhere in the front and back 10 steps of the current position. Any player passing the roadblock will be intercepted. The props are effective once. \n");
@@ -293,14 +390,23 @@ void help_cmd() {
     printf("Query : Display your assets. \n");
     printf("Help : View command help. \n");
     printf("Quit : Forced return. \n");
-    printf("Step n : Control step. \n");
+    if(ROOT_ON == root)
+    {
+        printf("Step n : Control step. \n");
+        printf("Su : Su for 3 times, then \"Su pass_word\", to get root.\n");
+        printf("Exit : Exit root.\n");
+    }
 }
 
 void query_cmd(PLAYER *player, BOOL *end_round) {
-    //TODO: player's property rank
+//    char rank = 0;
+    PLAYER* top;
+    top = _find_top_rank();
     print_player_name(player);
     printf(":\nPosition: %d\n", player -> position);
-    printf("Money: %ld\n", player->money);
+    printf("Money: %ld\t", player->money);
+    print_player_name(top);
+    printf(": %ld\n", top->money);
     printf("Point: %ld\n", player->point);
     printf("Skip round: %d\n", player->skip_num);
     printf("Luck god  : %d\n", player->lucky_god);
@@ -348,92 +454,9 @@ void dice_cmd(PLAYER* player,BOOL* end_round){
     int steps = _get_rand(1, 6);
     players_run_in_the_way(player,steps, end_round);
     if (*end_round) return;
-    display_run_map(player,player->position+1);
+    display_run_map(player,player->position);
     print_player_name(player);
     printf(":\nYou walked %d steps forward happily !!\n", steps);
     players_end_run(player, end_round);
     *end_round = TRUE;
-}
-
-BOOL preset_cmd(char* cmd){
-    //测试接口,preset命令,详情见测试文档
-    char *tmp = strtok(cmd, " ");
-    int init_money = 10000;
-    printf("%s\n",cmd);
-    if (strcmp(tmp, "preset") == 0){
-        tmp = strtok(NULL, " ");
-        if (strcmp(tmp, "user") == 0){
-            tmp = strtok(NULL, " ");
-            USERS_NUMBER = sizeof(tmp) / sizeof(char);
-            int users[USERS_NUMBER];
-            for (int i = 0; i < USERS_NUMBER; i++)
-            {
-                if (tmp[i] == 'A')
-                    users[i] = 2;
-                else if (tmp[i] == 'Q')
-                    users[i] = 1;
-                else if (tmp[i] == 'S')
-                    users[i] = 3;
-                else if (tmp[i] == 'J')
-                    users[i] = 4;
-            }
-            _init_players(users, init_money);
-        }
-        else if (strcmp(tmp, "map") == 0){
-            tmp = strtok(NULL, " ");
-            int posi = atoi(tmp);
-            tmp = strtok(NULL, " ");
-            char name = tmp[0];
-            tmp = strtok(NULL," ");
-            int level = atoi(tmp);
-            preset_map(MAPS,posi,_get_player(name),level);
-        }
-        else if (strcmp(tmp, "fund") == 0){
-            tmp = strtok(NULL, " ");
-            char name = tmp[0];
-            tmp = strtok(NULL," ");
-            long money = atol(tmp);
-            preset_fund(_get_player(name),money);
-        }
-        else if (strcmp(tmp, "credit") == 0){
-            tmp = strtok(NULL, " ");
-            char name = tmp[0];
-            tmp = strtok(NULL," ");
-            long credit = atol(tmp);
-            preset_credit(_get_player(name),credit);
-        }
-        else if (strcmp(tmp, "gift") == 0){
-            tmp = strtok(NULL," ");
-            char name = tmp[0];
-            tmp = strtok(NULL," ");
-            int tn_size = sizeof(tmp)/sizeof(char);
-            char tool[tn_size+1];
-            strcpy(tool,tmp);
-            tmp = strtok(NULL," ");
-            int n = atoi(tmp);
-            preset_gift(_get_player(name),tool,n);
-        }
-        else if (strcmp(tmp, "bomb") == 0){
-            tmp = strtok(NULL, " ");
-            MAPS[atoi(tmp)].tool = TOOL_B;
-        }
-        else if (strcmp(tmp, "barrier") == 0){
-            tmp = strtok(NULL, " ");
-            MAPS[atoi(tmp)].tool = TOOL_L;
-        }
-        else if (strcmp(tmp, "userloc") == 0){
-            tmp = strtok(NULL," ");
-            char name = tmp[0];
-            tmp = strtok(NULL," ");
-            int posi = atoi(tmp);
-            tmp = strtok(NULL, " ");
-            int m = atoi(tmp);
-            preset_userloc(MAPS,_get_player(name),posi,m);
-        }
-        else if (strcmp(tmp, "nextuser") == 0){
-            
-        }
-    }
-    else return FALSE;
-    return TRUE;
 }
