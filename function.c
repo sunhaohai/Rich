@@ -541,6 +541,9 @@ BOOL preset_cmd(char* cmd){
             int m = atoi(tmp);
             preset_userloc(MAPS,_get_player(name),posi,m);
         }
+        else if (strcmp(tmp, "dump") == 0){
+                dump();
+        }
         else if (strcmp(tmp, "nextuser") == 0){
             
         }
