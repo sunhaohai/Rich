@@ -171,7 +171,7 @@ void player_round(PLAYER* player){
                     _args[i] = ' ';
                     i++;
                 }
-                puts(_args);
+                //puts(_args);
                 continue;
             }
             // '\n' and over
