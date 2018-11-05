@@ -9,6 +9,7 @@ int NOW_ID;
 int game_over;
 ROOT_STATE root = ROOT_OFF;
 int dice_num;
+char TMP_DEBUG[50] = {'\0'};
 
 int main()
 {
@@ -26,7 +27,8 @@ int main()
         int j = 0;
         while(1){
             fflush(stdin);
-            my_getline(start_tmp,20);
+            my_getline(start_tmp,50);
+            printf("%s",start_tmp);
             if(preset_cmd(start_tmp)){
                 j++;
                 root = ROOT_ON;
@@ -37,7 +39,6 @@ int main()
             }
             break;
         }
-
         //init_game();
         display(MAPS);
         while (!game_over) //
@@ -46,9 +47,10 @@ int main()
             {
                 player_round(USERS+i);   
                 NOW_ID = i;
+                if(game_over) break;
             }
         }
-        game_over = 0;
+        if(game_over) break;
     }
     return 0;
 }
