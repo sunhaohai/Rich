@@ -7,4 +7,4 @@ function.o: function.c
 assist.o: assist.c
 	gcc -c assist.c
 clean:
-	rm *.o rich
+	rm *.o ./rich

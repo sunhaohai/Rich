@@ -1,3 +1,5 @@
+#include <ctype.h>
+
 #include "assist.h"
 #include "function.h"
 
@@ -5,6 +7,7 @@ extern PLAYER USERS[4];
 extern int USERS_NUMBER;
 extern MAP MAPS[MAX_POSITION];
 extern int game_over;
+extern ROOT_STATE root;
 
 int _get_rand(int min, int max){
     //生成大小在[min,max]当中的随机数
@@ -37,8 +40,29 @@ int* _read_number(){
     return result;
 }
 
+char* _str_upper(char* str)
+{
+    char* s = str;
+    int i;
+//    printf("before toupper() : %s\n", s);
+    for(i = 0; i < strlen(s); i++)
+    s[i] = toupper(s[i]);
+//    printf("after toupper() : %s\n", s);
+    return s;
+}
+
+PLAYER* _find_player(USER_NAME name)
+{
+    char i = 0;
+    for(i=0;i < USERS_NUMBER;i++)
+    if(USERS[i].name == name) {
+        return &USERS[i];
+    }
+}
+
 int* _read_n_players(int min_player, int max_player, int min_n, int max_n){
     //读取[min_n,max_n]个编号为[min_player,max_player]的玩家信息保存到全局变量当中
+    //TODO: input check
     while (1){
     REIN:
         setbuf(stdin, NULL);
@@ -168,26 +192,49 @@ void print_prompt(PLAYER *player){
     }
 }
 
+void print_player_name(PLAYER *player){
+    //打印player name
+    if ((*player).name == QIAN){
+        char name[] = "Qian";
+        print_player(name, (*player).name);
+    }
+    else if ((*player).name == ATUBO){
+        char name[] = "Atubo";
+        print_player(name, (*player).name);
+    }
+    else if ((*player).name == JING){
+        char name[] = "Jing";
+        print_player(name, (*player).name);
+    }
+    else if ((*player).name == SUN){
+        char name[] = "Sun";
+        print_player(name, (*player).name);
+    }
+    else{
+        printf("print_player_name error!");
+    }
+}
+
 char _get_map_display(SYMBOL symbol){
     //根据symbol获取显示的char字符
     if(symbol==SYMBOL_$) return '$';
-    else if(symbol==SYMBOL_0) return '0';
-    else if(symbol==SYMBOL_1) return '1';
-    else if(symbol==SYMBOL_2) return '2';
-    else if(symbol==SYMBOL_3) return '3';
-    else if(symbol==SYMBOL_A) return 'A';
-    else if(symbol==SYMBOL_B) return 'B';
-    else if(symbol==SYMBOL_J) return 'J';
-    else if(symbol==SYMBOL_Q) return 'Q';
-    else if(symbol==SYMBOL_M) return 'M';
-    else if(symbol==SYMBOL_L) return 'L';
-    else if(symbol==SYMBOL_S) return 'S';
-    else if(symbol==SYMBOL_ST) return 's';
-    else if(symbol==SYMBOL_H) return 'H';
-    else if(symbol==SYMBOL_T) return 'T';
-    else if(symbol==SYMBOL_G) return 'G';
-    else if(symbol==SYMBOL_P) return 'P';
-    else if(symbol==SYMBOL_R) return 'R';
+    else if(symbol==SYMBOL_0)  return  '0';
+    else if(symbol==SYMBOL_1)  return  '1';
+    else if(symbol==SYMBOL_2)  return  '2';
+    else if(symbol==SYMBOL_3)  return  '3';
+    else if(symbol==SYMBOL_A)  return  'A';
+    else if(symbol==SYMBOL_B)  return  '@';
+    else if(symbol==SYMBOL_J)  return  'J';
+    else if(symbol==SYMBOL_Q)  return  'Q';
+    else if(symbol==SYMBOL_M)  return  'M';
+    else if(symbol==SYMBOL_L)  return  '#';
+    else if(symbol==SYMBOL_S)  return  'S';
+    else if(symbol==SYMBOL_ST) return  's';
+    else if(symbol==SYMBOL_H)  return  'H';
+    else if(symbol==SYMBOL_T)  return  'T';
+    else if(symbol==SYMBOL_G)  return  'G';
+    else if(symbol==SYMBOL_P)  return  'P';
+    else if(symbol==SYMBOL_R)  return  'R';
     else return '0';
 }
 
@@ -210,13 +257,14 @@ BOOL args_parse(char* arg, PLAYER* player){
     //命令行解析函数
     BOOL end_round=FALSE; //end this round or not
     int args_field_n = _args_num_parse(arg);
-    if(args_field_n==1) _args_parse_one(arg,player,&end_round);
+    if(args_field_n==1) _args_parse_one(_str_upper(arg),player,&end_round);
     else if(args_field_n==2){
         char* t=strtok(arg," ");
         char* f1=t;
         t=strtok(NULL," ");
         char* f2=t;
-        _args_parse_two(f1,player,atoi(f2),&end_round);
+//        puts(f2);
+        _args_parse_two(_str_upper(f1),player, f2,&end_round);
     }
     else help_cmd();
     return end_round;
@@ -224,19 +272,22 @@ BOOL args_parse(char* arg, PLAYER* player){
 
 void _args_parse_one(char* arg, PLAYER* player,BOOL* end_round){
     //deal cmd without param
-    if(strcmp(ROLL,arg)==0) dice_cmd(player,end_round);
-    else if(strcmp(ROBOT,arg)==0) robot_cmd(player,end_round);
-    else if(strcmp(QUERY,arg)==0) query_cmd(player,end_round);
-    else if(strcmp(QUIT,arg)==0) quit_cmd(player,end_round);
+    if(strcmp("ROLL",arg)==0) dice_cmd(player,end_round);
+    else if(strcmp("ROBOT",arg)==0) robot_cmd(player,end_round);
+    else if(strcmp("QUERY",arg)==0) query_cmd(player,end_round);
+    else if(strcmp("QUIT",arg)==0) quit_cmd(player,end_round);
+    else if((strcmp("SU",arg)==0)) su_cmd_pre(player,end_round);
+    else if((strcmp("EXIT",arg)==0) && (ROOT_ON == root)) exit_cmd(player,end_round);
     else help_cmd();
 }
 
-void _args_parse_two(char *arg, PLAYER *player, int position,BOOL* end_round){
+void _args_parse_two(char *arg, PLAYER *player, char* str,BOOL* end_round){
     //deal cmd with param
-    if(strcmp(SELL,arg)==0) sell_cmd(player,position,end_round);
-    else if(strcmp(BLOCK,arg)==0) bolck_cmd(player,position,end_round);
-    else if(strcmp(BOMB,arg)==0) bomb_cmd(player,position,end_round);
-    else if(strcmp(STEP,arg)==0) step_cmd(player,position,end_round);
+    if(strcmp("SELL",arg)==0) sell_cmd(player,atoi(str),end_round);
+    else if(strcmp("BLOCK",arg)==0) bolck_cmd(player,atoi(str),end_round);
+    else if(strcmp("BOMB",arg)==0) bomb_cmd(player,atoi(str),end_round);
+    else if((strcmp("STEP",arg)==0) && (ROOT_ON == root)) step_cmd(player,atoi(str),end_round);
+    else if((strcmp("SU",arg)==0) && (ROOT_PRE == root)) su_cmd(player,str,end_round);
     else help_cmd();
 }
 
@@ -298,11 +349,43 @@ void _del_symbol(MAP* map,SYMBOL dels){
     }
 }
 
+PLAYER* _find_top_rank(void)
+{
+    char i = 0;
+    long max = 0;
+    char k;
+
+    for(i = 0;i < USERS_NUMBER;i++)
+    {
+      if(USERS[i].money > max)
+      {
+          max = USERS[i].money;
+          k = i;
+      }
+    }
+    return &USERS[k];
+}
+
+//about input
+BOOL _isalph(char c)
+{
+    return ( ((c >= 'A')&&(c <= 'Z')) || ((c >= 'a')&&(c <= 'z')))? TRUE : FALSE;
+}
+BOOL _isnum(char c)
+{
+    return ( ((c >= '0')&&(c <= '9')) )? TRUE : FALSE;
+}
+BOOL _isdivider(char c)
+{
+    return ( ((c == ' ')||(c == '\t')||(c == ',')||(c == '.')) )? TRUE : FALSE;
+}
+
+
+
 void prison(PLAYER *player){
-    //走到监狱的时候发生的事
-    printf("你被关进了监狱,将被关2轮!\n");
-    getchar();
-    player->skip_num += 2;
+    //走到监狱的时候发生的事  step 49
+    printf("You are in prison and will stay here for 2 days!\n");
+    player->skip_num = SKIP_P;
     return;
 }
 
@@ -312,69 +395,93 @@ void magic_house(PLAYER *player){
 }
 
 void on_mine(char mine, PLAYER *player){
-    //走到旷地放生的事
+    //走到旷地放生的事 step 64~69
     player->point += mine;
-    printf("你获得点数:%hhd\n",mine);
+    printf("You got %hhd point in mine!\n""Your point: %ld -> %ld\n",
+            mine, ((player -> point)-mine), (player -> point));
     return;
 }
 
 void gift_house(PLAYER *player){
-    //走到礼品屋发生的事
-    int gift;
-    printf("Welcome to gift house, please choose a gift：\n");
-    printf("1:money 2:point card 3: lucky god\n");
+    //走到礼品屋发生的事 step 35
+    printf("Welcome to gift house, you can choose a gift you want here：\n");
+    printf("(Choose a gift by input its number correctly)\n");
+    printf("->1: money (Increase 2000 instantly) \n"
+           "->2: point card (Increase 200 instantly) \n"
+           "->3: lucky god (Free to pass for 5 days) \n");
     while (1){
-        scanf("%d", &gift);
-        switch (gift)
-        {
-        case 1:
-            (*player).money += 2000;
-            printf("你获得2000元!\n");
+        char chose, clear;
+        printf("(1/2/3): ");
+        chose = getchar();
+        if(chose != '\n')while ((clear = getchar()) != EOF && clear != '\n');
+        switch (chose){
+        case '1':
+            player -> money += 2000;
+            printf("Your money increased 2000!\n"
+                   "You money: %ld -> %ld\n", ((player -> money) - 2000), (player -> money));
             return;
-        case 2:
-            (*player).point += 200;
-            printf("你获得200点!\n");
+        case '2':
+            (player -> point) += 200;
+                printf("Your point increased 200!\n"
+                       "You point: %ld -> %ld\n", ((player -> point) - 200), (player -> point));
             return;
-        case 3:
-            (*player).lucky_god += 5;
-            printf("你获得5轮财神!\n");
+        case '3':
+            (player -> lucky_god) += 5;
+            printf("You got a lucky god!\n");
             return;
         default:
-            printf("please choose again:");
+            printf("***** please choose again *****\n");
             break;
         }
     }
 }
 
 void tool_house(PLAYER *player){
-    //走到道具屋发生的事
-    printf("Welcome to tool house, please choose a tool:\n");
-    char tool;
+    //走到道具屋发生的事 step 35 -> step 63
+    char chose, clear;
+    printf("Welcome to tool house, you can spend point buy a tool you want here:\n");
+    printf("(Choose a tool by input its number correctly)\n");
     while (1){
-        if (player->point <= 50){
-            printf("you only can buy 2:robot baby \n");
-            printf("if you want to leave,please enter F \n");
-            scanf("%c", &tool);
-        }
-        else{
-            printf("1:road barrier 2:robot baby 3:bomb\n");
-            printf("if you want to leave,please enter F \n");
-            scanf("%c", &tool);
-        }
-        switch (tool){
+        printf("Your point: %ld\n", (player -> point));
+        printf("->1: Block(50)  ->2: Robot(30)  ->3: Bomb(50)\n");
+        if ((player->point) < 50) printf("you only can buy ->2: Robot(30) \n");
+        printf("if you want to leave, please enter F. \n""(1/2/3/F): ");
+        chose = getchar();
+        if(chose != '\n')while ((clear = getchar()) != EOF && clear != '\n');
+        switch (chose){
         case '1':
-            player->tool[1].num++;
+            if((player -> point) < 50){
+                printf("Sorry, you don't have enough point.\n");
+                break;
+            }
+            else{
+                player->tool[TOOL_L].num++;
+                player->point -= 50;
+                printf("You got a BLOCK, your point: %ld\n", player -> point);
+            }
             return;
         case '2':
-            player->tool[2].num++;
+            player->tool[TOOL_R].num++;
+            player->point -= 30;
+            printf("You got a ROBOT, your point: %ld\n", player -> point);
             return;
         case '3':
-            player->tool[3].num++;
+            if((player -> point) < 50){
+                printf("Sorry, you don't have enough point.\n");
+                break;
+            }
+            else{
+                player->tool[TOOL_B].num++;
+                player->point -= 50;
+                printf("You got a BOMB, your point: %ld\n", player -> point);
+            }
             return;
         case 'F':
+        case 'f':
+            printf("You bought nothing and left Tool Shop!\n");
             return;
         default:
-            printf("please choose again ~~~");
+            printf("***** please choose again ~~~ *****\n");
             break;
         }
     }
@@ -399,7 +506,7 @@ void _usercmp(PLAYER* user1, PLAYER* user2){
 }
 
 void rm_user(PLAYER* users,USER_NAME name, int* user_size){
-    //玩家破产,删除玩家
+    //玩家破产,删除玩家, cover the dead player
     for(int i=0;i<MAX_POSITION;i++){
         if(MAPS[i].owner==name){
             MAPS[i].type = MAP_COM;
@@ -419,37 +526,61 @@ void rm_user(PLAYER* users,USER_NAME name, int* user_size){
 
 void pay_rent(PLAYER *player, MAP *maps){
     //玩家交租
-    if(player->lucky_god) return;
-    for(int i=0;i<USERS_NUMBER;i++){
-        if(USERS[i].name == maps[player->position].owner){
-            if(USERS[i].skip_num) return ;
-            if(player->money < (maps[player->position].price_all/2) ){
-                USERS[i].money += player->money;
-                rm_user(USERS,player->name,&USERS_NUMBER);
-                printf("你破产了!\n");
-                return;
-            }
-            player->money -= (maps[player->position].price_all / 2);
-            USERS[i].money += (maps[player->position].price_all / 2);
-            return ;
-        }
+    PLAYER* owner;
+    int rent = 0;
+    if(player->lucky_god)
+    {
+        (player->lucky_god) --;
+        printf("Lucky god pay the rent for you, %d more times rent can be pay!\n", (player->lucky_god));
+        printf("Your money : %ld\n", (player -> money));
+        return;
     }
+    owner = _find_player(maps[player->position].owner);
+    printf("You arrived at ");
+    print_player_name(owner);
+    printf("'s place\n");
+    rent = ((maps[player->position]).price_all ) / 2;
+    if(rent < 0)printf("rent err! %d , the price all %d\n", rent, ((maps[player->position]).price_all ));
+    if(owner -> skip_num != SKIP_NULL)
+    {
+        printf("You didn't pay the rent and nobody knew.\n");
+        return;
+    }
+    if( (player->money) < rent ){
+        owner->money += player->money;
+        rm_user(USERS,player->name,&USERS_NUMBER);
+        printf("Sorry, you're bankrupt!!\n");
+        print_player_name(owner);
+        printf("'s money : %ld -> %ld\n",  (owner->money - rent), owner->money);
+        return;
+    }
+    player->money -= rent;
+    owner->money += rent;
+    printf("You have to pay the rent %d.\n", rent);
+    printf("Your money : %ld -> %ld\n", (player->money + rent), player->money);
+    print_player_name(owner);
+    printf("'s money : %ld -> %ld\n",  (owner->money - rent), owner->money);
+    return ;
 }
 
 void buy_upper_house(PLAYER *player, MAP *maps){
     //买房子和升级房子
-    printf("Your Money:%ld\n",player->money);
+//    print_player_name(player);
     //买房子
     if(maps[player->position].type == MAP_COM){
-        printf("This house price:%d\n",maps[player->position].price_all);
         if (player->money >= maps[player->position].price_all){
-            printf("You can buy this house(Y/N):");
             while(1){
-                char chose;
-                scanf("%c", &chose);
-                getchar();
-                if (chose == 'N' || chose == 'n') return;
-                else if (chose == 'Y' || chose == 'y'){
+                char chose, clear;
+                printf("This house price: %d\n",maps[player->position].price_all);
+                printf("Your Money: %ld\n",player->money);
+                printf("You can buy this house(Y/N):");
+                chose = getchar();
+                if(chose != '\n')while ((clear = getchar()) != EOF && clear != '\n');
+                if (chose == 'N' || chose == 'n'){
+                    printf("You didn't buy it.\n");
+                    return;
+                }
+                else if (chose == 'Y' || chose == 'y' || chose == '\n'){
                     player->house[player->position] = 1;
                     maps[player->position].owner = player->name;
                     maps[player->position].type = MAP_PRI;
@@ -457,24 +588,34 @@ void buy_upper_house(PLAYER *player, MAP *maps){
                     printf("After you buy the house you have money:%ld\n",player->money);
                     return;
                 }
+                printf("***** Invalid input, choose again *****\n");
             }
         }
         else printf("You money is not enough!\n");
     }
     else{
         SYMBOL tmp = maps[player->position].pre_symbol[MAX_USER - 1];
-        if(tmp == SYMBOL_3) return;
-        printf("upper you house price is:%d\n",_get_place_price(maps[player->position].price));
+        if(tmp == SYMBOL_3) {
+            printf("This house belongs to you and it's highest level.\n");
+            return;
+        }
         if (player->money >= _get_place_price(maps[player->position].price)){
-            printf("You can upper this house(Y/N):");
             while(1){
-                char chose;
-                scanf("%c", &chose);
-                getchar();
-                if (chose == 'N' || chose == 'n') return;
-                else if (chose == 'Y' || chose == 'y'){
+                char chose, clear;
+                printf("To upper you house cost %d\n",_get_place_price(maps[player->position].price));
+                printf("Your Money: %ld\n",player->money);
+                printf("You can upper this house(Y/N):");
+                chose = getchar();
+                if(chose != '\n')while ((clear = getchar()) != EOF && clear != '\n');
+                if (chose == 'N' || chose == 'n')
+                {
+                    printf("You didn't upper it.\n");
+                    return;
+                }
+                else if (chose == 'Y' || chose == 'y' || chose == '\n'){
                     maps[player->position].price_all += _get_place_price(maps[player->position].price);
                     player->money -= _get_place_price(maps[player->position].price);
+                    (player -> house[player->position]) ++;
                     //更新标志
                     for (int i = 0; i < MAX_USER; i++){
                         if (maps[player->position].pre_symbol[i] == tmp)
@@ -482,9 +623,10 @@ void buy_upper_house(PLAYER *player, MAP *maps){
                         if (maps[player->position].symbol == tmp)
                             maps[player->position].symbol += 1;
                     }
-                    printf("After you upper the house you have money:%ld\n", player->money);
+                    printf("Upper successfully! Your money: %ld\n", player->money);
                     return;
                 }
+                printf("***** Invalid input, choose again *****\n");
             }
         }
     }
@@ -501,36 +643,36 @@ void display_run_map(PLAYER* player, int fin_position){
 
 void players_end_run(PLAYER *player,BOOL *end_round){
     //玩家走最后一步的时候发生的事件控制函数
+    //TODO: adjust order in round
     int pos_temp = (*player).position;
     if (MAPS[pos_temp].owner && MAPS[pos_temp].owner!=player->name)
         pay_rent(player,MAPS);
     else if (MAPS[pos_temp].type == MAP_COM || MAPS[pos_temp].owner == player->name)
         buy_upper_house(player, MAPS);
     else{
-        int tool_num = player->tool[0].num + player->tool[1].num + player->tool[2].num;
-        switch (MAPS[pos_temp].pre_symbol[MAX_USER-1])
+        switch (MAPS[pos_temp].type)
         {
-        case SYMBOL_T:
-            if (player->point < 30){
-                printf("You are too pool to buy tools");
-            }
-            else if (tool_num >= 10){
-                printf("You already have a maximum limit number of tools");
-            }
-            else{
-               tool_house(player);
+        case MAP_T: {
+            char tool_num = player->tool[TOOL_L].num + player->tool[TOOL_B].num + player->tool[TOOL_R].num;
+            if (player->point < 30) {
+                printf("You are too pool to buy any tool.\n");
+            } else if (tool_num >= 10) {
+                printf("You already have a maximum limit number of tools.\n");
+            } else {
+                tool_house(player);
             }
             break;
-        case SYMBOL_G:
+        }
+        case MAP_G:
             gift_house(player);
             break;
-        case SYMBOL_M:
+        case MAP_M:
             magic_house(player);
             break;
-        case SYMBOL_P:
+        case MAP_PRS:
             prison(player);
             break;
-        case SYMBOL_$:
+        case MAP_$:
             on_mine(MAPS[pos_temp].mine, player);
             break;
         default:
@@ -543,18 +685,26 @@ void players_end_run(PLAYER *player,BOOL *end_round){
 
 void players_run_in_the_way(PLAYER *player, int steps,BOOL *end_round){
     //玩家走在路上的时候可能发生的事件
+    char pos_start = player -> position;
     int pos_temp = 0;
-    for (int i = 1; i < steps; i++){
+    for (int i = 1; i < steps+1; i++){
         pos_temp = (player->position + 1) % MAX_POSITION;
-        switch (MAPS[pos_temp].symbol)
+        switch (MAPS[pos_temp].tool)
         {
-        case SYMBOL_L:
+        case TOOL_L:
+            MAPS[pos_temp].tool = TOOL_NULL;
             display_run_map(player, pos_temp);
+            print_player_name(player);
+            printf(":\nYou meet a BLOCK on the way! You walked %d steps forward.\n", (pos_temp - pos_start));
             *end_round = TRUE;
             return;
-        case SYMBOL_B:
-            player->skip_num += 2;
+        case TOOL_B:
+            MAPS[pos_temp].tool = TOOL_NULL;
+            player->skip_num = SKIP_H;
             display_run_map(player, 14);
+            print_player_name(player);
+            printf(":\nYou meet a BOMB on the way! You were injured and sent to the hospital in time.\n"
+                   "You have to rest in the hospital for 3 days.\n");
             *end_round = TRUE;
             return;
         default:
@@ -562,4 +712,75 @@ void players_run_in_the_way(PLAYER *player, int steps,BOOL *end_round){
             break;
         }
     }
+}
+
+
+void preset_map(MAP *maps, int n, PLAYER *player, int level){
+    //设置地图建筑
+    maps[n].owner = player->name;
+    maps[n].price_all = _get_place_price(maps[n].price)*(level+1);
+    SYMBOL tmp = maps[n].pre_symbol[MAX_USER - 1];
+    for (int i = 0; i < MAX_USER; i++){
+        if (maps[n].pre_symbol[i] == tmp)
+            maps[player->position].pre_symbol[i] = level + SYMBOL_0;
+        if (maps[player->position].symbol == tmp)
+            maps[player->position].symbol = level + SYMBOL_0;
+    }
+    maps[n].type = MAP_PRI;
+    player->house[n] = 1;
+}
+
+void preset_fund(PLAYER* player,long money){
+    //设置玩家金钱数
+    player->money = money;
+}
+
+void preset_credit(PLAYER* player,long point){
+    //设置玩家点数
+    player->point = point;
+}
+
+void preset_gift(PLAYER* player,char* tool,char n){
+    //设置用户拥有的道具
+    if(strcmp(tool,"bomb")==0){
+        player->tool[TOOL_B].type = TOOL_B;
+        player->tool[TOOL_B].num = n;
+    }
+    else if(strcmp(tool,"barrier")==0){
+        player->tool[TOOL_L].type = TOOL_L;
+        player->tool[TOOL_L].num = n;
+    }
+    else if(strcmp(tool,"robot")==0){
+        player->tool[TOOL_R].type = TOOL_R;
+        player->tool[TOOL_R].num = n;
+    }
+    else if(strcmp(tool,"god")==0){
+        player->lucky_god = n;
+    }
+    else return;
+}
+
+void preset_userloc(MAP* maps,PLAYER* player,int position, int m){
+    player->position = position;
+    player->skip_num = m;
+    _add_symbol(maps+position,_get_symbol(*player));
+}
+
+PLAYER* _get_player(char n){
+    for(int i=0;i<USERS_NUMBER;i++){
+        if(USERS[i].short_name==n) return USERS+i;
+    }
+}
+
+int my_getline(char *line, int max_size)
+{
+    int c;
+    int len = 0;
+    while ((c = getchar()) != EOF && len < max_size){
+        line[len++] = c;
+        if ('\n' == c)
+            break;
+    }
+    line[len] = '\0';
+    return len;
 }

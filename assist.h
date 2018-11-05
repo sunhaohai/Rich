@@ -23,17 +23,26 @@ void print_blue(char *chars);
 void print_yellow(char *chars);
 void print_player(char *chars, USER_NAME name);
 void print_prompt(PLAYER *player);
+void print_player_name(PLAYER *player);
 void _print_map_symbol(MAP *map);
 
+char* _str_upper(char* str);
+PLAYER* _find_player(USER_NAME name);
 BOOL args_parse(char *arg, PLAYER *player);
 void _args_parse_one(char *arg, PLAYER *player, BOOL *end_round);
-void _args_parse_two(char *arg, PLAYER *player, int position, BOOL *end_round);
+void _args_parse_two(char *arg, PLAYER *player, char* str, BOOL *end_round);
 int _args_num_parse(char *arg);
 BOOL _isuser_symbol(SYMBOL sym);
 
 void _add_symbol(MAP* map,SYMBOL adds);
 void _del_symbol(MAP *map, SYMBOL dels);
 void display_run_map(PLAYER *player, int fin_position);
+
+PLAYER* _find_top_rank(void);
+
+BOOL _isalph(char c);
+BOOL _isnum(char c);
+BOOL _isdivider(char c);
 
 void prison(PLAYER *player);
 void magic_house(PLAYER *player);
@@ -49,4 +58,13 @@ void players_run_in_the_way(PLAYER *player, int steps, BOOL *end_round);
 
 void _usercmp(PLAYER *user1, PLAYER *user2);
 void rm_user(PLAYER *users, USER_NAME name, int* user_size);
+
+void preset_map(MAP *maps, int n, PLAYER *player, int level);
+void preset_fund(PLAYER *player, long money);
+void preset_credit(PLAYER *player, long point);
+void preset_gift(PLAYER *player, char *tool, char n);
+void preset_userloc(MAP *maps, PLAYER *player, int position, int m);
+PLAYER *_get_player(char n);
+int my_getline(char *line, int max_size);
+
 #endif //_ASSIST_H_

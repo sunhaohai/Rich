@@ -1,3 +1,7 @@
-#usage 
 preset user AQSJ
-preset map 2 A 2
+preset map 1  A 3
+preset fund A 1000
+preset fund Q 1000
+preset fund S 1000
+preset fund J 1000
+dump

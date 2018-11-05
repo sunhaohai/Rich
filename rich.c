@@ -7,6 +7,7 @@ int USERS_NUMBER; //玩家个数
 MAP MAPS[MAX_POSITION]; //地图信息
 int NOW_ID;
 int game_over;
+ROOT_STATE root = ROOT_OFF;
 int dice_num;
 
 int main()
@@ -15,9 +16,30 @@ int main()
     srand((unsigned)time(NULL));
     while (1) //main loop of the game
     {
-        init_game();
+        int init_user[] = {1,2,3,4};
+        USERS_NUMBER = MAX_USER;
+        _init_maps();
+        _init_players(init_user,10000);
+        
+        printf("Enter a space to continue!\n");
+        char start_tmp[50];
+        int j = 0;
+        while(1){
+            fflush(stdin);
+            my_getline(start_tmp,20);
+            if(preset_cmd(start_tmp)){
+                j++;
+                root = ROOT_ON;
+                continue;
+            }
+            if(j==0){
+                init_game();
+            }
+            break;
+        }
+
+        //init_game();
         display(MAPS);
-        dump();
         while (!game_over) //
         {
             for(int i=0;i<USERS_NUMBER;i++)

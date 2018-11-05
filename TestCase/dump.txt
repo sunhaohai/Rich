@@ -1,8 +1,9 @@
 user AQSJ
-fund A 2345
-fund Q 2345
-fund S 2345
-fund J 2345
+map[1] A 4
+fund A 1000
+fund Q 1000
+fund S 1000
+fund J 1000
 credit A 0
 credit Q 0
 credit S 0
@@ -27,4 +28,4 @@ userloc A 0
 userloc Q 0
 userloc S 0
 userloc J 0
-nextuser A
+nextuser J
