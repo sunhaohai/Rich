@@ -13,6 +13,9 @@ int _get_place_price(PRICE place);
 char _get_map_display(SYMBOL symbol);
 SYMBOL _get_symbol(PLAYER player);
 
+int _get_money_by_symbol(char user_symbol);
+int _get_point_by_symbol(char user_symbol);
+
 
 void print_red(char *chars);
 void print_green(char *chars);

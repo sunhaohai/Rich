@@ -106,6 +106,24 @@ int _get_place_price(PRICE place){
     else return 0;
 }
 
+int _get_money_by_symbol(char user_symbol)
+{
+    for (int i = 0; i < USERS_NUMBER; ++i)
+    {
+        if (USERS[i].short_name == user_symbol)
+            return (USERS[i].money);
+    }
+}
+
+int _get_point_by_symbol(char user_symbol)
+{
+    for (int i = 0; i < USERS_NUMBER; ++i)
+    {
+        if (USERS[i].short_name == user_symbol)
+            return (USERS[i].point);
+    }
+}
+
 /////
 /////
 /////下面是和显示相关的函数
@@ -663,6 +681,7 @@ void players_end_run(PLAYER *player,BOOL *end_round){
     }
     *end_round = TRUE;
 }
+
 
 void players_run_in_the_way(PLAYER *player, int steps,BOOL *end_round){
     //玩家走在路上的时候可能发生的事件

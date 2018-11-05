@@ -5,8 +5,10 @@
 PLAYER USERS[4]; //玩家信息
 int USERS_NUMBER; //玩家个数
 MAP MAPS[MAX_POSITION]; //地图信息
+int NOW_ID;
 int game_over;
 ROOT_STATE root = ROOT_OFF;
+int dice_num;
 
 int main()
 {
@@ -40,7 +42,11 @@ int main()
         display(MAPS);
         while (!game_over) //
         {
-            for(int i=0;i<USERS_NUMBER;i++) player_round(USERS+i);
+            for(int i=0;i<USERS_NUMBER;i++)
+            {
+                player_round(USERS+i);   
+                NOW_ID = i;
+            }
         }
         game_over = 0;
     }
