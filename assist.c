@@ -744,7 +744,7 @@ void preset_gift(PLAYER* player,char* tool,char n){
 void preset_userloc(MAP* maps,PLAYER* player,int position, int m){
     player->position = position;
     player->skip_num = m;
-    _add_symbol(maps,_get_symbol(*player));
+    _add_symbol(maps+position,_get_symbol(*player));
 }
 
 PLAYER* _get_player(char n){

@@ -19,23 +19,24 @@ int main()
         _init_maps();
         _init_players(init_user,10000);
         
-
-        /*
-        printf("Enter a space to continue!");
-        char start_tmp[20];
+        printf("Enter a space to continue!\n");
+        char start_tmp[50];
         int j = 0;
         while(1){
+            fflush(stdin);
             my_getline(start_tmp,20);
-            int input_len = sizeof(start_tmp)/sizeof(char);
-            start_tmp[input_len-1]='\0'; 
-            if(preset_cmd(start_tmp)) j++;
+            if(preset_cmd(start_tmp)){
+                j++;
+                root = ROOT_ON;
+                continue;
+            }
             if(j==0){
                 init_game();
-                break;
             }
+            break;
         }
-        */
-        init_game();
+
+        //init_game();
         display(MAPS);
         while (!game_over) //
         {

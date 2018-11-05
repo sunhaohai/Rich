@@ -465,12 +465,11 @@ BOOL preset_cmd(char* cmd){
     //测试接口,preset命令,详情见测试文档
     char *tmp = strtok(cmd, " ");
     int init_money = 10000;
-    printf("%s\n",cmd);
     if (strcmp(tmp, "preset") == 0){
         tmp = strtok(NULL, " ");
         if (strcmp(tmp, "user") == 0){
             tmp = strtok(NULL, " ");
-            USERS_NUMBER = sizeof(tmp) / sizeof(char);
+            USERS_NUMBER = strlen(tmp) - 1;        
             int users[USERS_NUMBER];
             for (int i = 0; i < USERS_NUMBER; i++)
             {
