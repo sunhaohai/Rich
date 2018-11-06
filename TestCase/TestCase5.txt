@@ -5,6 +5,7 @@ preset gift A bomb 2
 preset gift Q bomb 2
 query
 bomb 8
+bomb -8
 step 15
 n
 step 10

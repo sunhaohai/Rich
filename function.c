@@ -239,7 +239,7 @@ void bolck_cmd(PLAYER *player, int position,BOOL* end_round){
     }
     else
     {
-        pos_tool = (player->position + pos) % MAX_POSITION;
+        pos_tool = (player->position + pos + MAX_POSITION) % MAX_POSITION;
         if((MAPS[pos_tool].tool > TOOL_NULL) || _isuser_symbol(MAPS[pos_tool].symbol))
         {
             printf("Can not be used in this place !\r\n");
@@ -274,7 +274,7 @@ void bomb_cmd(PLAYER *player, int position,BOOL* end_round){
     }
     else
     {
-        pos_tool = (player->position + pos) % MAX_POSITION;
+        pos_tool = (player->position + pos + MAX_POSITION) % MAX_POSITION;
         if((MAPS[pos_tool].tool > TOOL_NULL) || _isuser_symbol(MAPS[pos_tool].symbol))
         {
             printf("Can not be used in this place !\r\n");
