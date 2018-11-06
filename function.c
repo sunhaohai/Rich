@@ -164,7 +164,7 @@ void player_round(PLAYER* player){
     }
     while(1){
         if(TMP_DEBUG[0]!='\0'){
-            if(root==ROOT_ON){
+            if(root==ROOT_OFF){
                 TMP_DEBUG[0] = '\0';
                 continue;
             }
