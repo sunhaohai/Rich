@@ -685,7 +685,7 @@ void dump_map()
     for (int i = 0; i < MAX_POSITION; ++i)
     {
         if (MAPS[i].owner != USER_NULL)
-            fprintf(pdump,"map[%d] %c %d\n",i,_get_player_symbol(MAPS[i].owner),MAPS[i].symbol);      
+            fprintf(pdump,"map[%d] %c %d\n",i,_get_player_symbol(MAPS[i].owner),MAPS[i].pre_symbol[MAX_USER-1]-3);      
     }
 
     return;

@@ -12,7 +12,10 @@ preset gift Q barrier 10
 preset gift Q robot 10
 preset gift Q god 10
 query
-step 28
-1
+block 3
+step 5
+n
+query
+pass
 dump
-//test max num of tools
+//test the function of barrier 

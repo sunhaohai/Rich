@@ -23,7 +23,7 @@ int main()
     srand((unsigned)time(NULL));
     while (1) //main loop of the game
     {
-        int init_user[] = {1,2,3,4};
+        char init_user[] = {1,2,3,4};
         USERS_NUMBER = MAX_USER;
         _init_maps();
         _init_players(init_user,10000);
