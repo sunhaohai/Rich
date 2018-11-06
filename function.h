@@ -6,8 +6,8 @@
 #include <time.h>
 #include "rich.h"
 
-int *_start_game();
-void _init_players(int *users, int init_money);
+void _start_game(char* users);
+void _init_players(char *users, int init_money);
 void _init_one_map(MAP *map, int posi, MAP_TYPE type, USER_NAME name, TOOL_TYPE tool,
                    char mine, PRICE price, SYMBOL symbol);
 void _init_maps();
