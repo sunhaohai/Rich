@@ -3,14 +3,17 @@ preset fund A 1000
 preset fund Q 1000
 preset gift A bomb 2
 preset gift Q bomb 2
-bomb 8
-bomb -8
-step 15
-n
-pass
-step 10
-n
-pass
 query
+bomb -12
+step 1
+n
+pass
+step 2
+n
+pass
+bomb 10
+step 2
+n
+pass
 dump
 //test for tool range
