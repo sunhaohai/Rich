@@ -4,8 +4,7 @@
 #include "rich.h"
 
 void _clear();
-int *_read_number();
-int *_read_n_players(int min_player, int max_player, int min_n, int max_n);
+void _read_number(char* users);
 
 int _get_rand(int min, int max);
 char _get_player_symbol(USER_NAME name);

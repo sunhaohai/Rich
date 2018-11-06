@@ -14,23 +14,23 @@ FILE * pdump;
 char order_buf[5] = {'\0'};
 extern char TMP_DEBUG[50];
 
-int *_start_game(){
+void _start_game(char* users){
     // 开始游戏,等待玩家选择角色
-    // char clear;
-    // while (((clear = getchar()) != '\n') && (clear != EOF));
-
     _clear();
-    printf("1:Qian  2:Atubo, 3:Sun Meimei   4:Jing Beibei\n");
+    print_red("1:Qian  ");
+    print_green("2:Atubo  ");
+    print_blue("3:Sun Meimei  ");
+    print_yellow("4:Jing Beibei\n");
     printf("please input 1-4 to choose roles(at least 2 roles):");
-    int *users = _read_n_players(2, 4, 1, 4);
-    return users;
+
+    _read_number(users);
 }
 
-void _init_players(int *users, int init_money){
+void _init_players(char *users, int init_money){
     //初始化用户信息   users为用户编号数组  数组index为掷骰子先后顺序
     //init_money 为初始化金钱数
     for (int i = 0; i < USERS_NUMBER; i++){
-        USERS[i].name = users[i];
+        USERS[i].name = i+1;
         USERS[i].short_name = _get_player_symbol(USERS[i].name); 
         USERS[i].id = i + 1;
         USERS[i].lucky_god = 0;
@@ -95,13 +95,12 @@ void _init_maps(){
 
 void init_game(){
     // 开始游戏,完成游戏的初始化
-    int *users = _start_game();
+    char users[5];
     int init_money;
     char tmp[6] = "\0";
 //    puts(tmp);
-        // char clear;
-        // while (((clear = getchar()) != '\n') && (clear != EOF));
-
+    _start_game(users);
+//    for(char j = 0;j < USERS_NUMBER;j++)printf("The users  is %d\n", users[j]);
     while (1){
         char i = 0;
         char c, clear;
@@ -416,19 +415,30 @@ void step_cmd(PLAYER *player, int position, BOOL *end_round){
 }
 
 void help_cmd(void) {
-    printf("Roll : Roll the dice 1~6 \n");
-    printf("Sell n : When it's the buyer's turn to play, sell a property with an absolute n on his map at twice the total cost of investment. \n");
-    printf("Block n :  You can place the roadblock anywhere in the front and back 10 steps of the current position. Any player passing the roadblock will be intercepted. The props are effective once. \n");
-    printf("Bomb n : You can place the bomb anywhere in the front and back 10 steps of the current position. Any player passing through the bomb will be wounded. To the hospital for three days.  \n");
-    printf("Robot : Using this prop, you can clean up any other props in the 10 steps on the road ahead, such as bombs and roadblocks. \n");
-    printf("Query : Display your assets. \n");
-    printf("Help : View command help. \n");
-    printf("Quit : Forced return. \n");
+    print_yellow("Roll :");
+    printf(" Roll the dice 1~6 \n");
+    print_yellow("Sell n :");
+    printf(" When it's the buyer's turn to play, sell a property with an absolute n on his map at twice the total cost of investment. \n");
+    print_yellow("Block n :");
+    printf(" You can place the roadblock anywhere in the front and back 10 steps of the current position. Any player passing the roadblock will be intercepted. The props are effective once. \n");
+    print_yellow("Bomb n :");
+    printf(" You can place the bomb anywhere in the front and back 10 steps of the current position. Any player passing through the bomb will be wounded. To the hospital for three days.  \n");
+    print_yellow("Robot :");
+    printf(" Using this prop, you can clean up any other props in the 10 steps on the road ahead, such as bombs and roadblocks. \n");
+    print_yellow("Query :");
+    printf(" Display your assets. \n");
+    print_yellow("Help :");
+    printf(" View command help. \n");
+    print_yellow("Quit :");
+    printf(" Forced return. \n");
     if(ROOT_ON == root)
     {
-        printf("Step n : Control step. \n");
-        printf("Su : Su for 3 times, then \"Su pass_word\", to get root.\n");
-        printf("Exit : Exit root.\n");
+        print_red("Step n :");
+        printf(" Control step. \n");
+        print_red("Su :");
+        printf(" Su for 3 times, then \"Su pass_word\", to get root.\n");
+        print_red("Exit :");
+        printf(" Exit root.\n");
     }
 }
 
@@ -440,7 +450,7 @@ void query_cmd(PLAYER *player, BOOL *end_round) {
     printf(":\nPosition: %d\n", player -> position);
     printf("Money: %ld\t", player->money);
     print_player_name(top);
-    printf(": %ld\n", top->money);
+    printf(": %ld""\tPlayer: %d\n", top->money, USERS_NUMBER);
     printf("Point: %ld\n", player->point);
     printf("Skip round: %d\n", player->skip_num);
     printf("Luck god  : %d\n", player->lucky_god);
@@ -512,7 +522,7 @@ BOOL preset_cmd(char* cmd){
         if (strcmp(tmp, "user") == 0){
             tmp = strtok(NULL, " ");
             USERS_NUMBER = strlen(tmp) - 1;        
-            int users[USERS_NUMBER];
+            char users[USERS_NUMBER];
             for (int i = 0; i < USERS_NUMBER; i++)
             {
                 if (tmp[i] == 'A')
