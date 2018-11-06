@@ -21,35 +21,60 @@ void _clear(){
     system("clear");
 }
 
-int* _read_number(){
+void _read_number(char* users){
     //从屏幕读取罗干数字输入,以换行符结束
     //bug待处理:输入包涵char的时候USERS_NUMBER会不对
-    int *result = (int *)malloc(sizeof(int));
-    result[0] = -1;
-    int now_n;
-    int i = 0;
-    char c;
+//    int *result = (int *)malloc(sizeof(int));
+//    result[0] = -1;
+//    int now_n;
+//    int i = 0;
+//    char c;
+    char* result = users;
+    *result = '\0';
     while (1){
-        scanf("%d", &now_n);
-        result[i] = now_n;
-        i++;
-        result = (int *)realloc(result, ((i + 1) * sizeof(int)));
-        if ((c = getchar()) == '\n'){
-            USERS_NUMBER = i;
-            break;
+//        scanf("%d", &now_n);
+//        result[i] = now_n;
+//        i++;
+//        result = (int *)realloc(result, ((i + 1) * sizeof(int)));
+//        if ((c = getchar()) == '\n'){
+//            USERS_NUMBER = i;
+//            break;
+        char i=0;
+        while(1)
+        {
+            char c, clear;
+            c = getchar();
+
+            if('\n'==c) {result[i]=='\0'; break;}
+            if(_isdivider(c)) continue;
+            if((c >= '1') && (c <= '4'))
+            {
+                char j = 0;
+//                printf("%c\n",c);
+                c = c - '0';
+                for(j = 0;j < i; j++) if(result[j] == c) break;
+                if(j==i) {result[i++] = c; continue;}
+            }
+            else
+            {
+                result[0] = '\0';
+                while (((clear = getchar()) != '\n') && (clear != EOF));
+                break;
+            }
         }
+//        printf("len is %d\n",i);
+        if((i > 1)&&(i<5)) {USERS_NUMBER = i; break;}
+        printf("you should input number between 1-4 and input again(at least 2 roles):");
     }
-    return result;
+//    for(char j = 0;j < USERS_NUMBER;j++)printf("The player number is %d\n", result[j]);
 }
 
 char* _str_upper(char* str)
 {
     char* s = str;
     int i;
-//    printf("before toupper() : %s\n", s);
     for(i = 0; i < strlen(s); i++)
     s[i] = toupper(s[i]);
-//    printf("after toupper() : %s\n", s);
     return s;
 }
 
@@ -59,33 +84,6 @@ PLAYER* _find_player(USER_NAME name)
     for(i=0;i < USERS_NUMBER;i++)
     if(USERS[i].name == name) {
         return &USERS[i];
-    }
-}
-
-int* _read_n_players(int min_player, int max_player, int min_n, int max_n){
-    //读取[min_n,max_n]个编号为[min_player,max_player]的玩家信息保存到全局变量当中
-    //TODO: input check
-    while (1){
-    REIN:
-        setbuf(stdin, NULL);
-        int *result = _read_number();
-        if (USERS_NUMBER > max_player || USERS_NUMBER < min_player){
-            printf("you should input players number between %d-%d,and input again:", min_player, max_player);
-            goto REIN;
-        }
-        for (int i = 0; i < USERS_NUMBER; i++){
-            if (result[i] < min_n || result[i] > max_n){
-                printf("you should input number between %d-%d,and input again:", min_n, max_n);
-                goto REIN;
-            }
-            for (int j = i + 1; j < USERS_NUMBER; j++){
-                if (result[i] == result[j]){
-                    printf("you should input non-repeating number,and input again:");
-                    goto REIN;
-                }
-            }
-        }
-        return result;
     }
 }
 
@@ -290,7 +288,7 @@ void _args_parse_one(char* arg, PLAYER* player,BOOL* end_round){
             break;
         case ROUND_TOOL:
             if(strcmp("ROLL",arg)==0) dice_cmd(player,end_round);
-            else if(strcmp("ROBOT",arg)==0) printf("Use cmd: use tool -> roll dice -> buy/upper/sell house -> pass, query anytime!\n");
+            else if(strcmp("ROBOT",arg)==0) printf("Use cmd: use tool -> roll dice -> buy/upper/sell house -> pass, query or pass anytime!\n");
             else help_cmd();
             break;
         case ROUND_DICE:
@@ -299,7 +297,7 @@ void _args_parse_one(char* arg, PLAYER* player,BOOL* end_round){
         case ROUND_SELL:
         case ROUND_IDLE:
             if((strcmp("ROBOT",arg)==0) || (strcmp("ROLL",arg)==0))
-            printf("Use cmd: use tool -> roll dice -> buy/upper/sell house -> pass, query anytime!\n");
+            printf("Use cmd: use tool -> roll dice -> buy/upper/sell house -> pass, query or pass anytime!\n");
             else help_cmd();
             break;
         default:
@@ -339,7 +337,7 @@ void _args_parse_two(char *arg, PLAYER *player, char* str,BOOL* end_round){
             if(strcmp("SELL",arg)==0) sell_cmd(player,atoi(str),end_round);
             else if((strcmp("BLOCK",arg)==0) || (strcmp("STEP",arg)==0) ||
                     (strcmp("BOMB",arg)==0) )
-                printf("Use cmd: use tool -> roll dice -> buy/upper/sell house -> pass, query anytime!\n");
+                printf("Use cmd: use tool -> roll dice -> buy/upper/sell house -> pass, query or pass anytime!\n");
             else help_cmd();
             break;
         case ROUND_BUY:
@@ -348,7 +346,7 @@ void _args_parse_two(char *arg, PLAYER *player, char* str,BOOL* end_round){
             if
             ((strcmp("BLOCK",arg)==0) || (strcmp("STEP",arg)==0) ||
             (strcmp("BOMB",arg)==0) || (strcmp("SELL",arg)==0))
-                printf("Use cmd: use tool -> roll dice -> buy/upper/sell house -> pass, query anytime!\n");
+                printf("Use cmd: use tool -> roll dice -> buy/upper/sell house -> pass, query or pass anytime!\n");
             else help_cmd();
         break;
         default:
