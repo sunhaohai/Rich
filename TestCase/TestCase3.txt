@@ -4,7 +4,9 @@ preset fund Q 1000
 preset barrier 5
 step 10
 n
+pass
 step 10
 n
+pass
 dump
 //test for barrier function

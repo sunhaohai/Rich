@@ -2,9 +2,9 @@ preset user AQ
 preset fund A 1000
 preset fund Q 1000
 preset gift A bomb 2
-preset gift Q bomb 2
+preset gift Q barrier 2
 bomb 8
-bomb -8
+barrier 8
 step 15
 n
 pass
@@ -13,4 +13,4 @@ n
 pass
 query
 dump
-//test for tool range
+//test multi tools in one palce

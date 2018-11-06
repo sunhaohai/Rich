@@ -11,6 +11,6 @@ gift Q bomb 0
 gift Q barrier 0
 gift Q robot 0
 gift Q god 0
-userloc A 14 2
-userloc Q 10
-nextuser Q
+userloc A 0
+userloc Q 14 3
+nextuser A

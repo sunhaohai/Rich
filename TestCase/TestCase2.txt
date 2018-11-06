@@ -4,9 +4,9 @@ preset fund Q 1000
 preset bomb 5
 step 10
 n
+pass
 step 10
 n
-step 10
-n
+pass
 dump
 //test for bomb function
