@@ -16,6 +16,9 @@ extern char TMP_DEBUG[50];
 
 int *_start_game(){
     // 开始游戏,等待玩家选择角色
+    // char clear;
+    // while (((clear = getchar()) != '\n') && (clear != EOF));
+
     _clear();
     printf("1:Qian  2:Atubo, 3:Sun Meimei   4:Jing Beibei\n");
     printf("please input 1-4 to choose roles(at least 2 roles):");
@@ -96,6 +99,9 @@ void init_game(){
     int init_money;
     char tmp[6] = "\0";
 //    puts(tmp);
+        // char clear;
+        // while (((clear = getchar()) != '\n') && (clear != EOF));
+
     while (1){
         char i = 0;
         char c, clear;
@@ -110,7 +116,8 @@ void init_game(){
                 break;
             } else if ((c >= '0') && (c <= '9') && (i < 5)) {
                 tmp[i] = c;
-//                puts(tmp);
+               //  printf("this input:");
+               // puts(tmp);
                 i++;
                 continue;
             }
@@ -158,6 +165,10 @@ void player_round(PLAYER* player){
     }
     while(1){
         if(TMP_DEBUG[0]!='\0'){
+            if(root==ROOT_ON){
+                TMP_DEBUG[0] = '\0';
+                continue;
+            }
             if (args_parse(TMP_DEBUG, player)){
                 TMP_DEBUG[0] = '\0';
                 break;
@@ -188,7 +199,8 @@ void player_round(PLAYER* player){
                     _args[i] = ' ';
                     i++;
                 }
-                //puts(_args);
+                // printf("test :");
+                // puts(_args);
                 continue;
             }
             // '\n' and over
@@ -583,7 +595,7 @@ BOOL preset_cmd(char* cmd){
 
 void dump(PLAYER *player, BOOL *end_round)
 {
-    if (!(pdump = fopen("./TestCase/dump.txt","a")))
+    if (!(pdump = fopen("./TestCase/dump.txt","w")))
     {
         printf("open dump.txt failed\ndump failed!\n");
         goto EXIT;

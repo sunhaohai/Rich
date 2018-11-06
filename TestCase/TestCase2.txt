@@ -1,0 +1,12 @@
+preset user AQ
+preset fund A 1000
+preset fund Q 1000
+preset bomb 5
+step 10
+n
+step 10
+n
+step 10
+n
+dump
+//test for bomb function
