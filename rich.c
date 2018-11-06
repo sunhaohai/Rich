@@ -8,6 +8,7 @@ MAP MAPS[MAX_POSITION]; //地图信息
 int NOW_ID;
 int game_over;
 ROOT_STATE root = ROOT_OFF;
+ROUND_STATE round_state = ROUND_NULL;
 int dice_num;
 char TMP_DEBUG[50] = {'\0'};
 
