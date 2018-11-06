@@ -43,10 +43,21 @@ typedef enum
 }RICH_BOOL;
 
 typedef enum
+{//already done sth
+    ROUND_NULL = 0,
+    ROUND_TOOL ,
+    ROUND_DICE ,
+    ROUND_RENT ,
+    ROUND_BUY  ,
+    ROUND_SELL ,
+    ROUND_IDLE     //BOMB OR PRISON
+}ROUND_STATE;
+
+typedef enum
 {
     ROOT_OFF = 0,
     ROOT_PRE ,
-    ROOT_ON,
+    ROOT_ON  ,
 }ROOT_STATE;
 
 typedef enum

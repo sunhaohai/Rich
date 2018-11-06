@@ -21,6 +21,7 @@ void su_cmd_pre(PLAYER *player, BOOL *end_round);
 void su_cmd(PLAYER *player, char* str, BOOL *end_round);
 void exit_cmd(PLAYER *player, BOOL *end_round);
 void step_cmd(PLAYER *plary, int position, BOOL *end_round);
+void pass_cmd(BOOL* end_round);
 void help_cmd(void);
 void query_cmd(PLAYER *player, BOOL *end_round);
 void quit_cmd(PLAYER *player, BOOL *end_round);

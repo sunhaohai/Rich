@@ -50,7 +50,7 @@ void on_mine(char mine, PLAYER *player);
 void gift_house(PLAYER *player);
 void tool_house(PLAYER *player);
 
-void pay_rent(PLAYER *player, MAP *maps);
+void pay_rent(PLAYER *player, MAP *maps, BOOL *end_round);
 void buy_upper_house(PLAYER *player, MAP *maps);
 
 void players_end_run(PLAYER *player, BOOL *end_round);

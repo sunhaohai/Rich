@@ -8,6 +8,7 @@ extern MAP MAPS[MAX_POSITION];
 extern int NOW_ID;
 extern int game_over;
 extern ROOT_STATE root;
+extern ROUND_STATE round_state;
 
 FILE * pdump;
 char order_buf[5] = {'\0'};
@@ -205,7 +206,7 @@ void player_round(PLAYER* player){
 
         }while(1);
         if(('\n' == c) && (0 == i) && (!strlen(_args))) continue;
-        if(args_parse(_args, player)) break;
+        if(args_parse(_args, player)){ round_state = ROUND_NULL; break;}
         //printf("=======----%s-----\n", _args);
     }
     if(USERS_NUMBER<2){
@@ -227,7 +228,7 @@ void bolck_cmd(PLAYER *player, int position,BOOL* end_round){
     }
     else
     {
-        pos_tool = (player->position + pos) % MAX_POSITION;
+        pos_tool = (player->position + pos + MAX_POSITION) % MAX_POSITION;
         if((MAPS[pos_tool].tool > TOOL_NULL) || _isuser_symbol(MAPS[pos_tool].symbol))
         {
             printf("Can not be used in this place !\r\n");
@@ -238,6 +239,7 @@ void bolck_cmd(PLAYER *player, int position,BOOL* end_round){
         {
             player->tool[TOOL_L].num--;
             MAPS[pos_tool].tool = TOOL_L;
+            round_state = ROUND_TOOL;
             display(MAPS);
             print_player_name(player); printf(":\n");
             printf("Block is used successfully !\r\n");
@@ -262,7 +264,7 @@ void bomb_cmd(PLAYER *player, int position,BOOL* end_round){
     }
     else
     {
-        pos_tool = (player->position + pos) % MAX_POSITION;
+        pos_tool = (player->position + pos + MAX_POSITION) % MAX_POSITION;
         if((MAPS[pos_tool].tool > TOOL_NULL) || _isuser_symbol(MAPS[pos_tool].symbol))
         {
             printf("Can not be used in this place !\r\n");
@@ -273,6 +275,7 @@ void bomb_cmd(PLAYER *player, int position,BOOL* end_round){
         {
             player->tool[TOOL_B].num--;
             MAPS[pos_tool].tool = TOOL_B;
+            round_state = ROUND_TOOL;
             display(MAPS);
             print_player_name(player); printf(":\n");
             printf("Bomb is used successfully !\r\n");
@@ -299,6 +302,7 @@ void robot_cmd(PLAYER* player,BOOL* end_round){
             pos_scan %= MAX_POSITION;
             if((MAPS[pos_scan].tool > TOOL_NULL) && (MAPS[pos_scan].tool < TOOL_R))
             {
+                round_state = ROUND_TOOL;
                 if(TOOL_L == MAPS[pos_scan].tool)
                 {
                     MAPS[pos_scan].tool = TOOL_NULL;
@@ -390,13 +394,13 @@ void exit_cmd(PLAYER *player, BOOL *end_round) {
 
 
 void step_cmd(PLAYER *player, int position, BOOL *end_round){
+    *end_round = FALSE;
     players_run_in_the_way(player, position, end_round);
-    if (*end_round) return;
     display_run_map(player, player->position);
     print_player_name(player);
     printf(":\n");
     players_end_run(player, end_round);
-    *end_round = TRUE;
+
 }
 
 void help_cmd(void) {
@@ -448,6 +452,12 @@ void quit_cmd(PLAYER *player,BOOL* end_round){
     game_over = 1;
 }
 
+void pass_cmd(BOOL* end_round)
+{
+    *end_round = TRUE;
+    display(MAPS);
+}
+
 void sell_cmd(PLAYER *player, int position, BOOL *end_round) {
     if(player->house[position]==0){
         printf("It's NOT your house!\n");
@@ -459,24 +469,26 @@ void sell_cmd(PLAYER *player, int position, BOOL *end_round) {
         MAPS[position].type = MAP_COM;
         player->money += price;
         player->house[position] = 0;
+        round_state = ROUND_SELL;
         display(MAPS);
         print_player_name(player);
         printf(":\nYou SELL the house in %d and get money %d.\n""You money: %ld -> %ld\n",
                position, price, ((player->money) - price), (player->money));
-        *end_round = 1;
+        *end_round = FALSE;
     }
 }
 
 void dice_cmd(PLAYER* player,BOOL* end_round){
     //玩家执行Roll命令后的一系列情况
     int steps = _get_rand(1, 6);
+    *end_round = FALSE;
     players_run_in_the_way(player,steps, end_round);
-    if (*end_round) return;
+//    if (*end_round) return;
     display_run_map(player,player->position);
     print_player_name(player);
-    printf(":\nYou walked %d steps forward happily !!\n", steps);
+    if(ROUND_IDLE != round_state) printf(":\nYou walked %d steps forward !!\n", steps);
     players_end_run(player, end_round);
-    *end_round = TRUE;
+//    *end_round = TRUE;
 }
 
 BOOL preset_cmd(char* cmd){
