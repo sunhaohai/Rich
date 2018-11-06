@@ -28,7 +28,7 @@ void sell_cmd(PLAYER *player, int position, BOOL *end_round);
 void dice_cmd(PLAYER *player, BOOL *end_round);
 
 BOOL preset_cmd(char *cmd);
-void dump();
+void dump(PLAYER *player, BOOL *end_round);
 void dump_user();
 void dump_map();
 void dump_money();

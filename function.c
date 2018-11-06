@@ -11,6 +11,7 @@ extern ROOT_STATE root;
 
 FILE * pdump;
 char order_buf[5] = {'\0'};
+extern char TMP_DEBUG[50];
 
 int *_start_game(){
     // 开始游戏,等待玩家选择角色
@@ -155,6 +156,16 @@ void player_round(PLAYER* player){
         return;
     }
     while(1){
+        if(TMP_DEBUG[0]!='\0'){
+            if (args_parse(TMP_DEBUG, player)){
+                TMP_DEBUG[0] = '\0';
+                break;
+            }
+            else{
+                TMP_DEBUG[0] = '\0';
+                continue;
+            }
+        }
         printf("\n");
         print_prompt(player);
         char _args[12] = "\0";
@@ -195,6 +206,7 @@ void player_round(PLAYER* player){
         }while(1);
         if(('\n' == c) && (0 == i) && (!strlen(_args))) continue;
         if(args_parse(_args, player)) break;
+        //printf("=======----%s-----\n", _args);
     }
     if(USERS_NUMBER<2){
         printf("游戏结束!\n");
@@ -541,18 +553,23 @@ BOOL preset_cmd(char* cmd){
             int m = atoi(tmp);
             preset_userloc(MAPS,_get_player(name),posi,m);
         }
-        else if (strcmp(tmp, "dump") == 0){
-                dump();
-        }
         else if (strcmp(tmp, "nextuser") == 0){
             
         }
     }
-    else return FALSE;
+    else {
+        for(int i=0;i<50;i++){
+            if(cmd[i]!='\n'){
+                TMP_DEBUG[i] = cmd[i];
+            }
+            else break;
+        }
+        return FALSE;
+    }
     return TRUE;
 }
 
-void dump()
+void dump(PLAYER *player, BOOL *end_round)
 {
     if (!(pdump = fopen("./TestCase/dump.txt","a")))
     {
@@ -583,7 +600,8 @@ void dump()
 EXIT:
     if(pdump)
         fclose(pdump);
-
+    
+    quit_cmd(player,end_round);
     return;
 }
 
@@ -592,8 +610,14 @@ void dump_user()
     char buf[5] = {'\0'};
     char temp[5] = {'\0'};
 
+    memset(buf,'\0',5);
+    memset(temp,'\0',5);
+    memset(order_buf,'\0',5);
+
+
     for (int i = 0; i < USERS_NUMBER; ++i)
-        strcat(buf,&USERS[i].short_name);
+        buf[i] = USERS[i].short_name;
+
 
     for (int i = 0; i < USERS_NUMBER; ++i)
     {
@@ -607,11 +631,14 @@ void dump_user()
             temp[3] = 'J';
     }
 
+
     int j=0;
     for (int i = 0; i < 4; ++i)
     {
         if (temp[i] != '\0')
+        {
             order_buf[j++]=temp[i];
+        }
     }
 
     fprintf(pdump,"user %s\n",order_buf);

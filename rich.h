@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include <unistd.h>
 #include "rich.h"
 
 #define MAX_HORIZONTAL_NUM    30    //horizontial

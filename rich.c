@@ -9,9 +9,15 @@ int NOW_ID;
 int game_over;
 ROOT_STATE root = ROOT_OFF;
 int dice_num;
+char TMP_DEBUG[50] = {'\0'};
 
 int main()
 {
+
+    //if(freopen("./out.txt","w",stdout)==NULL)
+        //fprintf(stderr,"error\n");
+
+
     game_over = 0;
     srand((unsigned)time(NULL));
     while (1) //main loop of the game
@@ -26,7 +32,8 @@ int main()
         int j = 0;
         while(1){
             fflush(stdin);
-            my_getline(start_tmp,20);
+            my_getline(start_tmp,50);
+            printf("%s",start_tmp);
             if(preset_cmd(start_tmp)){
                 j++;
                 root = ROOT_ON;
@@ -37,7 +44,7 @@ int main()
             }
             break;
         }
-
+        //printf("j=%d\n",j );
         //init_game();
         display(MAPS);
         while (!game_over) //
@@ -46,10 +53,14 @@ int main()
             {
                 player_round(USERS+i);   
                 NOW_ID = i;
+                if(game_over) break;
             }
         }
-        game_over = 0;
+        if(game_over) break;
     }
+
+        //fclose(stdout);   
+
     return 0;
 }
 

@@ -1,0 +1,46 @@
+[3J[H[2J[3J[H[2J[3J[H[2J[3J[H[2JEnter a space to continue!
+preset user AQSJ
+preset fund A 1000
+preset fund Q 2000
+preset fund S 3000
+preset fund J 4000
+Roll
+s0000000000000H0000000000000T
+$                           0
+$                           0
+$                           0
+$                           0
+$                           0
+$                           0
+M0000000000000P0000000000000G
+s[0;32;32mA[0m000000000000H0000000000000T
+$                           0
+$                           0
+$                           0
+$                           0
+$                           0
+$                           0
+M0000000000000P0000000000000G
+s0[0;32;32mA[0m00000000000H0000000000000T
+$                           0
+$                           0
+$                           0
+$                           0
+$                           0
+$                           0
+M0000000000000P0000000000000G
+s0[0;32;32mA[0m00000000000H0000000000000T
+$                           0
+$                           0
+$                           0
+$                           0
+$                           0
+$                           0
+M0000000000000P0000000000000G
+[0;32;32mAtubo[0m:
+You walked 2 steps forward happily !!
+This house price: 200
+Your Money: 1000
+You can buy this house(Y/N):After you buy the house you have money:800
+
+[0;32;31mQian>[0mdump finished
