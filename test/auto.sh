@@ -78,7 +78,7 @@ do
     let index+=1
 	echo ${OUT_FILE_PATH}/"dump${index}.txt" ":" ${RIGHT_FILE_PATH}/"right${index}.txt"
     echo "正在测试第${index}个测试样例..."
-	./test/diff ${OUT_FILE_PATH}/"dump${index}.txt" ${RIGHT_FILE_PATH}/"right${index}.txt"
+	./diff/diff ${OUT_FILE_PATH}/"dump${index}.txt" ${RIGHT_FILE_PATH}/"right${index}.txt"
     let state=$?
 	# echo "结果：$?"
 	if [ ${state} -eq  ${success} ]
