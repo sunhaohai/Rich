@@ -1,4 +1,4 @@
-preset user AQ
+preset user QA
 preset map 1 A 1
 preset map 2 A 1
 preset map 3 A 1

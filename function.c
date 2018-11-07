@@ -30,7 +30,7 @@ void _init_players(char *users, int init_money){
     //初始化用户信息   users为用户编号数组  数组index为掷骰子先后顺序
     //init_money 为初始化金钱数
     for (int i = 0; i < USERS_NUMBER; i++){
-        USERS[i].name = i+1;
+        USERS[i].name = users[i];
         USERS[i].short_name = _get_player_symbol(USERS[i].name); 
         USERS[i].id = i + 1;
         USERS[i].lucky_god = 0;
@@ -158,6 +158,7 @@ void display(MAP* maps){
 void player_round(PLAYER* player){
     //玩家回合控制总函数
     //TODO: cmd table complete
+    BOOL end_round=FALSE;
     if((*player).skip_num>0){
         (*player).skip_num--;
         return;
@@ -221,7 +222,8 @@ void player_round(PLAYER* player){
         //printf("=======----%s-----\n", _args);
     }
     if(USERS_NUMBER<2){
-        printf("游戏结束!\n");
+        dump(player,&end_round);
+        printf("游戏结束，任意键退出！\n");
         getchar();
         game_over = 1;
     }
@@ -685,7 +687,7 @@ void dump_map()
     for (int i = 0; i < MAX_POSITION; ++i)
     {
         if (MAPS[i].owner != USER_NULL)
-            fprintf(pdump,"map[%d] %c %d\n",i,_get_player_symbol(MAPS[i].owner),MAPS[i].pre_symbol[MAX_USER-1]-3);      
+            fprintf(pdump,"map[%d] %c %d\n",i,_get_player_symbol(MAPS[i].owner),MAPS[i].pre_symbol[MAX_USER-1]-SYMBOL_0);      
     }
 
     return;

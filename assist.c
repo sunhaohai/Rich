@@ -736,7 +736,7 @@ void players_end_run(PLAYER *player,BOOL *end_round){
         case MAP_T: {
             char tool_num = player->tool[TOOL_L].num + player->tool[TOOL_B].num + player->tool[TOOL_R].num;
             if (player->point < 30) {
-                printf("You are too pool to buy any tool.\n");
+                printf("You are too poor to buy any tool.\n");
             } else if (tool_num >= 10) {
                 printf("You already have a maximum limit number of tools.\n");
             } else {
@@ -806,9 +806,9 @@ void preset_map(MAP *maps, int n, PLAYER *player, int level){
     SYMBOL tmp = maps[n].pre_symbol[MAX_USER - 1];
     for (int i = 0; i < MAX_USER; i++){
         if (maps[n].pre_symbol[i] == tmp)
-            maps[player->position].pre_symbol[i] = level + SYMBOL_0;
-        if (maps[player->position].symbol == tmp)
-            maps[player->position].symbol = level + SYMBOL_0;
+            maps[n].pre_symbol[i] = level + SYMBOL_0;
+        if (maps[n].symbol == tmp)
+            maps[n].symbol = level + SYMBOL_0;
     }
     maps[n].type = MAP_PRI;
     player->house[n] = 1;

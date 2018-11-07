@@ -1,4 +1,4 @@
-preset user AQSJ
+preset user QASJ
 preset fund A 1000
 preset credit A 100
 preset gift A bomb 1
