@@ -16,6 +16,7 @@ int main()
         init_game();
         display(MAPS);
         save_cmd();
+        read_archive();
         
     //    while (!game_over) //
     //    {

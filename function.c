@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "function.h"
 #include "assist.h"
 extern PLAYER USERS[4];
@@ -313,15 +314,15 @@ void save_cmd()
     } 
     //save all player's info to save.txt
     for(int i = 0;i < USERS_NUMBER; i++){
-        fprintf(fp,"name:%d short_name:%d position:%d id:%d skip_num：%d money:%ld point:%ld ",
+        fprintf(fp,"%d %d %d %d %d %ld %ld ",
         USERS[i].name, USERS[i].short_name, USERS[i].position, USERS[i].id, USERS[i].skip_num, USERS[i].money, USERS[i].point);
         for(int j = 0;j < MAX_POSITION; j++){
-            fprintf(fp, "house:%d ", USERS[i].house[j]);
+            fprintf(fp, "%d ", USERS[i].house[j]);
         }
         for(int j = 0;j < TOOL_NUMBER; j++){
-            fprintf(fp, "type：%d num：%d ", USERS[i].tool[j].type, USERS[i].tool[j].num);
+            fprintf(fp, "%d %d ", USERS[i].tool[j].type, USERS[i].tool[j].num);
         }
-        fprintf(fp, "lucky_god：%d \n", USERS[i].lucky_god);
+        fprintf(fp, "%d \n", USERS[i].lucky_god);
     }
     //save all map's info to save.txt
     for(int i = 0;i < MAX_POSITION;i++){
@@ -332,5 +333,35 @@ void save_cmd()
         }
         fprintf(fp,"price_all:%d \n",MAPS[i].price_all);
     }
+    fclose(fp);
+}
+
+void read_archive(){
+    FILE *fp;
+    char str[1000];
+    char *single;
+    int flag = 0, file_row = 0, count = 0;
+    if((fp = fopen("save.txt","r"))==NULL){
+         printf("The file save.txt can not be opened.\n");
+         return;
+    }
+    for(int i = 0;i < USERS_NUMBER;i++){
+        fgets(str,1000,fp);
+        single = strtok(str, " "); 
+        while(single != NULL){
+            single = strtok(NULL, " ");
+        } 
+    }
+    printf("%d\n",single);
+    // while (!feof(fp)) { 
+    //     fgets(str,1000,fp);  //读取一行
+    //     printf("%s\n", str); //输出
+    //     single = strtok(str, " "); 
+    //     while(single != NULL){
+    //         printf("%s\n",single);
+    //         single = strtok(NULL, " ");
+    //     } 
+    // }     
+    // printf("%d",USERS_NUMBER);
     fclose(fp);
 }
