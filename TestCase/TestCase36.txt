@@ -1,0 +1,5 @@
+preset user AJ   //没有道具时使用道具命令
+preset fund A 1000
+preset fund J 1000
+Bomb 4
+dump

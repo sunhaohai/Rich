@@ -1,0 +1,7 @@
+preset user QS   //道具使用后是否扣除
+preset credit Q 100
+preset credit S 10
+preset gift Q bomb 3
+Bomb 3
+Query
+dump

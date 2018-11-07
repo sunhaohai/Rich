@@ -1,0 +1,7 @@
+preset user QJ   //购买道具，记录，点数扣除
+preset credit Q 100
+preset credit J 10
+step 28
+2
+Query
+dump
