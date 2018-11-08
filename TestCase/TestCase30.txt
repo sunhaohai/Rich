@@ -1,0 +1,35 @@
+preset user AQSJ
+preset fund A 1000
+preset fund Q 2000
+preset fund S 3000
+preset fund J 4000
+preset credit A 100
+preset credit Q 100
+preset credit S 10
+preset credit J 10
+preset gift A bomb 9
+step 28
+1
+query
+step 28
+1
+query
+step 28
+1
+query
+step 28
+1
+query
+step 0
+1
+query
+step 0
+1
+query
+step 0
+1
+query
+step 0
+1
+query
+dump
