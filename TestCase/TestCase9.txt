@@ -1,0 +1,28 @@
+<<<<<<< HEAD
+preset user QA
+preset fund A 1000
+preset fund Q 1000
+preset gift A robot 10
+preset gift Q robot 10
+preset gift A bomb 10
+preset gift Q bomb 10
+query
+bomb 5
+step 1
+n
+pass
+robot
+step 10
+n
+pass
+dump
+//test the function of robot
+=======
+preset user QS   //使用没有的道具命令
+preset credit Q 100
+preset credit S 10
+preset gift Q bomb 3
+Block 3
+
+dump
+>>>>>>> 7be809433e1453328fa53f5bc1471529fd1fc194

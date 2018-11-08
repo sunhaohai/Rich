@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include <unistd.h>
 #include "rich.h"
 
 #define MAX_HORIZONTAL_NUM    30    //horizontial
@@ -25,21 +26,29 @@ typedef short BOOL;
 #define YELLOW_S "\033[0;32;33m"
 #define ORI "\033[0m"
 
-#define ROLL "Roll"
-#define SELL "Sell"
-#define BLOCK "Block"
-#define BOMB "Bomb"
-#define ROBOT "Bobot"
-#define QUERY "Query"
-#define HELP "Help"
-#define QUIT "Quit"
-#define STEP "Step"
-
 typedef enum 
 {
     RICH_FALSE  = 0,
     RICH_TURE   = 1,
 }RICH_BOOL;
+
+typedef enum
+{//already done sth
+    ROUND_NULL = 0,
+    ROUND_TOOL ,
+    ROUND_DICE ,
+    ROUND_RENT ,
+    ROUND_BUY  ,
+    ROUND_SELL ,
+    ROUND_IDLE     //BOMB OR PRISON
+}ROUND_STATE;
+
+typedef enum
+{
+    ROOT_OFF = 0,
+    ROOT_PRE ,
+    ROOT_ON  ,
+}ROOT_STATE;
 
 typedef enum
 {

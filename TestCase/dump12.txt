@@ -1,0 +1,17 @@
+user AQ
+map[1] Q 0
+fund A 1000
+fund Q 800
+credit A 0
+credit Q 0
+gift A bomb 0
+gift A barrier 0
+gift A robot 0
+gift A god 0
+gift Q bomb 0
+gift Q barrier 0
+gift Q robot 0
+gift Q god 0
+userloc A 0
+userloc Q 1
+nextuser A

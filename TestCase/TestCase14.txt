@@ -1,0 +1,14 @@
+preset user AQ
+preset fund A 1000
+preset fund Q 1000
+preset barrier 3
+preset bomb 4
+preset barrier 5
+query
+step 10
+n
+pass
+step 10
+dump
+//dose block and bomb will both take effect
+//A will stay in map 3, Q will stay in H for 3 days
