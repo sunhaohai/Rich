@@ -347,12 +347,14 @@ void read_archive(){
     }
     for(int i = 0;i < USERS_NUMBER;i++){
         fgets(str,1000,fp);
+        // printf("%s",str);
         single = strtok(str, " "); 
         while(single != NULL){
+            printf("%s\n",single);
             single = strtok(NULL, " ");
         } 
     }
-    printf("%d\n",single);
+    // printf("%d\n",single);
     // while (!feof(fp)) { 
     //     fgets(str,1000,fp);  //读取一行
     //     printf("%s\n", str); //输出
