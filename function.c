@@ -65,7 +65,7 @@ void _init_maps(){
     _init_one_map(MAPS, 0, MAP_START, USER_NULL, TOOL_NULL, 0, PRICE_0, SYMBOL_ST);
     for (int i = 1; i <= 27; i++){
         if (i == 14){
-            _init_one_map(MAPS, i, MAP_H, USER_NULL, TOOL_NULL, 0, PRICE_0, SYMBOL_H);
+            _init_one_map(MAPS, i, MAP_PARK, USER_NULL, TOOL_NULL, 0, PRICE_0, SYMBOL_PARK);
             continue;
         }
         _init_one_map(MAPS, i, MAP_COM, USER_NULL, TOOL_NULL, 0, PRICE_1, SYMBOL_0);
@@ -77,7 +77,7 @@ void _init_maps(){
     _init_one_map(MAPS, 35, MAP_G, USER_NULL, TOOL_NULL, 0, PRICE_0, SYMBOL_G);
     for (int i = 36; i <= 62; i++){
         if (i == 49){
-            _init_one_map(MAPS, i, MAP_PRS, USER_NULL, TOOL_NULL, 0, PRICE_0, SYMBOL_P);
+            _init_one_map(MAPS, i, MAP_PARK, USER_NULL, TOOL_NULL, 0, PRICE_0, SYMBOL_PARK);
             continue;
         }
         _init_one_map(MAPS, i, MAP_COM, USER_NULL, TOOL_NULL, 0, PRICE_3, SYMBOL_0);

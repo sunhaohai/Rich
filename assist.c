@@ -23,7 +23,6 @@ void _clear(){
 
 void _read_number(char* users){
     //从屏幕读取罗干数字输入,以换行符结束
-    //bug待处理:输入包涵char的时候USERS_NUMBER会不对
 //    int *result = (int *)malloc(sizeof(int));
 //    result[0] = -1;
 //    int now_n;
@@ -235,6 +234,7 @@ char _get_map_display(SYMBOL symbol){
     else if(symbol==SYMBOL_G)  return  'G';
     else if(symbol==SYMBOL_P)  return  'P';
     else if(symbol==SYMBOL_R)  return  'R';
+    else if(symbol==SYMBOL_PARK) return 'P';
     else return '0';
 }
 
@@ -246,6 +246,7 @@ void _print_map_symbol(MAP* map){
     else if(map->tool==TOOL_R) p = _get_map_display(SYMBOL_R);
     char pt[2];
     pt[0] = p;
+    pt[1] = '\0';
     if(p=='Q') print_player(pt,QIAN);
     else if(p=='J') print_player(pt,JING);
     else if(p=='A') print_player(pt,ATUBO);
@@ -456,7 +457,27 @@ void prison(PLAYER *player){
 
 void magic_house(PLAYER *player){
     //走到魔法屋的时候发生的事
-    printf("你来到了魔法屋 Waiting to do\n");
+    printf("You came to the magic house\n");
+    printf("0:give up,");
+    for(int i=1;i<USERS_NUMBER+1;i++){
+        printf("%d:",i);
+        print_player_name(USERS+(i-1));
+        printf(",");
+    }
+    printf("\nYou can chose one player to skip 2 round!\n");
+    char choose[20];
+    while(1){
+        int str_len = my_getline(choose,20);
+        int tmp = choose[0] - '0';
+        if(str_len==2&&tmp>=0&&tmp<=USERS_NUMBER) break;
+    }
+    int tmp = choose[0] - '0';
+    if(tmp==0) return;
+    USERS[tmp-1].skip_num += 2; 
+}
+
+void park_house(PLAYER *player){
+    printf("You came to the park!\n");
 }
 
 void on_mine(char mine, PLAYER *player){
@@ -750,8 +771,8 @@ void players_end_run(PLAYER *player,BOOL *end_round){
         case MAP_M:
             magic_house(player);
             break;
-        case MAP_PRS:
-            prison(player);
+        case MAP_PARK:
+            park_house(player);
             break;
         case MAP_$:
             on_mine(MAPS[pos_temp].mine, player);
