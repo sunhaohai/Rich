@@ -19,8 +19,8 @@ fi
 
 # set variable
 OUT_FILE_NAME="dump"
-RIGHT_FILE_NAME="right"
-TEST_FILE_NAME="test"
+RIGHT_FILE_NAME="predump"
+TEST_FILE_NAME="TestCase"
 
 # get absolute path
 if [ ! -n "$2" ]; then
@@ -57,7 +57,7 @@ do
 	let index+=1
     echo "正在输入第${index}个测试样例..."
     if [ ! -n "$4" ]; then
-        ./rich "${OUT_FILE_PATH}dump${index}.txt" < "${TEST_FILE_PATH}/test${index}.txt"
+        ./rich "${OUT_FILE_PATH}dump${index}.txt" < "${TEST_FILE_PATH}/TestCase${index}.txt"
     else
         $4 "${index}" < ${TEST_FILE_PATH}/${m}
     fi
@@ -76,9 +76,9 @@ let index=0
 for m  in $(ls ${OUT_FILE_PATH})
 do
     let index+=1
-	echo ${OUT_FILE_PATH}/"dump${index}.txt" ":" ${RIGHT_FILE_PATH}/"right${index}.txt"
+	echo ${OUT_FILE_PATH}/"dump${index}.txt" ":" ${RIGHT_FILE_PATH}/"predump${index}.txt"
     echo "正在测试第${index}个测试样例..."
-	./diff/diff ${OUT_FILE_PATH}/"dump${index}.txt" ${RIGHT_FILE_PATH}/"right${index}.txt"
+	./diff/diff ${OUT_FILE_PATH}/"dump${index}.txt" ${RIGHT_FILE_PATH}/"predump${index}.txt"
     let state=$?
 	# echo "结果：$?"
 	if [ ${state} -eq  ${success} ]
@@ -101,7 +101,7 @@ if [ ${FAIL_INDEX} -eq  ${success} ]
 then
     echo ""
     echo "${SUCCESS_INDEX}个样例全部通过～～～"
-    echo "   \ 0 . 0 /"
+    echo "   \ 0 v 0 /"
     echo ""
 else
     echo "测试成功样例总数：${SUCCESS_INDEX}个"

@@ -17,8 +17,7 @@ SM：邬昕昱
 * 编辑器
 
 ## autotest todo
-* dump文件保存位置确认
-* auto脚本testcase文件命名确认
-* testcase文件命名确定（dump，predump同理）
-* diff函数用法
+* dump文件保存位置确认（输入保存路径）
+* testcase文件命名确定（dump，predump同理）(**文件名+编号.txt**)
+* diff函数用法(**加上两个绝对路径**)
 
