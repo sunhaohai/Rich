@@ -11,13 +11,17 @@ ROOT_STATE root = ROOT_ON;
 ROUND_STATE round_state = ROUND_NULL;
 int dice_num;
 char TMP_DEBUG[50] = {'\0'};
+char * DUMP_PATH;
 
-int main()
+int main(int argc,char *argv[])
 {
-
-    //if(freopen("./out.txt","w",stdout)==NULL)
-        //fprintf(stderr,"error\n");
-
+    if (argc != 2)
+    {
+        printf("input and only input the Dump file path\n");
+        return 0;
+    }
+    DUMP_PATH = argv[1];
+    
 
     game_over = 0;
     srand((unsigned)time(NULL));
