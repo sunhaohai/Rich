@@ -10,6 +10,8 @@ extern int game_over;
 extern ROOT_STATE root;
 extern char TMP_DEBUG[50];
 extern ROUND_STATE round_state;
+extern char isFirst_tool;
+extern char isFirst_sell;
 
 int _get_rand(int min, int max){
     //生成大小在[min,max]当中的随机数
@@ -23,7 +25,6 @@ void _clear(){
 
 void _read_number(char* users){
     //从屏幕读取罗干数字输入,以换行符结束
-    //bug待处理:输入包涵char的时候USERS_NUMBER会不对
 //    int *result = (int *)malloc(sizeof(int));
 //    result[0] = -1;
 //    int now_n;
@@ -235,6 +236,7 @@ char _get_map_display(SYMBOL symbol){
     else if(symbol==SYMBOL_G)  return  'G';
     else if(symbol==SYMBOL_P)  return  'P';
     else if(symbol==SYMBOL_R)  return  'R';
+    else if(symbol==SYMBOL_PARK) return 'P';
     else return '0';
 }
 
@@ -246,6 +248,7 @@ void _print_map_symbol(MAP* map){
     else if(map->tool==TOOL_R) p = _get_map_display(SYMBOL_R);
     char pt[2];
     pt[0] = p;
+    pt[1] = '\0';
     if(p=='Q') print_player(pt,QIAN);
     else if(p=='J') print_player(pt,JING);
     else if(p=='A') print_player(pt,ATUBO);
@@ -277,11 +280,14 @@ void _args_parse_one(char* arg, PLAYER* player,BOOL* end_round){
     else if((strcmp("SU",arg)==0)) {su_cmd_pre(player,end_round); return;}
     else if((strcmp("EXIT",arg)==0) && (ROOT_ON == root)) {exit_cmd(player,end_round); return;}
     else if(strcmp("DUMP",arg)==0) {dump(player,end_round); return;}
-    else if(strcmp("PASS",arg)==0) {pass_cmd(end_round); return;}
+    else if((strcmp("PASS",arg)==0) && (ROOT_ON == root)) {pass_cmd(end_round); return;}
+    else if(strcmp("ROBOT",arg)==0) robot_cmd(player,end_round);
+    else if(strcmp("ROLL",arg)==0) dice_cmd(player,end_round);
     else if(strcmp("SAVE",arg)==0) {save_cmd(); return;}
     else if(strcmp("LOAD",arg)==0) {read_archive(); return;}
-    
+    else help_cmd();
 
+#if 0
     switch(round_state)
     {
         case ROUND_NULL:
@@ -317,17 +323,25 @@ void _args_parse_one(char* arg, PLAYER* player,BOOL* end_round){
 //    else if(strcmp("DUMP",arg)==0) dump(player,end_round);
 //    else if(strcmp("PASS",arg)==0) pass_cmd(end_round);
 //    else help_cmd();
+#endif
+
 }
 
 void _args_parse_two(char *arg, PLAYER *player, char* str,BOOL* end_round){
     //deal cmd with param
     if((strcmp("SU",arg)==0) && (ROOT_PRE == root)) {su_cmd(player,str,end_round); return;}
+    else if((strcmp("BLOCK",arg)==0)) bolck_cmd(player,atoi(str),end_round);
+    else if((strcmp("STEP",arg)==0) && (ROOT_ON == root)) step_cmd(player,atoi(str),end_round);
+    else if(strcmp("SELL",arg)==0) sell_cmd(player,atoi(str),end_round);
+    else help_cmd();
 
+#if 0
     switch(round_state)
     {
         case ROUND_NULL:
             if(strcmp("BLOCK",arg)==0) bolck_cmd(player,atoi(str),end_round);
             else if(strcmp("BOMB",arg)==0) bomb_cmd(player,atoi(str),end_round);
+//            else if(strcmp("BOMB",arg)==0) bomb_cmd(player,atoi(str),end_round);
             else if((strcmp("STEP",arg)==0) && (ROOT_ON == root)) step_cmd(player,atoi(str),end_round);
             else help_cmd();
         break;
@@ -356,6 +370,7 @@ void _args_parse_two(char *arg, PLAYER *player, char* str,BOOL* end_round){
             printf("ROUND_STATE_2 ERR!\n");
         break;
     }
+#endif
 }
 
 int _args_num_parse(char* arg){
@@ -448,7 +463,7 @@ BOOL _isdivider(char c)
 }
 
 
-
+#if 0
 void prison(PLAYER *player){
     //走到监狱的时候发生的事  step 49
     player->skip_num = SKIP_P;
@@ -456,10 +471,31 @@ void prison(PLAYER *player){
     printf("You are in prison and will stay here for 2 days!\n");
     return;
 }
+#endif
 
 void magic_house(PLAYER *player){
     //走到魔法屋的时候发生的事
-    printf("你来到了魔法屋 Waiting to do\n");
+    printf("You came to the magic house\n");
+    printf("0:give up,");
+    for(int i=1;i<USERS_NUMBER+1;i++){
+        printf("%d:",i);
+        print_player_name(USERS+(i-1));
+        printf(",");
+    }
+    printf("\nYou can chose one player to skip 2 round!\n");
+    char choose[20];
+    while(1){
+        int str_len = my_getline(choose,20);
+        int tmp = choose[0] - '0';
+        if(str_len==2&&tmp>=0&&tmp<=USERS_NUMBER) break;
+    }
+    int tmp = choose[0] - '0';
+    if(tmp==0) return;
+    USERS[tmp-1].skip_num += 2; 
+}
+
+void park_house(PLAYER *player){
+    printf("You came to the park!\n");
 }
 
 void on_mine(char mine, PLAYER *player){
@@ -511,9 +547,9 @@ void tool_house(PLAYER *player){
     printf("(Choose a tool by input its number correctly)\n");
     while (1){
         printf("Your point: %ld\n", (player -> point));
-        printf("->1: Block(50)  ->2: Robot(30)  ->3: Bomb(50)\n");
-        if ((player->point) < 50) printf("you only can buy ->2: Robot(30) \n");
-        printf("if you want to leave, please enter F. \n""(1/2/3/F): ");
+        printf("->1: Block(50)  ->2: Robot(30)\n");//  ->3: Bomb(50)\n");
+        if ((player->point) < 50) printf("you can only buy ->2: Robot(30) \n");
+        printf("if you want to leave, please enter F. \n""(1/2/F): ");
         chose = getchar();
         if(chose != '\n')while ((clear = getchar()) != EOF && clear != '\n');
         switch (chose){
@@ -533,17 +569,17 @@ void tool_house(PLAYER *player){
             player->point -= 30;
             printf("You got a ROBOT, your point: %ld\n", player -> point);
             return;
-        case '3':
-            if((player -> point) < 50){
-                printf("Sorry, you don't have enough point.\n");
-                break;
-            }
-            else{
-                player->tool[TOOL_B].num++;
-                player->point -= 50;
-                printf("You got a BOMB, your point: %ld\n", player -> point);
-            }
-            return;
+//        case '3':
+//            if((player -> point) < 50){
+//                printf("Sorry, you don't have enough point.\n");
+//                break;
+//            }
+//            else{
+//                player->tool[TOOL_B].num++;
+//                player->point -= 50;
+//                printf("You got a BOMB, your point: %ld\n", player -> point);
+//            }
+//            return;
         case 'F':
         case 'f':
             printf("You bought nothing and left Tool Shop!\n");
@@ -602,8 +638,8 @@ void pay_rent(PLAYER *player, MAP *maps, BOOL *end_round)
         (player->lucky_god) --;
         printf("Lucky god pay the rent for you, %d more times rent can be pay!\n", (player->lucky_god));
         printf("Your money : %ld\n", (player -> money));
-        round_state = ROUND_RENT;
-        *end_round = FALSE;
+//        round_state = ROUND_RENT;
+//        *end_round = FALSE;
         return;
     }
     owner = _find_player(maps[player->position].owner);
@@ -611,19 +647,19 @@ void pay_rent(PLAYER *player, MAP *maps, BOOL *end_round)
     print_player_name(owner);
     printf("'s place\n");
     rent = ((maps[player->position]).price_all ) / 2;
-    if(rent < 0)printf("rent err! %d , the price all %d\n", rent, ((maps[player->position]).price_all ));
+//    if(rent < 0)printf("rent err! %d , the price all %d\n", rent, ((maps[player->position]).price_all ));
     if(owner -> skip_num != SKIP_NULL)
     {
-        round_state = ROUND_RENT;
-        *end_round = FALSE;
+//        round_state = ROUND_RENT;
+//        *end_round = FALSE;
         printf("You didn't pay the rent and nobody knew.\n");
         return;
     }
     if( (player->money) < rent ){
         owner->money += player->money;
         rm_user(USERS,player->name,&USERS_NUMBER);
-        round_state = ROUND_IDLE;
-        *end_round = TRUE;
+//        round_state = ROUND_IDLE;
+//        *end_round = TRUE;
         printf("Sorry, you're bankrupt!!\n");
         print_player_name(owner);
         printf("'s money : %ld -> %ld\n",  (owner->money - rent), owner->money);
@@ -631,8 +667,8 @@ void pay_rent(PLAYER *player, MAP *maps, BOOL *end_round)
     }
     player->money -= rent;
     owner->money += rent;
-    round_state = ROUND_RENT;
-    *end_round = FALSE;
+//    round_state = ROUND_RENT;
+//    *end_round = FALSE;
     printf("You have to pay the rent %d.\n", rent);
     printf("Your money : %ld -> %ld\n", (player->money + rent), player->money);
     print_player_name(owner);
@@ -650,18 +686,18 @@ void buy_upper_house(PLAYER *player, MAP *maps){
                 char chose, clear;
                 printf("This house price: %d\n",maps[player->position].price_all);
                 printf("Your Money: %ld\n",player->money);
-                printf("(You can buy it now or sell other house after 'n/N')\n""You can buy this house(Y/N):");
+                printf(/*"(You can buy it now or sell other house after 'n/N')\n"*/"You can buy this house(Y/N):");
                 chose = getchar();
                 if(chose != '\n')while ((clear = getchar()) != EOF && clear != '\n');
                 if (chose == 'N' || chose == 'n'){
-                    printf("You didn't buy it.\n""You can use 'sell' to sell your other house now.\n");
+                    printf("You didn't buy it.\n");//"You can use 'sell' to sell your other house now.\n");
                     return;
                 }
                 else if (chose == 'Y' || chose == 'y' || chose == '\n'){
                     player->house[player->position] = 1;
                     maps[player->position].owner = player->name;
                     maps[player->position].type = MAP_PRI;
-                    round_state = ROUND_BUY;
+//                    round_state = ROUND_BUY;
                     player->money -= maps[player->position].price_all;
                     printf("After you buy the house you have money:%ld\n",player->money);
                     return;
@@ -682,7 +718,7 @@ void buy_upper_house(PLAYER *player, MAP *maps){
                 char chose, clear;
                 printf("To upper you house cost %d\n",_get_place_price(maps[player->position].price));
                 printf("Your Money: %ld\n",player->money);
-                printf("(You can upper it now or sell other house after 'n/N')\n""You can upper this house(Y/N):");
+                printf(/*"(You can upper it now or sell other house after 'n/N')\n"*/"You can upper this house(Y/N):");
                 chose = getchar();
                 if(chose != '\n')while ((clear = getchar()) != EOF && clear != '\n');
                 if (chose == 'N' || chose == 'n')
@@ -701,7 +737,7 @@ void buy_upper_house(PLAYER *player, MAP *maps){
                         if (maps[player->position].symbol == tmp)
                             maps[player->position].symbol += 1;
                     }
-                    round_state = ROUND_BUY;
+//                    round_state = ROUND_BUY;
                     printf("Upper successfully! Your money: %ld\n", player->money);
                     return;
                 }
@@ -737,7 +773,7 @@ void players_end_run(PLAYER *player,BOOL *end_round){
         switch (MAPS[pos_temp].type)
         {
         case MAP_T: {
-            char tool_num = player->tool[TOOL_L].num + player->tool[TOOL_B].num + player->tool[TOOL_R].num;
+            char tool_num = player->tool[TOOL_L].num/* + player->tool[TOOL_B].num */+ player->tool[TOOL_R].num;
             if (player->point < 30) {
                 printf("You are too poor to buy any tool.\n");
             } else if (tool_num >= 10) {
@@ -753,14 +789,14 @@ void players_end_run(PLAYER *player,BOOL *end_round){
         case MAP_M:
             magic_house(player);
             break;
-        case MAP_PRS:
-            prison(player);
+        case MAP_PARK:
+            park_house(player);
             break;
         case MAP_$:
             on_mine(MAPS[pos_temp].mine, player);
             break;
         default:
-            return;
+            break;
         }
     }
 //    *end_round = TRUE;
@@ -779,23 +815,23 @@ void players_run_in_the_way(PLAYER *player, int steps,BOOL *end_round){
             MAPS[pos_temp].tool = TOOL_NULL;
             display_run_map(player, pos_temp);
             print_player_name(player);
-            round_state = ROUND_DICE;
+//            round_state = ROUND_DICE;
             printf(":\nYou meet a BLOCK on the way! You walked %d steps forward.\n", (pos_temp - pos_start));
             *end_round = FALSE;
             return;
-        case TOOL_B:
-            MAPS[pos_temp].tool = TOOL_NULL;
-            player->skip_num = SKIP_H;
-            display_run_map(player, 14);
-            print_player_name(player);
-            round_state = ROUND_IDLE;
-            printf(":\nYou meet a BOMB on the way! You were injured and sent to the hospital in time.\n"
-                   "You have to rest in the hospital for 3 days.\n");
-            *end_round = FALSE;
-            return;
+//        case TOOL_B:
+//            MAPS[pos_temp].tool = TOOL_NULL;
+//            player->skip_num = SKIP_H;
+//            display_run_map(player, 14);
+//            print_player_name(player);
+//            round_state = ROUND_IDLE;
+//            printf(":\nYou meet a BOMB on the way! You were injured and sent to the hospital in time.\n"
+//                   "You have to rest in the hospital for 3 days.\n");
+//            *end_round = FALSE;
+//            return;
         default:
             display_run_map(player, pos_temp);
-            round_state = ROUND_DICE;
+//            round_state = ROUND_DICE;
             break;
         }
     }

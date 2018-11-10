@@ -9,6 +9,8 @@ extern int NOW_ID;
 extern int game_over;
 extern ROOT_STATE root;
 extern ROUND_STATE round_state;
+extern char isFirst_tool;
+extern char isFirst_sell;
 
 FILE * pdump;
 char order_buf[5] = {'\0'};
@@ -65,7 +67,7 @@ void _init_maps(){
     _init_one_map(MAPS, 0, MAP_START, USER_NULL, TOOL_NULL, 0, PRICE_0, SYMBOL_ST);
     for (int i = 1; i <= 27; i++){
         if (i == 14){
-            _init_one_map(MAPS, i, MAP_H, USER_NULL, TOOL_NULL, 0, PRICE_0, SYMBOL_H);
+            _init_one_map(MAPS, i, MAP_PARK, USER_NULL, TOOL_NULL, 0, PRICE_0, SYMBOL_PARK);
             continue;
         }
         _init_one_map(MAPS, i, MAP_COM, USER_NULL, TOOL_NULL, 0, PRICE_1, SYMBOL_0);
@@ -77,7 +79,7 @@ void _init_maps(){
     _init_one_map(MAPS, 35, MAP_G, USER_NULL, TOOL_NULL, 0, PRICE_0, SYMBOL_G);
     for (int i = 36; i <= 62; i++){
         if (i == 49){
-            _init_one_map(MAPS, i, MAP_PRS, USER_NULL, TOOL_NULL, 0, PRICE_0, SYMBOL_P);
+            _init_one_map(MAPS, i, MAP_PARK, USER_NULL, TOOL_NULL, 0, PRICE_0, SYMBOL_PARK);
             continue;
         }
         _init_one_map(MAPS, i, MAP_COM, USER_NULL, TOOL_NULL, 0, PRICE_3, SYMBOL_0);
@@ -218,7 +220,7 @@ void player_round(PLAYER* player){
 
         }while(1);
         if(('\n' == c) && (0 == i) && (!strlen(_args))) continue;
-        if(args_parse(_args, player)){ round_state = ROUND_NULL; break;}
+        if(args_parse(_args, player)){ isFirst_tool = TRUE; isFirst_sell = TRUE;/*round_state = ROUND_NULL;*/ break;}//end round
         //printf("=======----%s-----\n", _args);
     }
     if(USERS_NUMBER<2){
@@ -235,118 +237,113 @@ void bolck_cmd(PLAYER *player, int position,BOOL* end_round){
     int pos = position;
     int pos_tool;
 
-    if((pos > 10) || (pos < -10) || (!pos))
-    {
-        printf("To use this tool, please input a number between -10 and 10 indicate behind or before you, 0 is not allowed! \r\n");
-    }
-    else
-    {
-        pos_tool = (player->position + pos + MAX_POSITION) % MAX_POSITION;
-        if((MAPS[pos_tool].tool > TOOL_NULL) || _isuser_symbol(MAPS[pos_tool].symbol))
-        {
-            printf("Can not be used in this place !\r\n");
-            *end_round = FALSE;
-            return;
-        }
-        if((player->tool[TOOL_L].num > 0) && (player->tool[TOOL_L].num < 11))
-        {
-            player->tool[TOOL_L].num--;
-            MAPS[pos_tool].tool = TOOL_L;
-            round_state = ROUND_TOOL;
-            display(MAPS);
-            print_player_name(player); printf(":\n");
-            printf("Block is used successfully !\r\n");
-        }
-        else
-        {
-            player->tool[TOOL_L].num = 0;
-            printf("Sorry, you don't have available tool(Block) now !\r\n");
+    if(!isFirst_tool)   printf("Use cmd: query,use tool(once),sell house(once)-> roll dice(once) !\n");
+    else {
+        if ((pos > 10) || (pos < -10) || (!pos)) {
+            printf("To use this tool, please input a number between -10 and 10 indicate behind or before you, 0 is not allowed! \r\n");
+        } else {
+            pos_tool = (player->position + pos + MAX_POSITION) % MAX_POSITION;
+            if ((MAPS[pos_tool].tool > TOOL_NULL) || _isuser_symbol(MAPS[pos_tool].symbol)) {
+                printf("Can not be used in this place !\r\n");
+                *end_round = FALSE;
+                return;
+            }
+            if ((player->tool[TOOL_L].num > 0) && (player->tool[TOOL_L].num < 11)) {
+                player->tool[TOOL_L].num--;
+                MAPS[pos_tool].tool = TOOL_L;
+//                round_state = ROUND_TOOL;
+                isFirst_tool = FALSE;
+                display(MAPS);
+                print_player_name(player);
+                printf(":\n");
+                printf("Block is used successfully !\r\n");
+            } else {
+                player->tool[TOOL_L].num = 0;
+                printf("Sorry, you don't have available tool(Block) now !\r\n");
+            }
         }
     }
     *end_round = FALSE;
 }
 
-void bomb_cmd(PLAYER *player, int position,BOOL* end_round){
-    //printf("Function is developing\n");
-    int pos = position;
-    int pos_tool;
-
-    if((pos > 10) || (pos < -10) || (!pos))
-    {
-        printf("To use this tool, please input a number between -10 and 10 indicate behind or before you, 0 is not allowed! \r\n");
-    }
-    else
-    {
-        pos_tool = (player->position + pos + MAX_POSITION) % MAX_POSITION;
-        if((MAPS[pos_tool].tool > TOOL_NULL) || _isuser_symbol(MAPS[pos_tool].symbol))
-        {
-            printf("Can not be used in this place !\r\n");
-            *end_round = FALSE;
-            return;
-        }
-        if((player->tool[TOOL_B].num > 0) && (player->tool[TOOL_B].num < 11))
-        {
-            player->tool[TOOL_B].num--;
-            MAPS[pos_tool].tool = TOOL_B;
-            round_state = ROUND_TOOL;
-            display(MAPS);
-            print_player_name(player); printf(":\n");
-            printf("Bomb is used successfully !\r\n");
-        }
-        else
-        {
-            player->tool[TOOL_B].num = 0;
-            printf("Sorry, you don't have available tool(Bomb) now !\r\n");
-        }
-    }
-    *end_round = FALSE;
-}
+//void bomb_cmd(PLAYER *player, int position,BOOL* end_round){
+//    //printf("Function is developing\n");
+//    int pos = position;
+//    int pos_tool;
+//
+//    if((pos > 10) || (pos < -10) || (!pos))
+//    {
+//        printf("To use this tool, please input a number between -10 and 10 indicate behind or before you, 0 is not allowed! \r\n");
+//    }
+//    else
+//    {
+//        pos_tool = (player->position + pos + MAX_POSITION) % MAX_POSITION;
+//        if((MAPS[pos_tool].tool > TOOL_NULL) || _isuser_symbol(MAPS[pos_tool].symbol))
+//        {
+//            printf("Can not be used in this place !\r\n");
+//            *end_round = FALSE;
+//            return;
+//        }
+//        if((player->tool[TOOL_B].num > 0) && (player->tool[TOOL_B].num < 11))
+//        {
+//            player->tool[TOOL_B].num--;
+//            MAPS[pos_tool].tool = TOOL_B;
+//            round_state = ROUND_TOOL;
+//            display(MAPS);
+//            print_player_name(player); printf(":\n");
+//            printf("Bomb is used successfully !\r\n");
+//        }
+//        else
+//        {
+//            player->tool[TOOL_B].num = 0;
+//            printf("Sorry, you don't have available tool(Bomb) now !\r\n");
+//        }
+//    }
+//    *end_round = FALSE;
+//}
 
 void robot_cmd(PLAYER* player,BOOL* end_round){
     //printf("Function is developing\n");
     char pos = player->position;
     char pos_scan = pos;
 
-    if((player->tool[TOOL_R].num > 0) && (player->tool[TOOL_R].num < 11))
-    {
-        player->tool[TOOL_R].num--;
-        while((++pos_scan % MAX_POSITION)  <= ((pos + 10) % MAX_POSITION))
-        {
-            pos_scan %= MAX_POSITION;
-            if((MAPS[pos_scan].tool > TOOL_NULL) && (MAPS[pos_scan].tool < TOOL_R))
-            {
-                round_state = ROUND_TOOL;
-                if(TOOL_L == MAPS[pos_scan].tool)
-                {
-                    MAPS[pos_scan].tool = TOOL_NULL;
-                    display(MAPS);
-                    print_player_name(player); printf(":\n");
-                    printf("Your robot found a Block !\r\n");
-                }
-                else
-                {
-                    MAPS[pos_scan].tool = TOOL_NULL;
-                    display(MAPS);
-                    print_player_name(player); printf(":\n");
-                    printf("Your robot found a Bomb !\r\n");
-                }
-                break;
-            }
-            else
-            {
-                MAPS[pos_scan].tool = TOOL_NULL;
-                if(pos_scan == ((pos + 10) % MAX_POSITION))
-                {
-                    printf("Your robot found nothing !\r\n");
-                }
-            }
-        }
-
-    }
+    if(!isFirst_tool) printf("Use cmd: query,use tool(once),sell house(once)-> roll dice(once) !\n");
     else
     {
-        player->tool[TOOL_R].num = 0;
-        printf("Sorry, you don't have available tool(Robot) now !\r\n");
+        if ((player->tool[TOOL_R].num > 0) && (player->tool[TOOL_R].num < 11)) {
+            player->tool[TOOL_R].num--;
+            isFirst_tool = FALSE;
+            while ((++pos_scan % MAX_POSITION) <= ((pos + 10) % MAX_POSITION)) {
+                pos_scan %= MAX_POSITION;
+                if ((MAPS[pos_scan].tool > TOOL_NULL) && (MAPS[pos_scan].tool < TOOL_R)) {
+//                    round_state = ROUND_TOOL;
+                    if (TOOL_L == MAPS[pos_scan].tool) {
+                        MAPS[pos_scan].tool = TOOL_NULL;
+                        display(MAPS);
+                        print_player_name(player);
+                        printf(":\n");
+                        printf("Your robot found a Block !\r\n");
+                    }
+//                else
+//                {
+//                    MAPS[pos_scan].tool = TOOL_NULL;
+//                    display(MAPS);
+//                    print_player_name(player); printf(":\n");
+//                    printf("Your robot found a Bomb !\r\n");
+//                }
+                    break;
+                } else {
+                    MAPS[pos_scan].tool = TOOL_NULL;
+                    if (pos_scan == ((pos + 10) % MAX_POSITION)) {
+                        printf("Your robot found nothing !\r\n");
+                    }
+                }
+            }
+
+        } else {
+            player->tool[TOOL_R].num = 0;
+            printf("Sorry, you don't have available tool(Robot) now !\r\n");
+        }
     }
     *end_round = FALSE;
 }
@@ -413,6 +410,7 @@ void step_cmd(PLAYER *player, int position, BOOL *end_round){
     print_player_name(player);
     printf(":\n");
     players_end_run(player, end_round);
+    *end_round = TRUE;
 
 }
 
@@ -423,10 +421,10 @@ void help_cmd(void) {
     printf(" When it's the buyer's turn to play, sell a property with an absolute n on his map at twice the total cost of investment. \n");
     print_yellow("Block n :");
     printf(" You can place the roadblock anywhere in the front and back 10 steps of the current position. Any player passing the roadblock will be intercepted. The props are effective once. \n");
-    print_yellow("Bomb n :");
-    printf(" You can place the bomb anywhere in the front and back 10 steps of the current position. Any player passing through the bomb will be wounded. To the hospital for three days.  \n");
+//    print_yellow("Bomb n :");
+//    printf(" You can place the bomb anywhere in the front and back 10 steps of the current position. Any player passing through the bomb will be wounded. To the hospital for three days.  \n");
     print_yellow("Robot :");
-    printf(" Using this prop, you can clean up any other props in the 10 steps on the road ahead, such as bombs and roadblocks. \n");
+    printf(" Using this prop, you can clean up any other props in the 10 steps on the road ahead.\n");//, such as bombs and roadblocks. \n");
     print_yellow("Query :");
     printf(" Display your assets. \n");
     print_yellow("Help :");
@@ -435,6 +433,8 @@ void help_cmd(void) {
     printf(" Forced return. \n");
     if(ROOT_ON == root)
     {
+        print_red("Pass  :");
+        printf(" Pass round directly. \n");
         print_red("Step n :");
         printf(" Control step. \n");
         print_red("Su :");
@@ -466,7 +466,7 @@ void query_cmd(PLAYER *player, BOOL *end_round) {
     printf("--------------------------------------------------------------\n");
     printf("Tool:\n");                            //显示道具（种类和数量）
     printf("\t* Block's number: %d\n", player->tool[TOOL_L].num); //路障数量
-    printf("\t* Bomb's  number: %d\n", player->tool[TOOL_B].num);  //炸弹数量
+//    printf("\t* Bomb's  number: %d\n", player->tool[TOOL_B].num);  //炸弹数量
     printf("\t* Robot's number: %d\n", player->tool[TOOL_R].num); //路障数量
     printf("**************************************************************\n");
 }
@@ -483,34 +483,41 @@ void pass_cmd(BOOL* end_round)
 }
 
 void sell_cmd(PLAYER *player, int position, BOOL *end_round) {
-    if(player->house[position]==0){
-        printf("It's NOT your house!\n");
-        return;
+    if(!isFirst_sell) printf("Use cmd: query,use tool(once),sell house(once)-> roll dice(once) !\n");
+    else {
+        if (player->house[position] == 0) {
+            printf("It's NOT your house!\n");
+            return;
+        }
+        {
+            int price = MAPS[position].price_all * 2;
+            MAPS[position].owner = USER_NULL;
+            MAPS[position].type = MAP_COM;
+            player->money += price;
+            player->house[position] = 0;
+//        round_state = ROUND_SELL;
+            isFirst_sell = FALSE;
+            display(MAPS);
+            print_player_name(player);
+            printf(":\nYou SELL the house in %d and get money %d.\n""You money: %ld -> %ld\n",
+                   position, price, ((player->money) - price), (player->money));
+        }
     }
-    {
-        int price = MAPS[position].price_all * 2;
-        MAPS[position].owner = USER_NULL;
-        MAPS[position].type = MAP_COM;
-        player->money += price;
-        player->house[position] = 0;
-        round_state = ROUND_SELL;
-        display(MAPS);
-        print_player_name(player);
-        printf(":\nYou SELL the house in %d and get money %d.\n""You money: %ld -> %ld\n",
-               position, price, ((player->money) - price), (player->money));
-        *end_round = FALSE;
-    }
+    *end_round = FALSE;
+
 }
 
 void dice_cmd(PLAYER* player,BOOL* end_round){
     //玩家执行Roll命令后的一系列情况
     int steps = _get_rand(1, 6);
-    *end_round = FALSE;
+    char pos_pre = player->position;
+//    *end_round = FALSE;
     players_run_in_the_way(player,steps, end_round);
 //    if (*end_round) return;
     display_run_map(player,player->position);
     print_player_name(player);
-    if(ROUND_IDLE != round_state) printf(":\nYou walked %d steps forward !!\n", steps);
+    /*if(ROUND_IDLE != round_state)*/
+    printf(":\nYou walked %d steps forward !!\n", ((player->position) + MAX_POSITION - pos_pre)%MAX_POSITION);
     players_end_run(player, end_round);
 //    *end_round = TRUE;
 }
@@ -596,6 +603,276 @@ void read_archive(){
     // printf("%d",USERS_NUMBER);
     fclose(fp);
     display(MAPS);
+}
+
+BOOL preset_cmd(char* cmd){
+    //测试接口,preset命令,详情见测试文档
+    char *tmp = strtok(cmd, " ");
+    int init_money = 10000;
+    if (strcmp(tmp, "preset") == 0){
+        tmp = strtok(NULL, " ");
+        if (strcmp(tmp, "user") == 0){
+            tmp = strtok(NULL, " ");
+            USERS_NUMBER = strlen(tmp) - 1;        
+            char users[USERS_NUMBER];
+            for (int i = 0; i < USERS_NUMBER; i++)
+            {
+                if (tmp[i] == 'A')
+                    users[i] = 2;
+                else if (tmp[i] == 'Q')
+                    users[i] = 1;
+                else if (tmp[i] == 'S')
+                    users[i] = 3;
+                else if (tmp[i] == 'J')
+                    users[i] = 4;
+            }
+            _init_players(users, init_money);
+        }
+        else if (strcmp(tmp, "map") == 0){
+            tmp = strtok(NULL, " ");
+            int posi = atoi(tmp);
+            tmp = strtok(NULL, " ");
+            char name = tmp[0];
+            tmp = strtok(NULL," ");
+            int level = atoi(tmp);
+            preset_map(MAPS,posi,_get_player(name),level);
+        }
+        else if (strcmp(tmp, "fund") == 0){
+            tmp = strtok(NULL, " ");
+            char name = tmp[0];
+            tmp = strtok(NULL," ");
+            long money = atol(tmp);
+            preset_fund(_get_player(name),money);
+        }
+        else if (strcmp(tmp, "credit") == 0){
+            tmp = strtok(NULL, " ");
+            char name = tmp[0];
+            tmp = strtok(NULL," ");
+            long credit = atol(tmp);
+            preset_credit(_get_player(name),credit);
+        }
+        else if (strcmp(tmp, "gift") == 0){
+            tmp = strtok(NULL," ");
+            char name = tmp[0];
+            tmp = strtok(NULL," ");
+            int tn_size = sizeof(tmp)/sizeof(char);
+            char tool[tn_size+1];
+            strcpy(tool,tmp);
+            tmp = strtok(NULL," ");
+            int n = atoi(tmp);
+            preset_gift(_get_player(name),tool,n);
+        }
+        else if (strcmp(tmp, "bomb") == 0){
+            tmp = strtok(NULL, " ");
+            MAPS[atoi(tmp)].tool = TOOL_B;
+        }
+        else if (strcmp(tmp, "barrier") == 0){
+            tmp = strtok(NULL, " ");
+            MAPS[atoi(tmp)].tool = TOOL_L;
+        }
+        else if (strcmp(tmp, "userloc") == 0){
+            tmp = strtok(NULL," ");
+            char name = tmp[0];
+            tmp = strtok(NULL," ");
+            int posi = atoi(tmp);
+            tmp = strtok(NULL, " ");
+            int m = atoi(tmp);
+            preset_userloc(MAPS,_get_player(name),posi,m);
+        }
+        else if (strcmp(tmp, "nextuser") == 0){
+            
+        }
+    }
+    else {
+        for(int i=0;i<50;i++){
+            if(cmd[i]!='\n'){
+                TMP_DEBUG[i] = cmd[i];
+            }
+            else break;
+        }
+        return FALSE;
+    }
+    return TRUE;
+}
+
+void dump(PLAYER *player, BOOL *end_round)
+{
+    if (!(pdump = fopen("./TestCase/dump.txt","w")))
+    {
+        printf("open dump.txt failed\ndump failed!\n");
+        goto EXIT;
+    }
+
+    dump_user();
+
+    dump_map();
+   
+    dump_money();
+
+    dump_point();
+
+    dump_tool_user();
+
+    dump_tool_map();
+
+    dump_loc();
+
+    dump_next();
+
+    printf("dump finished\n");
+
+    fclose(pdump);
+
+EXIT:
+    if(pdump)
+        fclose(pdump);
+    
+    quit_cmd(player,end_round);
+    return;
+}
+
+void dump_user()
+{
+    char buf[5] = {'\0'};
+    char temp[5] = {'\0'};
+
+    memset(buf,'\0',5);
+    memset(temp,'\0',5);
+    memset(order_buf,'\0',5);
+
+
+    for (int i = 0; i < USERS_NUMBER; ++i)
+        buf[i] = USERS[i].short_name;
+
+
+    for (int i = 0; i < USERS_NUMBER; ++i)
+    {
+        if (buf[i] == 'A')
+            temp[0] = 'A';
+        if (buf[i] == 'Q')
+            temp[1] = 'Q';
+        if (buf[i] == 'S')
+            temp[2] = 'S';
+        if (buf[i] == 'J')
+            temp[3] = 'J';
+    }
+
+
+    int j=0;
+    for (int i = 0; i < 4; ++i)
+    {
+        if (temp[i] != '\0')
+        {
+            order_buf[j++]=temp[i];
+        }
+    }
+
+    fprintf(pdump,"user %s\n",order_buf);
+
+    return;
+}
+
+void dump_map()
+{   
+    for (int i = 0; i < MAX_POSITION; ++i)
+    {
+        if (MAPS[i].owner != USER_NULL)
+            fprintf(pdump,"map[%d] %c %d\n",i,_get_player_symbol(MAPS[i].owner),MAPS[i].pre_symbol[MAX_USER-1]-SYMBOL_0);      
+    }
+
+    return;
+}
+
+void dump_money()
+{
+    for (int i = 0; i < USERS_NUMBER; ++i)
+        fprintf(pdump,"fund %c %d\n",order_buf[i],_get_money_by_symbol(order_buf[i]));
+    return;
+}
+
+void dump_point()
+{
+    for (int i = 0; i < USERS_NUMBER; ++i)
+        fprintf(pdump,"credit %c %d\n",order_buf[i],_get_point_by_symbol(order_buf[i]));
+    return;
+}
+
+void dump_tool_user()
+{
+    for (int i = 0; i < USERS_NUMBER; ++i)
+    {
+        for (int j = 0; j < USERS_NUMBER; ++j)
+        {
+            if (USERS[j].short_name == order_buf[i])
+            {
+                fprintf(pdump,"gift %c bomb %d\n",order_buf[i],USERS[j].tool[1].num);
+                fprintf(pdump,"gift %c barrier %d\n",order_buf[i],USERS[j].tool[0].num);
+                fprintf(pdump,"gift %c robot %d\n",order_buf[i],USERS[j].tool[2].num);
+                fprintf(pdump,"gift %c god %d\n",order_buf[i],USERS[j].lucky_god);
+            }
+        }   
+    }
+    return;
+}
+
+
+void dump_tool_map()
+{
+    for (int i = 0; i < MAX_POSITION; ++i)
+    {
+        if (MAPS[i].tool == 1)
+            fprintf(pdump,"bomb in %d\n",i);      
+    }
+
+    for (int i = 0; i < MAX_POSITION; ++i)
+    {
+        if (MAPS[i].tool == 0)
+            fprintf(pdump,"barrier in %d\n",i);      
+    }
+    return;
+}
+
+void dump_loc()
+{
+    for (int i = 0; i < USERS_NUMBER; ++i)
+    {
+        for (int j = 0; j < USERS_NUMBER; ++j)
+        {
+            if (USERS[j].short_name == order_buf[i])
+            {
+                if (USERS[j].skip_num == 0)
+                    fprintf(pdump,"userloc %c %d\n",order_buf[i],USERS[j].position);
+                else
+                    fprintf(pdump,"userloc %c %d %d\n",order_buf[i],USERS[j].position,USERS[j].skip_num);
+            }
+
+        }
+    }
+    return;
+    
+}
+
+void dump_next()
+{
+    int next_id;
+
+    for (int i = 0; i < USERS_NUMBER; ++i)
+    {
+        if (USERS[i].id == NOW_ID)
+        {           
+            if ( NOW_ID < USERS_NUMBER )
+                next_id = NOW_ID + 1 + (USERS[i+1].skip_num != 0);
+                
+            else if ( NOW_ID == USERS_NUMBER)
+                next_id = NOW_ID + 1 + (USERS[0].skip_num != 0);
+        }
+    }
+
+    if (next_id == USERS_NUMBER)
+        fprintf(pdump,"nextuser %c\n",USERS[next_id-1].short_name);
+    else
+        fprintf(pdump,"nextuser %c\n",USERS[next_id%USERS_NUMBER-1].short_name);
+    return;
 }
 
 BOOL preset_cmd(char* cmd){

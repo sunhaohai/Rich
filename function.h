@@ -27,8 +27,8 @@ void query_cmd(PLAYER *player, BOOL *end_round);
 void quit_cmd(PLAYER *player, BOOL *end_round);
 void sell_cmd(PLAYER *player, int position, BOOL *end_round);
 void dice_cmd(PLAYER *player, BOOL *end_round);
-void save_cmd();
 void read_archive();
+void save_cmd(void);
 
 BOOL preset_cmd(char *cmd);
 void dump(PLAYER *player, BOOL *end_round);

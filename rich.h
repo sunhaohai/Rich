@@ -109,6 +109,7 @@ typedef enum
     MAP_$   = 6, //
     MAP_T   = 7, //tool
     MAP_START = 8,
+    MAP_PARK = 9,
     MAP_NUM 
 }MAP_TYPE;
 
@@ -141,6 +142,7 @@ typedef enum
     SYMBOL_L,
     SYMBOL_R,
     SYMBOL_B,
+    SYMBOL_PARK, //park
     SYMBOL_NUM
 }SYMBOL;
 
