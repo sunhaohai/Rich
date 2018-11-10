@@ -70,7 +70,8 @@ int main(int argc,char *argv[]) {
         printf("通过该文件测试\n");
         return ret;
     }
-    printf("第%d行未通过测试\n",ret);
+    printf("\033[1;31m第%d行未通过测试\n",ret);
+    printf("\033[0m");
     return ret;
 }
 #pragma clang diagnostic pop
