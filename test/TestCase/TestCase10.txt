@@ -1,18 +1,7 @@
 preset user QA
 preset fund A 1000
-preset fund Q 1000
-preset gift A barrier 10
-preset gift Q barrier 10
-preset gift A bomb 10
-preset gift Q bomb 10
+preset fund Q 100
+preset map 1 A 3
 query
-bomb 10
 step 1
-n
-pass
-block 10
-step 1
-n
-pass
-dump
-//test multi tools in the same block
+//test for buy special place

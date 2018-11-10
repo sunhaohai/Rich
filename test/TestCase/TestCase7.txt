@@ -1,21 +1,14 @@
 preset user QA
+preset map 1 A 1
+preset map 2 A 1
+preset map 3 A 1
+preset map 4 A 1
 preset fund A 1000
 preset fund Q 1000
-preset credit A 1000
-preset credit Q 1000
-preset gift A bomb 10
-preset gift A barrier 10
-preset gift A robot 10
 preset gift A god 10
-preset gift Q bomb 10
-preset gift Q barrier 10
-preset gift Q robot 10
 preset gift Q god 10
 query
-block 3
-step 5
-n
+step 1
 query
-pass
 dump
-//test the function of barrier 
+//test the function of god 

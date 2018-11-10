@@ -1,29 +1,37 @@
-preset user AQSJ
-preset fund A 1000
-preset fund Q 10
-preset fund S 10
-preset fund J 10
-preset map 1 A 3
-preset map 2 A 3
-preset map 3 A 3
-preset map 4 A 3
-preset map 5 A 3
+preset user AQ
+preset fund A 10000
+preset fund Q 10000
+preset gift A god 5
+preset map 1 Q 3
+preset map 2 Q 3
+preset map 3 Q 3
+preset map 4 Q 3
+preset map 5 Q 3
+preset map 6 Q 3
 query
-step 10
-n
-pass
 step 1
 n
-pass
+step 0
+n
 step 1
 n
-pass
+step 0
+n
 step 1
 n
-pass
+step 0
+n
 step 1
 n
-pass
+step 0
+n
+step 1
+n
+step 0
+n
+step 1
+n
+step 0
 query
 dump
-//test verify of game over
+//test for initial function

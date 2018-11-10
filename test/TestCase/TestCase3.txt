@@ -1,12 +1,11 @@
 preset user QA
 preset fund A 1000
 preset fund Q 1000
+gift A robot 2
 preset barrier 5
-step 10
+preset barrier 10
+robot
+step 12
 n
-pass
-step 10
-n
-pass
 dump
-//test for barrier function
+//test for robot function

@@ -1,7 +1,6 @@
 preset user QASJ
 preset fund A 1000
 preset credit A 100
-preset gift A bomb 1
 preset gift A barrier 1
 preset gift A robot 1
 preset gift A god 1
@@ -11,7 +10,6 @@ preset map 3 A 1
 preset map 4 A 1
 preset fund Q 2000
 preset credit Q 200
-preset gift Q bomb 2
 preset gift Q barrier 2
 preset gift Q robot 2
 preset gift Q god 2
@@ -21,7 +19,6 @@ preset map 7 Q 1
 preset map 8 Q 1
 preset fund S 3000
 preset credit S 300
-preset gift S bomb 3
 preset gift S barrier 3
 preset gift S robot 3
 preset gift S god 3
@@ -31,7 +28,6 @@ preset map 11 S 1
 preset map 12 S 1
 preset fund J 4000
 preset credit J 400
-preset gift J bomb 4
 preset gift J barrier 4
 preset gift J robot 4
 preset gift J god 4

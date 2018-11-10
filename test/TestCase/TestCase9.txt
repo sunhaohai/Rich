@@ -1,18 +1,14 @@
 preset user QA
 preset fund A 1000
 preset fund Q 1000
-preset gift A robot 10
-preset gift Q robot 10
-preset gift A bomb 10
-preset gift Q bomb 10
+preset gift A barrier 10
+preset gift Q barrier 10
 query
-bomb 5
+block 10
 step 1
 n
-pass
-robot
-step 10
+block 10
+step 1
 n
-pass
 dump
-//test the function of robot
+//test multi tools in the same block
