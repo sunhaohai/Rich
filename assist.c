@@ -758,7 +758,6 @@ void display_run_map(PLAYER* player, int fin_position){
 
 void players_end_run(PLAYER *player,BOOL *end_round){
     //玩家走最后一步的时候发生的事件控制函数
-    //TODO: adjust order in round
     int pos_temp = (*player).position;
 
     if (MAPS[pos_temp].owner && MAPS[pos_temp].owner!=player->name)

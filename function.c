@@ -159,7 +159,6 @@ void display(MAP* maps){
 
 void player_round(PLAYER* player){
     //玩家回合控制总函数
-    //TODO: cmd table complete
     BOOL end_round=FALSE;
     if((*player).skip_num>0){
         (*player).skip_num--;
@@ -524,6 +523,7 @@ void dice_cmd(PLAYER* player,BOOL* end_round){
 
 void save_cmd()
 {
+    //TODO:CHANGE LOGIC TO SAVE isFirst_tool,isFirst_sell,USERS[]. MAKE SURE to reload to the player who "save"
     FILE *fp;
     if((fp = fopen("save.txt","w+"))==NULL){
          printf("The file save.txt can not be opened.\n");
@@ -554,6 +554,7 @@ void save_cmd()
 }
 
 void read_archive(){
+    //TODO:CHANGE LOGIC REFER TO save_cmd
     FILE *fp;
     //char str[1000];
     //char *single;
