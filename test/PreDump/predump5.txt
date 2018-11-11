@@ -11,4 +11,4 @@ gift Q robot 10
 gift Q god 9
 userloc A 0
 userloc Q 28
-nextuser Q
+nextuser A

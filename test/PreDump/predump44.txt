@@ -3,12 +3,6 @@ fund Q 10000
 fund S 10000
 credit Q 300
 credit S 10
-gift Q barrier 0
-gift Q robot 0
-gift Q god 0
-gift S barrier 0
-gift S robot 0
-gift S god 0
 userloc Q 35
 userloc S 0
-nextuser Q
+nextuser S
