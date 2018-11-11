@@ -1,0 +1,9 @@
+preset user QS   //财神是否免租，次数是否扣除
+preset credit Q 100
+preset credit S 10
+preset map 2 S 1
+preset gift Q god 1
+step 2
+
+Query
+dump

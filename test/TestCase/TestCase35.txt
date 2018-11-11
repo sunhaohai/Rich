@@ -1,7 +1,7 @@
-preset user QS   //使用没有的道具命令
+preset user QS   //道具使用后是否扣除
 preset credit Q 100
 preset credit S 10
 preset gift Q barrier 3
-Block 3
-
+Barrier 3
+Query
 dump
