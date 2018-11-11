@@ -1,8 +1,14 @@
 preset user AQ
-preset fund 1000
-preset fund A 666
-preset fund Q 666
-preset map 1  A 5
-preset map 1  A 3
-
-//test stability of preset cmd
+preset fund A 1000
+preset fund Q 1000
+preset gift A barrier 2
+preset gift Q barrier 2
+query
+block 5
+block 6
+step 1
+n
+step 1
+n
+dump
+//test for mutil tools used in one round

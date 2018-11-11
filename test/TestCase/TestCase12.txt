@@ -17,6 +17,8 @@ step 1
 n
 step 1
 n
+step 1
+n
 query
 dump
 //test verify of game over
