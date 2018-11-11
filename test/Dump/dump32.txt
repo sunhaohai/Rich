@@ -1,15 +1,9 @@
 user AQ
-map[2] Q 1
+map 2 Q 1
 fund A 800
 fund Q 1200
 credit A 100
 credit Q 10
-gift A barrier 0
-gift A robot 0
-gift A god 0
-gift Q barrier 0
-gift Q robot 0
-gift Q god 0
 userloc A 2
 userloc Q 0
-nextuser A
+nextuser Q

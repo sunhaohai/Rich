@@ -680,7 +680,11 @@ BOOL preset_cmd(char* cmd){
             preset_userloc(MAPS,_get_player(name),posi,m);
         }
         else if (strcmp(tmp, "nextuser") == 0){
-            
+            tmp = strtok(NULL," ");
+            char name = tmp[0];
+            for(int i=0;i<USERS_NUMBER;i++){
+                if(name==USERS[i].short_name) NOW_ID = i;
+            }
         }
     }
     else {
@@ -741,7 +745,7 @@ void dump_map()
     for (int i = 0; i < MAX_POSITION; ++i)
     {
         if (MAPS[i].owner != USER_NULL)
-            fprintf(pdump,"map[%d] %c %d\n",i,_get_player_symbol(MAPS[i].owner),MAPS[i].pre_symbol[MAX_USER-1]-SYMBOL_0);      
+            fprintf(pdump,"map %d %c %d\n",i,_get_player_symbol(MAPS[i].owner),MAPS[i].pre_symbol[MAX_USER-1]-SYMBOL_0);      
     }
 
     return;
@@ -750,14 +754,25 @@ void dump_map()
 void dump_money()
 {
     for (int i = 0; i < USERS_NUMBER; ++i)
-        fprintf(pdump,"fund %c %d\n",order_buf[i],_get_money_by_symbol(order_buf[i]));
+    {
+        if (_get_money_by_symbol(order_buf[i])!=0)
+        {
+            fprintf(pdump, "fund %c %d\n", order_buf[i], _get_money_by_symbol(order_buf[i]));
+        }
+    }
+
     return;
 }
 
 void dump_point()
 {
     for (int i = 0; i < USERS_NUMBER; ++i)
-        fprintf(pdump,"credit %c %d\n",order_buf[i],_get_point_by_symbol(order_buf[i]));
+    {
+        if (_get_point_by_symbol(order_buf[i]) != 0)
+        {
+            fprintf(pdump, "credit %c %d\n", order_buf[i], _get_point_by_symbol(order_buf[i]));
+        }
+    }
     return;
 }
 
@@ -769,10 +784,12 @@ void dump_tool_user()
         {
             if (USERS[j].short_name == order_buf[i])
             {
-                //fprintf(pdump,"gift %c bomb %d\n",order_buf[i],USERS[j].tool[1].num);
-                fprintf(pdump,"gift %c barrier %d\n",order_buf[i],USERS[j].tool[0].num);
-                fprintf(pdump,"gift %c robot %d\n",order_buf[i],USERS[j].tool[2].num);
-                fprintf(pdump,"gift %c god %d\n",order_buf[i],USERS[j].lucky_god);
+                if (USERS[j].tool[0].num!=0)
+                    fprintf(pdump, "gift %c barrier %d\n", order_buf[i], USERS[j].tool[0].num);
+                if (USERS[j].tool[2].num != 0)
+                    fprintf(pdump, "gift %c robot %d\n", order_buf[i], USERS[j].tool[2].num);
+                if (USERS[j].lucky_god != 0)
+                    fprintf(pdump, "gift %c god %d\n", order_buf[i], USERS[j].lucky_god);
             }
         }   
     }
@@ -813,7 +830,7 @@ void dump_loc()
 
 void dump_next()
 {
-    fprintf(pdump, "nextuser %c\n", USERS[(NOW_ID + 1)%USERS_NUMBER].short_name);
+    fprintf(pdump, "nextuser %c\n", USERS[(NOW_ID)%USERS_NUMBER].short_name);
     return;
 }
 
