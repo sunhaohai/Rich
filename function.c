@@ -532,6 +532,7 @@ void save_cmd()
         printf("The file save.txt can not be opened.\n");
         return;
     }
+    fprintf(fp, "%d\n", USERS_NUMBER);
     //save all player's info to save.txt
     for (int i = 0; i < USERS_NUMBER; i++)
     {
@@ -552,7 +553,7 @@ void save_cmd()
     {
         fprintf(fp, "%d %d %d %d %d %d ",
                 MAPS[i].type, MAPS[i].owner, MAPS[i].tool, MAPS[i].mine, MAPS[i].price, MAPS[i].symbol);
-        for (int j = 0; j < MAX_USER; j++)
+        for (int j = 0; j < USERS_NUMBER; j++)
         {
             fprintf(fp, "%d ", MAPS[i].pre_symbol[j]);
         }
@@ -572,6 +573,7 @@ void read_archive(){
          printf("The file save.txt can not be opened.\n");
          return;
     }
+    fscanf(fp, "%d\n", &USERS_NUMBER);
     for(int i = 0;i < USERS_NUMBER; i++){
         fscanf(fp,"%d %d %d %d %d %ld %ld ",
         &(USERS[i].name), &(USERS[i].short_name), &(USERS[i].position), &(USERS[i].id), &(USERS[i].skip_num), &(USERS[i].money), &(USERS[i].point));
@@ -586,7 +588,7 @@ void read_archive(){
     for(int i = 0;i < MAX_POSITION;i++){
         fscanf(fp,"%d %d %d %d %d %d ",
         &(MAPS[i].type), &(MAPS[i].owner), &(MAPS[i].tool), &(MAPS[i].mine), &(MAPS[i].price), &(MAPS[i].symbol));
-        for(int j = 0;j < MAX_USER;j++){
+        for(int j = 0;j < USERS_NUMBER;j++){
             fscanf(fp,"%d ", &(MAPS[i].pre_symbol[j]));
         }
         fscanf(fp,"%d \n",&(MAPS[i].price_all));
