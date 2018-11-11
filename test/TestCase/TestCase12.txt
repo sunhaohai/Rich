@@ -11,19 +11,14 @@ preset map 5 A 3
 query
 step 10
 n
-pass
 step 1
 n
-pass
 step 1
 n
-pass
 step 1
 n
-pass
 step 1
 n
-pass
 query
 dump
 //test verify of game over

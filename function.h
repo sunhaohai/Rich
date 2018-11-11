@@ -31,7 +31,7 @@ void read_archive();
 void save_cmd(void);
 
 BOOL preset_cmd(char *cmd);
-void dump(PLAYER *player, BOOL *end_round);
+void dump(PLAYER *player, BOOL *end_round,char * path);
 void dump_user();
 void dump_map();
 void dump_money();

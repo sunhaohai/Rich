@@ -7,6 +7,5 @@ preset barrier 10
 robot
 step 12
 n
-pass
 dump
 //test for robot function

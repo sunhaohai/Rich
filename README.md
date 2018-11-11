@@ -16,6 +16,8 @@ SM：邬昕昱
 * Makefile
 * 编辑器
 
-## dump todo
+## autotest todo
+* dump文件保存位置确认（输入保存路径）
+* testcase文件命名确定（dump，predump同理）(**文件名+编号.txt**)
+* diff函数用法(**加上两个绝对路径**)
 
-测试dump

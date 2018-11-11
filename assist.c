@@ -12,6 +12,8 @@ extern char TMP_DEBUG[50];
 extern ROUND_STATE round_state;
 extern char isFirst_tool;
 extern char isFirst_sell;
+extern char * DUMP_PATH;
+
 
 int _get_rand(int min, int max){
     //生成大小在[min,max]当中的随机数
@@ -279,7 +281,7 @@ void _args_parse_one(char* arg, PLAYER* player,BOOL* end_round){
     else if(strcmp("QUIT",arg)==0) {quit_cmd(player,end_round); return;}
     else if((strcmp("SU",arg)==0)) {su_cmd_pre(player,end_round); return;}
     else if((strcmp("EXIT",arg)==0) && (ROOT_ON == root)) {exit_cmd(player,end_round); return;}
-    else if(strcmp("DUMP",arg)==0) {dump(player,end_round); return;}
+    else if(strcmp("DUMP",arg)==0) {dump(player,end_round,DUMP_PATH); return;}
     else if((strcmp("PASS",arg)==0) && (ROOT_ON == root)) {pass_cmd(end_round); return;}
     else if(strcmp("ROBOT",arg)==0) robot_cmd(player,end_round);
     else if(strcmp("ROLL",arg)==0) dice_cmd(player,end_round);

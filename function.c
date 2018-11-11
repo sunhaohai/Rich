@@ -11,6 +11,7 @@ extern ROOT_STATE root;
 extern ROUND_STATE round_state;
 extern char isFirst_tool;
 extern char isFirst_sell;
+extern char * DUMP_PATH;
 
 FILE * pdump;
 char order_buf[5] = {'\0'};
@@ -224,7 +225,7 @@ void player_round(PLAYER* player){
         //printf("=======----%s-----\n", _args);
     }
     if(USERS_NUMBER<2){
-        dump(player,&end_round);
+        dump(player, &end_round, DUMP_PATH);
         printf("游戏结束，任意键退出！\n");
         getchar();
         game_over = 1;
@@ -965,9 +966,11 @@ BOOL preset_cmd(char* cmd){
     return TRUE;
 }
 
-void dump(PLAYER *player, BOOL *end_round)
+void dump(PLAYER *player, BOOL *end_round,char * path)
 {
-    if (!(pdump = fopen("./TestCase/dump.txt","w")))
+
+    //if (!(pdump = fopen("./TestCase/dump.txt","w")))
+    if (!(pdump = fopen(path,"w")))
     {
         printf("open dump.txt failed\ndump failed!\n");
         goto EXIT;

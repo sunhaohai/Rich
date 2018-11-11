@@ -10,29 +10,28 @@ preset map 5 Q 3
 preset map 6 Q 3
 query
 step 1
-pass
+n
 step 0
-pass
+n
 step 1
-pass
+n
 step 0
-pass
+n
 step 1
-pass
+n
 step 0
-pass
+n
 step 1
-pass
+n
 step 0
-pass
+n
 step 1
-pass
+n
 step 0
-pass
+n
 step 1
-pass
+n
 step 0
-pass
 query
 dump
 //test for initial function
