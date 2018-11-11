@@ -5,7 +5,7 @@
 PLAYER USERS[4]; //玩家信息
 int USERS_NUMBER; //玩家个数
 MAP MAPS[MAX_POSITION]; //地图信息
-int NOW_ID;
+int NOW_ID; 
 int game_over;
 ROOT_STATE root = ROOT_OFF;
 ROUND_STATE round_state = ROUND_NULL;
@@ -40,6 +40,11 @@ int main(int argc,char *argv[])
             fflush(stdin);
             my_getline(start_tmp,50);
             printf("%s",start_tmp);
+            if(strcmp(_str_upper(start_tmp),"LOAD\n")==0){
+                read_archive();
+                j = 1;
+                break;
+            }
             if(preset_cmd(start_tmp)){
                 j++;
                 root = ROOT_ON;
@@ -55,12 +60,12 @@ int main(int argc,char *argv[])
         display(MAPS);
         while (!game_over) //
         {
-            for(int i=0;i<USERS_NUMBER;i++)
+            for (; NOW_ID < USERS_NUMBER; NOW_ID++)
             {
-                player_round(USERS+i);   
-                NOW_ID = i;
+                player_round(USERS+NOW_ID);   
                 if(game_over) break;
             }
+            NOW_ID = 0;
         }
         if(game_over) break;
     }

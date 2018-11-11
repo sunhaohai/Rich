@@ -525,32 +525,41 @@ void dice_cmd(PLAYER* player,BOOL* end_round){
 
 void save_cmd()
 {
+    //TODO:CHANGE LOGIC TO SAVE isFirst_tool,isFirst_sell,USERS[]. MAKE SURE to reload to the player who "save"
     FILE *fp;
-    if((fp = fopen("save.txt","w+"))==NULL){
-         printf("The file save.txt can not be opened.\n");
-         return;
-    } 
+    if ((fp = fopen("save.txt", "w+")) == NULL)
+    {
+        printf("The file save.txt can not be opened.\n");
+        return;
+    }
     //save all player's info to save.txt
-    for(int i = 0;i < USERS_NUMBER; i++){
-        fprintf(fp,"%d %d %d %d %d %ld %ld ",
-        USERS[i].name, USERS[i].short_name, USERS[i].position, USERS[i].id, USERS[i].skip_num, USERS[i].money, USERS[i].point);
-        for(int j = 0;j < MAX_POSITION; j++){
+    for (int i = 0; i < USERS_NUMBER; i++)
+    {
+        fprintf(fp, "%d %d %d %d %d %ld %ld ",
+                USERS[i].name, USERS[i].short_name, USERS[i].position, USERS[i].id, USERS[i].skip_num, USERS[i].money, USERS[i].point);
+        for (int j = 0; j < MAX_POSITION; j++)
+        {
             fprintf(fp, "%d ", USERS[i].house[j]);
         }
-        for(int j = 0;j < TOOL_NUMBER; j++){
+        for (int j = 0; j < TOOL_NUMBER; j++)
+        {
             fprintf(fp, "%d %d ", USERS[i].tool[j].type, USERS[i].tool[j].num);
         }
         fprintf(fp, "%d \n", USERS[i].lucky_god);
     }
     //save all map's info to save.txt
-    for(int i = 0;i < MAX_POSITION;i++){
-        fprintf(fp,"%d %d %d %d %d %d ",
-        MAPS[i].type, MAPS[i].owner, MAPS[i].tool, MAPS[i].mine, MAPS[i].price, MAPS[i].symbol);
-        for(int j = 0;j < MAX_USER;j++){
-            fprintf(fp,"%d ",MAPS[i].pre_symbol[j]);
+    for (int i = 0; i < MAX_POSITION; i++)
+    {
+        fprintf(fp, "%d %d %d %d %d %d ",
+                MAPS[i].type, MAPS[i].owner, MAPS[i].tool, MAPS[i].mine, MAPS[i].price, MAPS[i].symbol);
+        for (int j = 0; j < MAX_USER; j++)
+        {
+            fprintf(fp, "%d ", MAPS[i].pre_symbol[j]);
         }
-        fprintf(fp,"%d \n",MAPS[i].price_all);
+        fprintf(fp, "%d \n", MAPS[i].price_all);
     }
+    fprintf(fp,"%d\n", NOW_ID);
+    fprintf(fp,"%d %d\n",isFirst_tool,isFirst_sell);
     fclose(fp);
 }
 
@@ -582,26 +591,8 @@ void read_archive(){
         }
         fscanf(fp,"%d \n",&(MAPS[i].price_all));
     }
-    //for(int i = 0;i < USERS_NUMBER;i++){
-     //   fgets(str,1000,fp);
-        // printf("%s",str);
-    //    single = strtok(str, " "); 
-    //    while(single != NULL){
-    //        printf("%s\n",single);
-    //        single = strtok(NULL, " ");
-    //    } 
-    //}
-    // printf("%d\n",single);
-    // while (!feof(fp)) { 
-    //     fgets(str,1000,fp);  //读取一行
-    //     printf("%s\n", str); //输出
-    //     single = strtok(str, " "); 
-    //     while(single != NULL){
-    //         printf("%s\n",single);
-    //         single = strtok(NULL, " ");
-    //     } 
-    // }     
-    // printf("%d",USERS_NUMBER);
+    fscanf(fp, "%d\n", &NOW_ID);
+    fscanf(fp, "%d %d\n", &isFirst_tool, &isFirst_sell);
     fclose(fp);
     display(MAPS);
 }
