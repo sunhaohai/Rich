@@ -168,6 +168,7 @@ void player_round(PLAYER* player){
     }
     while(1){
         if(TMP_DEBUG[0]!='\0'){
+            //printf("====%s===\n",TMP_DEBUG);
             if(root==ROOT_OFF){
                 TMP_DEBUG[0] = '\0';
                 continue;
@@ -601,6 +602,11 @@ void read_archive(){
 
 BOOL preset_cmd(char* cmd){
     //测试接口,preset命令,详情见测试文档
+    char tmp_cmd[50];
+    for (int i = 0; i < 50; i++)
+    {
+        tmp_cmd[i] = cmd[i];
+    }
     char *tmp = strtok(cmd, " ");
     int init_money = 10000;
     if (strcmp(tmp, "preset") == 0){
@@ -679,8 +685,8 @@ BOOL preset_cmd(char* cmd){
     }
     else {
         for(int i=0;i<50;i++){
-            if(cmd[i]!='\n'){
-                TMP_DEBUG[i] = cmd[i];
+            if(tmp_cmd[i]!='\n'){
+                TMP_DEBUG[i] = tmp_cmd[i];
             }
             else break;
         }
