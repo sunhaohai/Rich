@@ -17,13 +17,12 @@ char * DUMP_PATH;
 
 int main(int argc,char *argv[])
 {
-    if (argc != 2)
-    {
-        printf("input and only input the Dump file path\n");
-        return 0;
+    if (argc != 2){
+        DUMP_PATH = (char*)malloc(sizeof(char)*20);
+        strcmp(DUMP_PATH,"tmp.txt");
     }
-    DUMP_PATH = argv[1];
-    
+    else
+        DUMP_PATH = argv[1];
 
     game_over = 0;
     srand((unsigned)time(NULL));
