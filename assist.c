@@ -13,7 +13,7 @@ extern ROUND_STATE round_state;
 extern char isFirst_tool;
 extern char isFirst_sell;
 extern char * DUMP_PATH;
-
+extern int NOW_ID;
 
 int _get_rand(int min, int max){
     //生成大小在[min,max]当中的随机数
@@ -627,6 +627,7 @@ void rm_user(PLAYER* users,USER_NAME name, int* user_size){
             }
         }
     }
+    NOW_ID--;
     *user_size -= 1;
 }
 
@@ -662,6 +663,7 @@ void pay_rent(PLAYER *player, MAP *maps, BOOL *end_round)
         rm_user(USERS,player->name,&USERS_NUMBER);
 //        round_state = ROUND_IDLE;
 //        *end_round = TRUE;
+        display(MAPS);
         printf("Sorry, you're bankrupt!!\n");
         print_player_name(owner);
         printf("'s money : %ld -> %ld\n",  (owner->money - rent), owner->money);

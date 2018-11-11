@@ -761,7 +761,7 @@ void dump_tool_user()
         {
             if (USERS[j].short_name == order_buf[i])
             {
-                fprintf(pdump,"gift %c bomb %d\n",order_buf[i],USERS[j].tool[1].num);
+                //fprintf(pdump,"gift %c bomb %d\n",order_buf[i],USERS[j].tool[1].num);
                 fprintf(pdump,"gift %c barrier %d\n",order_buf[i],USERS[j].tool[0].num);
                 fprintf(pdump,"gift %c robot %d\n",order_buf[i],USERS[j].tool[2].num);
                 fprintf(pdump,"gift %c god %d\n",order_buf[i],USERS[j].lucky_god);
@@ -774,11 +774,6 @@ void dump_tool_user()
 
 void dump_tool_map()
 {
-    for (int i = 0; i < MAX_POSITION; ++i)
-    {
-        if (MAPS[i].tool == 1)
-            fprintf(pdump,"bomb in %d\n",i);      
-    }
 
     for (int i = 0; i < MAX_POSITION; ++i)
     {
@@ -810,24 +805,7 @@ void dump_loc()
 
 void dump_next()
 {
-    int next_id;
-
-    for (int i = 0; i < USERS_NUMBER; ++i)
-    {
-        if (USERS[i].id == NOW_ID)
-        {           
-            if ( NOW_ID < USERS_NUMBER )
-                next_id = NOW_ID + 1 + (USERS[i+1].skip_num != 0);
-                
-            else if ( NOW_ID == USERS_NUMBER)
-                next_id = NOW_ID + 1 + (USERS[0].skip_num != 0);
-        }
-    }
-
-    if (next_id == USERS_NUMBER)
-        fprintf(pdump,"nextuser %c\n",USERS[next_id-1].short_name);
-    else
-        fprintf(pdump,"nextuser %c\n",USERS[next_id%USERS_NUMBER-1].short_name);
+    fprintf(pdump, "nextuser %c\n", USERS[(NOW_ID + 1)%USERS_NUMBER].short_name);
     return;
 }
 

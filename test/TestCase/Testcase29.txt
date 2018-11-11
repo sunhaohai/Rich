@@ -1,8 +1,0 @@
-preset user AJ   //道具是否允许放在有玩家的位置
-preset credit A 100
-preset credit J 10
-preset gift J barrier 3
-step 3
-n
-Barrier 3
-dump

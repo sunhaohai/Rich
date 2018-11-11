@@ -23,19 +23,15 @@ credit A 100
 credit Q 200
 credit S 300
 credit J 400
-gift A bomb 1
 gift A barrier 1
 gift A robot 1
 gift A god 1
-gift Q bomb 2
 gift Q barrier 2
 gift Q robot 2
 gift Q god 2
-gift S bomb 3
 gift S barrier 3
 gift S robot 3
 gift S god 3
-gift J bomb 4
 gift J barrier 4
 gift J robot 4
 gift J god 4
@@ -43,4 +39,4 @@ userloc A 0
 userloc Q 0
 userloc S 0
 userloc J 0
-nextuser J
+nextuser A

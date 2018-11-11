@@ -1,7 +1,9 @@
 preset user QA
 preset fund A 1000
 preset fund Q 100
-preset map 1 A 3
 query
-step 1
-//test for buy special place
+step 14
+y
+query
+dump
+//test for buy special place : park 14

@@ -8,9 +8,7 @@ block -12
 step 1
 n
 block 2
-n
-block 10
-step 2
+step 10
 n
 dump
 //test for tool range

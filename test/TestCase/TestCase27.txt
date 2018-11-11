@@ -1,6 +1,8 @@
-preset user AJ   //矿地点数是否正常获得
-preset credit A 100
-preset credit J 10
-step 65
-Query
-dump
+preset user AQ
+preset fund 1000
+preset fund A 666
+preset fund Q 666
+preset map 1  A 5
+preset map 1  A 3
+
+//test stability of preset cmd

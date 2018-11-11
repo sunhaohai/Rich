@@ -1,7 +1,9 @@
-preset user QS   //卖房输入非自己房产
-preset credit Q 100
-preset credit S 10
-preset map 2 S 1
-preset map 3 Q 0
-Sell 2
+preset user QA
+preset fund A 1000
+preset fund Q 100
+query
+step 66
+y
+query
 dump
+//test for buy special place : mine 

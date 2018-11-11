@@ -5,7 +5,7 @@
 PLAYER USERS[4]; //玩家信息
 int USERS_NUMBER; //玩家个数
 MAP MAPS[MAX_POSITION]; //地图信息
-int NOW_ID; 
+int NOW_ID = 0; 
 int game_over;
 ROOT_STATE root = ROOT_OFF;
 ROUND_STATE round_state = ROUND_NULL;
@@ -40,7 +40,7 @@ int main(int argc,char *argv[])
             fflush(stdin);
             my_getline(start_tmp,50);
             printf("%s",start_tmp);
-            if(strcmp(_str_upper(start_tmp),"LOAD\n")==0){
+            if(strcmp(start_tmp,"LOAD\n")==0){
                 read_archive();
                 j = 1;
                 break;
